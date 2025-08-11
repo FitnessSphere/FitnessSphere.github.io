@@ -1,0 +1,15 @@
+Beginner Edit Guide - Fitness Sphere
+
+Quick edits on Android:
+1. Use ZArchiver to open the folder and edit files.
+2. Replace public/logo.png with your image (rename to logo.png).
+3. To change hero text: edit src/components/Hero.jsx
+4. To change sample workouts/recipes: edit src/sampleData.js
+5. To change color: edit src/styles/index.css (variables --primary / --accent present)
+
+Publish on GitHub Pages:
+1. Create repo username.github.io
+2. Upload all files (use Upload files in GitHub web)
+3. Settings -> Pages -> source: main / root
+
+Publish on Firebase: follow firebase init hosting and firebase deploy (computer recommended)
