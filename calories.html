@@ -1,0 +1,81 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Fitness Sphere — Calorie Tracker</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="logo" width="120"/></a>
+      <div class="links" data-menu>
+        <a class="link" href="calories.html">Calories</a>
+        <a class="link" href="weight-loss.html">Weight Loss</a>
+        <a class="link" href="weight-gain.html">Weight Gain</a>
+        <a class="link" href="exercises.html">Exercises</a>
+        <a class="link" href="premium.html">Premium</a>
+      </div>
+      <button class="btn secondary" data-menu-btn>Menu</button>
+    </div>
+  </nav>
+
+  <main class="container section">
+    <h1>Manual Calorie Tracker</h1>
+    <p class="lead">Add foods with grams to get calories & macros. Save the day and see your last 7 days chart.</p>
+
+    <div class="grid" style="grid-template-columns: 1.5fr 1fr;">
+      <div class="card">
+        <div class="grid" style="grid-template-columns: 1fr 140px 140px;">
+          <input id="foodInput" placeholder="Search or type food (e.g. Paneer, Rice)"/>
+          <input id="gramsInput" type="number" placeholder="Grams (e.g. 100)"/>
+          <button id="addItem" class="btn">Add</button>
+        </div>
+        <div id="suggestions" class="hidden mt-2"></div>
+
+        <table class="table mt-3">
+          <thead><tr><th>Food</th><th>Unit</th><th>Grams</th><th>Kcal</th><th>P</th><th>C</th><th>F</th><th></th></tr></thead>
+          <tbody id="items"></tbody>
+        </table>
+        <div class="kpi">
+          <div>Totals (today)</div>
+          <div class="num"><span id="totalKcal">0</span> kcal • P <span id="totalP">0</span> • C <span id="totalC">0</span> • F <span id="totalF">0</span></div>
+        </div>
+        <div class="cta">
+          <button class="btn" id="saveLog">Save Day</button>
+          <button class="btn secondary" id="clearItems">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Photo → Calories <span class="tag">Premium</span></h3>
+        <div id="photoSection">
+          <div id="premiumLock" class="notice warn">Locked. Unlock in Premium page (use code <b>DEMO123</b> to test on this device).</div>
+          <input id="photoInput" type="file" accept="image/*" class="mt-2" disabled/>
+          <button id="photoEstimate" class="btn mt-2" disabled>Estimate</button>
+          <div id="photoResult" class="mt-2"></div>
+        </div>
+        <p class="mt-3">Tip: This demo asks you to confirm foods in the photo. A server AI can replace it later.</p>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <h3>Last 7 Days</h3>
+      <canvas id="kcalChart" height="100"></canvas>
+      <table class="table mt-3">
+        <thead><tr><th>Date</th><th>Total kcal</th><th></th><th></th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+
+    <div class="notice mt-3">All data is saved only on this device (localStorage). Clearing browser storage will remove it.</div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/calories.js"></script>
+</body>
+</html>

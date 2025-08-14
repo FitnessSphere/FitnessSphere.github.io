@@ -1,0 +1,76 @@
+
+:root{
+  --bg:#0b1020;
+  --bg-soft:#111834;
+  --card:#141c3a;
+  --text:#e6f1ff;
+  --muted:#9fb2cc;
+  --brand:#34d399; /* emerald */
+  --brand-2:#60a5fa; /* blue */
+  --accent:#f59e0b; /* amber */
+  --danger:#ef4444;
+  --success:#22c55e;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;scroll-behavior:smooth}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--text);background:#0f1530;border:1px solid #22305e;border-radius:10px;padding:12px 14px;outline:none}
+input::placeholder{color:#7f8fb0}
+
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
+.nav{position:sticky;top:0;background:rgba(11,16,32,.7);backdrop-filter:blur(8px);z-index:50;border-bottom:1px solid #1f2a4d}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.nav .links{display:flex;gap:18px;align-items:center}
+.nav a.link{opacity:.9;padding:8px 10px;border-radius:10px;transition:.2s background, .2s opacity}
+.nav a.link:hover{background:#111a3b;opacity:1}
+.brand{display:flex;align-items:center;gap:10px}
+
+.hero{position:relative;padding:80px 0 40px;background:radial-gradient(1200px 300px at 50% -80px, #203069 0%, transparent 60%);overflow:hidden}
+.hero h1{font-size:40px;line-height:1.05;margin:0 0 12px}
+.hero p{color:var(--muted);font-size:18px;margin:0 0 22px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#0e1632;border:1px solid #213268;color:#bcd1ff;border-radius:999px;padding:8px 14px;font-size:14px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{background:linear-gradient(90deg, var(--brand), var(--brand-2));border:0;color:#071022;padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:#13214a;color:#d8e4ff;border:1px solid #223469;box-shadow:none}
+.btn.ghost{background:transparent;border:1px dashed #2a3a6e;color:#b6c8ff}
+
+.grid{display:grid;gap:16px}
+.grid.features{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:28px 0}
+.card{background:var(--card);border:1px solid #22305e;border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.card h3{margin:8px 0 6px}
+.card p{color:var(--muted);margin:0}
+
+.section{padding:50px 0;border-top:1px solid #1b254a}
+.section h2{margin:0 0 6px;font-size:28px}
+.section p.lead{color:var(--muted);margin:0 0 18px}
+
+.footer{padding:30px 0;color:#91a6c6}
+.footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px}
+.footer a{color:#bcd1ff;opacity:.9}
+.footer a:hover{opacity:1}
+
+.kpi{display:flex;align-items:center;justify-content:space-between;background:#10173a;border:1px solid #213268;border-radius:14px;padding:14px;margin:10px 0}
+.kpi .num{font-weight:800;font-size:22px;background:linear-gradient(90deg, var(--brand), var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.notice{padding:12px 14px;border:1px solid #2c3f78;border-radius:12px;background:#0e1632;color:#bcd1ff}
+.notice.warn{border-color:#70540f;background:#1a1404;color:#ffd893}
+.notice.good{border-color:#1c5f3a;background:#061a11;color:#99f6c3}
+
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;background:#0e1632;border:1px solid #213268;color:#bcd1ff;font-size:12px}
+
+.table{width:100%;border-collapse:separate;border-spacing:0 10px}
+.table th{text-align:left;color:#9bb2d9;font-weight:600;padding:6px 8px}
+.table td{background:#111a3b;border:1px solid #23366d;border-left:0;border-right:0;padding:10px;border-radius:10px}
+
+.hidden{display:none}
+.center{text-align:center}
+.mt-2{margin-top:10px}.mt-3{margin-top:16px}.mt-4{margin-top:22px}
+.mb-2{margin-bottom:10px}.mb-3{margin-bottom:16px}.mb-4{margin-bottom:22px}
+
+@keyframes floaty {0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+.floating{animation:floaty 3s ease-in-out infinite}
