@@ -10,7 +10,7 @@
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="logo.svg" alt="logo" width="120"/></a>
+      <a class="brand" href="index.html"><img src="logo.png" alt="logo" width="120"/></a>
       <div class="links" data-menu>
         <a class="link" href="calories.html">Calories</a>
         <a class="link" href="weight-loss.html">Weight Loss</a>
@@ -23,29 +23,92 @@
   </nav>
 
   <main class="container section">
-    <h1>Weight Loss — Start Smart</h1>
-    <p class="lead">Aim for steady fat loss with a small calorie deficit, regular movement, and strength training to maintain muscle.</p>
+    <h1>Weight Loss Guide</h1>
+    <p class="lead">Get a structured daily plan with workouts and diet tips to help you lose weight effectively.</p>
 
-    <div class="grid features">
-      <div class="card"><h3>1. Set your target</h3><p>Pick a realistic pace: ~0.25–0.5 kg per week. Extreme diets backfire.</p></div>
-      <div class="card"><h3>2. Track intake</h3><p>Use the Calories page. Focus on protein, veggies, whole grains, and water.</p></div>
-      <div class="card"><h3>3. Move daily</h3><p>Combine steps/cardio with 2–3 strength sessions weekly to protect muscle.</p></div>
-      <div class="card"><h3>4. Sleep & stress</h3><p>7–9h sleep, manage stress — both affect hunger and recovery.</p></div>
+    <!-- Daily Tracker Card -->
+    <div class="card" id="dailyTracker">
+      <h2>Today's Plan</h2>
+      <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <div>
+          <img id="exerciseIcon" src="" alt="Exercise icon" width="60"/>
+          <p id="exerciseText"></p>
+          <label><input type="checkbox" id="exerciseDone"/> Completed</label>
+        </div>
+        <div>
+          <img id="dietIcon" src="" alt="Diet icon" width="60"/>
+          <p id="dietText"></p>
+          <label><input type="checkbox" id="dietDone"/> Completed</label>
+        </div>
+      </div>
     </div>
 
-    <div class="card mt-3">
-      <h3>Sample 3-Day Rotation</h3>
+    <!-- Your existing content can stay here -->
+    <section>
+      <h3>Weight Loss Tips</h3>
       <ul>
-        <li><b>Day A (Strength):</b> Squats, Push-ups, Rows, Planks — 3×8–12</li>
-        <li><b>Day B (Cardio):</b> Brisk walk or cycle 30–40 min + mobility</li>
-        <li><b>Day C (HIIT):</b> 6 rounds: 30s burpees / 60s rest + core</li>
+        <li>Focus on a calorie deficit with balanced nutrition.</li>
+        <li>Include strength training and cardio in your routine.</li>
+        <li>Stay hydrated and get enough sleep.</li>
       </ul>
-      <p class="mt-2">Repeat A→B→C with at least one easy day per week.</p>
-    </div>
-
-    <div class="notice mt-3">Tip: Consistency beats perfection. Save your days in the tracker and watch the 7-day chart.</div>
+    </section>
   </main>
 
   <script src="app.js"></script>
+  <script>
+    const exercises = [
+      {text: "30 min brisk walk", icon: "icons/walk.png"},
+      {text: "20 min HIIT workout", icon: "icons/hiit.png"},
+      {text: "15 min jump rope", icon: "icons/jumprope.png"},
+      {text: "Cycling for 30 min", icon: "icons/cycle.png"},
+      {text: "Full-body stretching", icon: "icons/stretch.png"},
+      {text: "10 min stair climbing", icon: "icons/stairs.png"},
+      {text: "20 min bodyweight workout", icon: "icons/bodyweight.png"}
+    ];
+
+    const diets = [
+      {text: "Have a high-protein breakfast", icon: "icons/protein.png"},
+      {text: "Replace soda with water", icon: "icons/water.png"},
+      {text: "Eat more vegetables", icon: "icons/veggies.png"},
+      {text: "Avoid late-night snacks", icon: "icons/nosnack.png"},
+      {text: "Use smaller plates", icon: "icons/plate.png"},
+      {text: "Opt for whole grains", icon: "icons/grains.png"},
+      {text: "Track your calorie intake", icon: "icons/track.png"}
+    ];
+
+    const dayIndex = new Date().getDay(); // 0-6
+    document.getElementById('exerciseText').textContent = exercises[dayIndex].text;
+    document.getElementById('exerciseIcon').src = exercises[dayIndex].icon;
+    document.getElementById('dietText').textContent = diets[dayIndex].text;
+    document.getElementById('dietIcon').src = diets[dayIndex].icon;
+
+    const exerciseDone = document.getElementById('exerciseDone');
+    const dietDone = document.getElementById('dietDone');
+
+    exerciseDone.checked = localStorage.getItem('wl_ex_done') === 'true';
+    dietDone.checked = localStorage.getItem('wl_diet_done') === 'true';
+
+    function checkCompletion() {
+      if (exerciseDone.checked && dietDone.checked) {
+        const messages = [
+          "Nice work! Keep going!",
+          "You’ve crushed today’s goal — victory is yours!",
+          "Solid grind today. Tomorrow’s another win waiting.",
+          "That’s how champions train!",
+          "Boom! Two tasks, zero excuses."
+        ];
+        customAlert(messages[Math.floor(Math.random()*messages.length)]);
+      }
+    }
+
+    exerciseDone.addEventListener('change', () => {
+      localStorage.setItem('wl_ex_done', exerciseDone.checked);
+      checkCompletion();
+    });
+    dietDone.addEventListener('change', () => {
+      localStorage.setItem('wl_diet_done', dietDone.checked);
+      checkCompletion();
+    });
+  </script>
 </body>
 </html>
