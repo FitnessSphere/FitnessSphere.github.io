@@ -1,6 +1,5 @@
 
-
-  <!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -13,7 +12,8 @@
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="logo.png" alt="logo" width="120"/></a>
+      <!-- Fixed logo path -->
+      <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere Logo" width="120"/></a>
       <div class="links" data-menu>
         <a class="link" href="calories.html">Calories</a>
         <a class="link" href="weight-loss.html">Weight Loss</a>
@@ -25,87 +25,62 @@
     </div>
   </nav>
 
-  <header class="hero">
-    <div class="container">
-      <div class="badge" id="premiumStatus">Free Plan</div>
-      <h1 class="floating">Transform your body with <span style="background:linear-gradient(90deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent;">Fitness Sphere</span></h1>
-      <p>Track calories, pick workouts, and follow tailored guidance for weight loss or gain — free forever, with optional premium conveniences.</p>
-      <div class="cta">
-        <a class="btn" href="calories.html">Start Tracking Calories</a>
-        <a class="btn secondary" href="exercises.html">Browse Exercises</a>
-      </div>
+  <main class="container section">
+    <h1>Welcome to Fitness Sphere</h1>
+    <p class="lead">Track your calories, manage your weight goals, and stay healthy with easy tools.</p>
 
-      <div class="grid features mt-4">
-        <div class="card">
-          <h3>Manual Calorie Tracker</h3>
-          <p>Type ingredients and quantities to get instant calorie & macro totals. Save your day and visualize weekly intake.</p>
-        </div>
-        <div class="card">
-          <h3>Photo → Calories (Premium)</h3>
-          <p>Upload a meal photo and get a quick calorie estimate. Stays optional — core tracking is always free.</p>
-        </div>
-        <div class="card">
-          <h3>Weight Loss & Gain</h3>
-          <p>Dedicated guidance pages with tips, sample plans, and tools to help you move steadily toward your goal.</p>
-        </div>
-        <div class="card">
-          <h3>Exercise Library</h3>
-          <p>Browse workouts by goal and body area. Includes how-to steps and a built-in calories estimator by duration.</p>
-        </div>
-      </div>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+      <a href="calories.html" class="card">
+        <h3>Calorie Tracker</h3>
+        <p>Add foods and quantities to get calorie & macro totals. Save and visualize weekly.</p>
+      </a>
 
-      <div class="kpi">
-        <div>Built to be fast, offline-friendly*, and mobile-first.</div>
-        <div class="num">Free • No logins required</div>
-      </div>
-      <div class="notice mt-2">*Your saved logs stay in your browser (local only).</div>
+      <a href="weight-loss.html" class="card">
+        <h3>Weight Loss</h3>
+        <p>Personalized tips, calorie deficit tracker, and workout suggestions for losing weight.</p>
+      </a>
+
+      <a href="weight-gain.html" class="card">
+        <h3>Weight Gain</h3>
+        <p>High-calorie meal ideas, surplus tracker, and training plans to build muscle mass.</p>
+      </a>
+
+      <a href="exercises.html" class="card">
+        <h3>Exercises</h3>
+        <p>Browse exercises and workouts for all fitness levels — with instructions and videos.</p>
+      </a>
+
+      <a href="premium.html" class="card">
+        <h3>Premium Features</h3>
+        <p>Unlock AI-powered photo calorie estimation, custom plans, and more.</p>
+      </a>
     </div>
-  </header>
-
-  <section class="section">
-    <div class="container">
-      <h2>Why Fitness Sphere?</h2>
-      <p class="lead">Simple tools that respect your time: no clutter, no nonsense — just what you need to take action today.</p>
-      <table class="table">
-        <thead><tr><th>Feature</th><th>Free</th><th>Premium</th></tr></thead>
-        <tbody>
-          <tr><td>Manual Calories (ingredients)</td><td>Yes</td><td>Yes</td></tr>
-          <tr><td>Daily Log + 7-day chart</td><td>Yes</td><td>Yes</td></tr>
-          <tr><td>Photo → Calories</td><td>—</td><td>Yes</td></tr>
-          <tr><td>Advanced reports</td><td>—</td><td>Yes (planned)</td></tr>
-        </tbody>
-      </table>
-      <div class="cta mt-3">
-        <a class="btn" href="premium.html">See Premium</a>
-        <a class="btn ghost" href="weight-loss.html">Start Weight Loss</a>
-        <a class="btn ghost" href="weight-gain.html">Start Weight Gain</a>
-      </div>
-    </div>
-  </section>
+  </main>
 
   <footer class="footer">
     <div class="container cols">
       <div>
-        <img src="logo.svg" width="140" alt="logo"/>
-        <p class="mt-2">© <span id="year"></span> Fitness Sphere. All rights reserved.</p>
+        <h4>About</h4>
+        <p>Fitness Sphere helps you reach your fitness goals with tools, tips, and trackers — all in one place.</p>
       </div>
       <div>
-        <div><a href="exercises.html">Exercises</a></div>
-        <div><a href="calories.html">Calories</a></div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="calories.html">Calories</a></li>
+          <li><a href="weight-loss.html">Weight Loss</a></li>
+          <li><a href="weight-gain.html">Weight Gain</a></li>
+          <li><a href="exercises.html">Exercises</a></li>
+        </ul>
       </div>
       <div>
-        <div><a href="weight-loss.html">Weight Loss</a></div>
-        <div><a href="weight-gain.html">Weight Gain</a></div>
+        <h4>Contact</h4>
+        <p>Email: support@fitnesssphere.com</p>
       </div>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="data.js"></script>
   <script src="app.js"></script>
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
 </body>
-</html>
+        </html>
 
+          
