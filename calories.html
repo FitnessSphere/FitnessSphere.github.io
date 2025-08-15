@@ -1,5 +1,5 @@
 
-<!doctype html>
+        <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -10,7 +10,7 @@
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="logo.svg" alt="logo" width="120"/></a>
+      <a class="brand" href="index.html"><img src="logo.png" alt="logo" width="120"/></a>
       <div class="links" data-menu>
         <a class="link" href="calories.html">Calories</a>
         <a class="link" href="weight-loss.html">Weight Loss</a>
@@ -26,6 +26,7 @@
     <h1>Manual Calorie Tracker</h1>
     <p class="lead">Add foods with grams to get calories & macros. Save the day and see your last 7 days chart.</p>
 
+    <!-- Improved Add Food Section -->
     <div class="grid" style="grid-template-columns: 1.5fr 1fr;">
       <div class="card">
         <div class="grid" style="grid-template-columns: 1fr 140px 140px;">
@@ -33,15 +34,22 @@
           <input id="gramsInput" type="number" placeholder="Grams (e.g. 100)"/>
           <button id="addItem" class="btn">Add</button>
         </div>
-        <div id="suggestions" class="hidden mt-2"></div>
+        <div id="suggestions" class="mt-2"></div>
+        <div id="preview" class="notice mt-2 hidden"></div>
 
         <table class="table mt-3">
-          <thead><tr><th>Food</th><th>Unit</th><th>Grams</th><th>Kcal</th><th>P</th><th>C</th><th>F</th><th></th></tr></thead>
+          <thead>
+            <tr>
+              <th>Food</th><th>Unit</th><th>Grams</th><th>Kcal</th><th>P</th><th>C</th><th>F</th><th></th>
+            </tr>
+          </thead>
           <tbody id="items"></tbody>
         </table>
         <div class="kpi">
           <div>Totals (today)</div>
-          <div class="num"><span id="totalKcal">0</span> kcal • P <span id="totalP">0</span> • C <span id="totalC">0</span> • F <span id="totalF">0</span></div>
+          <div class="num">
+            <span id="totalKcal">0</span> kcal • P <span id="totalP">0</span> • C <span id="totalC">0</span> • F <span id="totalF">0</span>
+          </div>
         </div>
         <div class="cta">
           <button class="btn" id="saveLog">Save Day</button>
@@ -49,23 +57,25 @@
         </div>
       </div>
 
+      <!-- Photo → Calories with Camera Support -->
       <div class="card">
-        <h3>Photo → Calories <span class="tag">Premium</span></h3>
-        <div id="photoSection">
-          <div id="premiumLock" class="notice warn">Locked. Unlock in Premium page (use code <b>DEMO123</b> to test on this device).</div>
-          <input id="photoInput" type="file" accept="image/*" class="mt-2" disabled/>
-          <button id="photoEstimate" class="btn mt-2" disabled>Estimate</button>
-          <div id="photoResult" class="mt-2"></div>
-        </div>
-        <p class="mt-3">Tip: This demo asks you to confirm foods in the photo. A server AI can replace it later.</p>
+        <h3>Photo → Calories</h3>
+        <p>Take a photo or upload food image to estimate calories.</p>
+        <input id="photoInput" type="file" accept="image/*" capture="environment" class="mt-2"/>
+        <button id="photoEstimate" class="btn mt-2">Estimate</button>
+        <div id="photoResult" class="mt-2"></div>
+        <p class="mt-3">Note: This is a demo. AI model integration will replace it in Premium later.</p>
       </div>
     </div>
 
+    <!-- Last 7 Days -->
     <div class="card mt-4">
       <h3>Last 7 Days</h3>
       <canvas id="kcalChart" height="100"></canvas>
       <table class="table mt-3">
-        <thead><tr><th>Date</th><th>Total kcal</th><th></th><th></th></tr></thead>
+        <thead>
+          <tr><th>Date</th><th>Total kcal</th></tr>
+        </thead>
         <tbody id="logBody"></tbody>
       </table>
     </div>
@@ -77,6 +87,52 @@
   <script src="data.js"></script>
   <script src="app.js"></script>
   <script src="calories.js"></script>
+  <script>
+    // Live food suggestions
+    const foodInput = document.getElementById('foodInput');
+    const gramsInput = document.getElementById('gramsInput');
+    const suggestions = document.getElementById('suggestions');
+    const preview = document.getElementById('preview');
+
+    const foodList = [
+      {name: 'Paneer', unit: '100g', kcal: 265, p: 18, c: 6, f: 20},
+      {name: 'Rice', unit: '100g', kcal: 130, p: 2.7, c: 28, f: 0.3},
+      {name: 'Dal', unit: '100g', kcal: 116, p: 9, c: 20, f: 0.4},
+      {name: 'Roti', unit: '1 pc', kcal: 80, p: 3, c: 15, f: 1}
+    ];
+
+    foodInput.addEventListener('input', () => {
+      const val = foodInput.value.toLowerCase();
+      suggestions.innerHTML = '';
+      preview.classList.add('hidden');
+      if (val.length > 0) {
+        const matches = foodList.filter(f => f.name.toLowerCase().includes(val));
+        matches.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'suggestion';
+          div.textContent = `${m.name} (${m.unit})`;
+          div.onclick = () => {
+            foodInput.value = m.name;
+            gramsInput.value = parseInt(m.unit) || 100;
+            preview.textContent = `${m.name} — ${m.kcal} kcal, P ${m.p}, C ${m.c}, F ${m.f}`;
+            preview.classList.remove('hidden');
+            suggestions.innerHTML = '';
+          };
+          suggestions.appendChild(div);
+        });
+      }
+    });
+
+    // Photo → Calories demo
+    document.getElementById('photoEstimate').addEventListener('click', () => {
+      const file = document.getElementById('photoInput').files[0];
+      if (!file) return customAlert('Please select or take a photo.');
+      const resultDiv = document.getElementById('photoResult');
+      resultDiv.innerHTML = '<em>Estimating...</em>';
+      setTimeout(() => {
+        resultDiv.innerHTML = `Estimated: <strong>${Math.floor(Math.random()*300)+100} kcal</strong>`;
+      }, 1500);
+    });
+  </script>
 </body>
-  </html>
-  
+</html>
