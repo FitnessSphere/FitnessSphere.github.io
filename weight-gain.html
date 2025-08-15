@@ -54,6 +54,15 @@
       opacity: 1;
       transform: translateY(0);
     }
+    .note {
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #856404;
+    }
   </style>
 </head>
 <body>
@@ -85,10 +94,16 @@
       </div>
 
       <p id="bulkDescShort">Clean Bulk: A balanced approach to gaining muscle with minimal fat.</p>
-      <p id="bulkDescFull" style="display:none;">
-        Clean Bulk focuses on nutrient-dense foods, lean proteins, and steady calorie increases to build muscle while keeping fat gain low.
-        Fast Bulk focuses on rapid weight gain by consuming large calorie surpluses, often less strict with food quality.
-      </p>
+      <div id="bulkDescFull" style="display:none;">
+        <p>
+          Clean Bulk focuses on nutrient-dense foods, lean proteins, and steady calorie increases to build muscle while keeping fat gain low.
+          Fast Bulk focuses on rapid weight gain by consuming large calorie surpluses, often less strict with food quality.
+        </p>
+        <p id="fastBulkCaution" class="note" style="display:none;">
+          <strong>Caution:</strong> Fast bulking can lead to excessive fat gain and digestive strain.
+          Ensure your training volume matches your calorie surplus, and monitor your weight weekly.
+        </p>
+      </div>
       <span id="readMoreToggle" class="read-more">Read More</span>
     </section>
 
@@ -152,6 +167,7 @@
     const readMore = document.getElementById('readMoreToggle');
     const fullDesc = document.getElementById('bulkDescFull');
     const shortDesc = document.getElementById('bulkDescShort');
+    const cautionBox = document.getElementById('fastBulkCaution');
 
     cleanBtn.onclick = () => {
       document.documentElement.style.setProperty('--theme-color', '#ff9800');
@@ -159,6 +175,7 @@
       fastBtn.classList.remove('active');
       renderTracker(cleanBulkPlan);
       localStorage.setItem('wg_mode', 'clean');
+      cautionBox.style.display = 'none';
     };
     fastBtn.onclick = () => {
       document.documentElement.style.setProperty('--theme-color', '#ff5722');
@@ -166,17 +183,24 @@
       cleanBtn.classList.remove('active');
       renderTracker(fastBulkPlan);
       localStorage.setItem('wg_mode', 'fast');
+      if (localStorage.getItem('wg_readmore') === 'open') {
+        cautionBox.style.display = 'block';
+      }
     };
 
     readMore.onclick = () => {
-      if (fullDesc.style.display === 'none') {
-        fullDesc.style.display = 'block';
-        readMore.textContent = "Read Less";
+      const isHidden = fullDesc.style.display === 'none';
+      fullDesc.style.display = isHidden ? 'block' : 'none';
+      readMore.textContent = isHidden ? "Read Less" : "Read More";
+
+      if (isHidden) {
         localStorage.setItem('wg_readmore', 'open');
+        if (localStorage.getItem('wg_mode') === 'fast') {
+          cautionBox.style.display = 'block';
+        }
       } else {
-        fullDesc.style.display = 'none';
-        readMore.textContent = "Read More";
         localStorage.removeItem('wg_readmore');
+        cautionBox.style.display = 'none';
       }
     };
 
