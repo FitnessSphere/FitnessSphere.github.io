@@ -1,31 +1,65 @@
 
-<!doctype html>
+      <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Fitness Sphere — Weight Gain</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="../css/styles.css"/>
   <style>
-    /* Lightweight theme accents just for this page */
-    :root { --wg-clean: #ffb24d; --wg-fast: #ff7a2f; }
-    .wg-banner { border-radius: 14px; padding: 14px 16px; color: #0a1029; }
-    .wg-clean { background: linear-gradient(135deg, #ffe3b3, #ffd28a); border: 1px solid #f4b04a; }
-    .wg-fast  { background: linear-gradient(135deg, #ffd1bd, #ffb591); border: 1px solid #ff7a2f; }
-    .wg-toggle { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
-    .wg-toggle .btn { padding:8px 14px; border-radius: 999px; }
-    .wg-toggle .active-clean { background: var(--wg-clean); color:#201a00; }
-    .wg-toggle .active-fast  { background: var(--wg-fast);  color:#201a00; }
-    .tip-row { display:flex; gap:14px; align-items:flex-start; }
-    .tip-row img { width:60px; height:60px; object-fit:contain }
-    .muted { color:#9ab3e6; font-size:.95rem }
-    .read-more { cursor:pointer; text-decoration:underline }
+    :root {
+      --theme-color: #ff9800; /* Clean Bulk default */
+    }
+    body {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .section {
+      margin-bottom: 40px;
+    }
+    .tracker-card {
+      border: 2px solid var(--theme-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #fff;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .mode-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .mode-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .mode-toggle .active {
+      background-color: var(--theme-color);
+      color: white;
+    }
+    .read-more {
+      color: var(--theme-color);
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="logo.png" alt="logo" width="120"/></a>
+      <a class="brand" href="../index.html"><img src="../assets/logo.png" alt="logo" width="120"/></a>
       <div class="links" data-menu>
         <a class="link" href="calories.html">Calories</a>
         <a class="link" href="weight-loss.html">Weight Loss</a>
@@ -38,194 +72,122 @@
   </nav>
 
   <main class="container section">
-    <h1>Weight Gain Guide</h1>
-    <p class="lead">Build muscle with a structured daily plan: strength work + surplus-friendly nutrition.</p>
+    <h1 class="fade-in">Weight Gain Guide & Tracker</h1>
 
-    <!-- Mode banner & toggle -->
-    <div id="wgBanner" class="wg-banner wg-clean">
-      <div class="wg-toggle">
-        <strong>Mode:</strong>
-        <button id="btnClean" class="btn active-clean">Clean Bulk</button>
-        <button id="btnFast" class="btn">Fast Bulk</button>
-        <span class="muted">Switch anytime — your choice is saved on this device.</span>
-      </div>
-      <div class="mt-2">
-        <div id="descShort" class="muted">
-          <strong>Clean Bulk:</strong> calorie surplus from mostly whole, nutrient-dense foods.
-          <span class="read-more" id="readMore">Read more</span>
-        </div>
-        <div id="descLong" class="muted hidden">
-          <p><strong>Clean Bulk:</strong> Focus on lean proteins (eggs, paneer, chicken, legumes), complex carbs (rice, potatoes, oats), healthy fats (nuts, olive oil). Aim for a modest surplus (+250–350 kcal), progressive overload in training, high protein (~1.6–2.2 g/kg), and good sleep. Expect slower but leaner gains.</p>
-          <p><strong>Fast Bulk:</strong> Larger surplus (+400–700 kcal) and less strict food selection to gain size quicker. Expect faster scale increases with a bit more fat. Keep protein high, train hard, and monitor waist measurements so you can dial back if fat gain is too quick.</p>
-          <span class="read-more" id="readLess">Show less</span>
-        </div>
-      </div>
-    </div>
+    <section class="fade-in">
+      <p>Welcome to the Weight Gain section of Fitness Sphere. Here you’ll find everything you need to pack on muscle mass or healthy weight in the way that suits you best.</p>
+    </section>
 
-    <!-- Daily Tracker Card -->
-    <div class="card mt-3" id="dailyTracker">
-      <h2>Today's Plan</h2>
-      <div class="grid" style="grid-template-columns: 1fr 1fr;">
-        <div class="tip-row">
-          <img id="exerciseIcon" src="" alt="Exercise icon"/>
-          <div>
-            <p id="exerciseText"></p>
-            <label><input type="checkbox" id="exerciseDone"/> Completed</label>
-          </div>
-        </div>
-        <div class="tip-row">
-          <img id="dietIcon" src="" alt="Diet icon"/>
-          <div>
-            <p id="dietText"></p>
-            <label><input type="checkbox" id="dietDone"/> Completed</label>
-          </div>
-        </div>
+    <section class="fade-in">
+      <div class="mode-toggle">
+        <button id="cleanBulkBtn" class="active">Clean Bulk</button>
+        <button id="fastBulkBtn">Fast Bulk</button>
       </div>
-    </div>
 
-    <!-- Your existing content area -->
-    <section class="mt-3">
-      <h3>Smart Weight Gain Tips</h3>
+      <p id="bulkDescShort">Clean Bulk: A balanced approach to gaining muscle with minimal fat.</p>
+      <p id="bulkDescFull" style="display:none;">
+        Clean Bulk focuses on nutrient-dense foods, lean proteins, and steady calorie increases to build muscle while keeping fat gain low.
+        Fast Bulk focuses on rapid weight gain by consuming large calorie surpluses, often less strict with food quality.
+      </p>
+      <span id="readMoreToggle" class="read-more">Read More</span>
+    </section>
+
+    <section id="trackerContainer" class="fade-in"></section>
+
+    <section class="fade-in">
+      <h2>Extra Tips for Weight Gain</h2>
       <ul>
-        <li>Track your weekly average weight; aim for +0.25–0.5 kg per week.</li>
-        <li>Prioritize progressive overload: add reps, sets, or weight weekly.</li>
-        <li>Eat protein at every meal and don’t skip post-workout nutrition.</li>
+        <li>Eat calorie-dense snacks between meals.</li>
+        <li>Track your calories daily to ensure a surplus.</li>
+        <li>Focus on progressive overload in strength training.</li>
+        <li>Get enough rest to allow muscle recovery.</li>
       </ul>
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script src="../js/ui.js"></script>
   <script>
-    // --- Icons + plans ---
-    const cleanExercises = [
-      {text: "Full-body strength (A): Squat, Bench, Row — 3×5", icon: "icons/strengthA.png"},
-      {text: "Upper body: Pull-ups, OHP, DB Row — 3×6-10",    icon: "icons/pullup.png"},
-      {text: "Lower + Core: Squat, RDL, Plank — 3×6-10",      icon: "icons/squat.png"},
-      {text: "Conditioning: Easy cycle 20 min + mobility",    icon: "icons/cycle.png"},
-      {text: "Full-body strength (B): Deadlift, Press, Chin", icon: "icons/deadlift.png"},
-      {text: "Arms & Shoulders: Curls, Triceps, Lateral raise",icon:"icons/dumbbell.png"},
-      {text: "Rest & Stretch: 20 min mobility + walk",        icon: "icons/stretch.png"}
+    const trackerContainer = document.getElementById('trackerContainer');
+    const cleanBulkPlan = [
+      { day: "Day 1", exercise: "Full-body workout", diet: "High-protein breakfast", icon: "../icons/dumbbell.png" },
+      { day: "Day 2", exercise: "Rest & stretch", diet: "Oats & milk", icon: "../icons/stretch.png" },
+      { day: "Day 3", exercise: "Upper body strength", diet: "Chicken & rice", icon: "../icons/biceps.png" },
+      { day: "Day 4", exercise: "Cardio 20 min", diet: "Protein shake", icon: "../icons/cardio.png" },
+      { day: "Day 5", exercise: "Lower body strength", diet: "Sweet potatoes", icon: "../icons/squat.png" },
+      { day: "Day 6", exercise: "Yoga & mobility", diet: "Eggs & toast", icon: "../icons/yoga.png" },
+      { day: "Day 7", exercise: "Rest", diet: "Balanced meals", icon: "../icons/plate.png" }
     ];
-    const cleanDiet = [
-      {text: "Add 300 kcal: rice bowl + paneer",               icon: "icons/ricebowl.png"},
-      {text: "Protein at each meal (1.8 g/kg target)",         icon: "icons/protein.png"},
-      {text: "Cook with 1–2 tbsp olive oil",                   icon: "icons/oliveoil.png"},
-      {text: "Greek yogurt or milk with honey",                icon: "icons/milk.png"},
-      {text: "Handful of nuts post-workout",                   icon: "icons/nuts.png"},
-      {text: "Avocado or peanut butter with toast",            icon: "icons/avocado.png"},
-      {text: "Hydrate and sleep 8 h minimum",                  icon: "icons/sleep.png"}
-    ];
-
-    const fastExercises = [
-      {text: "Push day: Bench, Incline DB, Dips — 4×6-10",     icon: "icons/bench.png"},
-      {text: "Pull day: Deadlift (moderate), Rows, Pulldown",  icon: "icons/deadlift.png"},
-      {text: "Legs: Squat, Leg press, Calf raise",             icon: "icons/squat.png"},
-      {text: "Upper accessories + abs (short rest)",           icon: "icons/bodyweight.png"},
-      {text: "Push day (variation): OHP, Close-grip bench",    icon: "icons/ohp.png"},
-      {text: "Pull day (variation): T-row, Face pull",         icon: "icons/row.png"},
-      {text: "Rest / light walk + mobility",                   icon: "icons/stretch.png"}
-    ];
-    const fastDiet = [
-      {text: "Add 600 kcal: mass-gainer shake or banana + PB + milk", icon: "icons/shake.png"},
-      {text: "Big carb dinner: pasta or rice + protein",               icon: "icons/ricebowl.png"},
-      {text: "Calorie-dense snacks: trail mix, nut bars",              icon: "icons/nuts.png"},
-      {text: "Liquid calories: milk or lassi with meals",              icon: "icons/milk.png"},
-      {text: "Cook with butter/ghi when needed",                       icon: "icons/butter.png"},
-      {text: "Second dinner: eggs + toast or paneer wrap",             icon: "icons/meal.png"},
-      {text: "Hydrate & sleep 8 h — recovery = growth",                icon: "icons/sleep.png"}
+    const fastBulkPlan = [
+      { day: "Day 1", exercise: "Push workout", diet: "Pasta with cheese", icon: "../icons/push.png" },
+      { day: "Day 2", exercise: "Rest", diet: "Smoothies", icon: "../icons/smoothie.png" },
+      { day: "Day 3", exercise: "Pull workout", diet: "Burgers & fries", icon: "../icons/burger.png" },
+      { day: "Day 4", exercise: "Leg day", diet: "Milkshakes", icon: "../icons/milkshake.png" },
+      { day: "Day 5", exercise: "Core training", diet: "Rice & curry", icon: "../icons/abs.png" },
+      { day: "Day 6", exercise: "Rest", diet: "Pizza", icon: "../icons/pizza.png" },
+      { day: "Day 7", exercise: "Active rest", diet: "Ice cream", icon: "../icons/icecream.png" }
     ];
 
-    // --- State & helpers ---
-    const dayIndex = new Date().getDay(); // 0-6 rotating plan
-    const modeKey = 'wg_mode'; // 'clean' | 'fast'
-    const readKey = 'wg_readmore_open';
-    const doneExKey = 'wg_ex_done';
-    const doneDietKey = 'wg_diet_done';
-
-    const btnClean = document.getElementById('btnClean');
-    const btnFast  = document.getElementById('btnFast');
-    const banner   = document.getElementById('wgBanner');
-
-    const exIcon = document.getElementById('exerciseIcon');
-    const exText = document.getElementById('exerciseText');
-    const dtIcon = document.getElementById('dietIcon');
-    const dtText = document.getElementById('dietText');
-    const exDone = document.getElementById('exerciseDone');
-    const dtDone = document.getElementById('dietDone');
-
-    const descShort = document.getElementById('descShort');
-    const descLong  = document.getElementById('descLong');
-    const readMore  = document.getElementById('readMore');
-    const readLess  = document.getElementById('readLess');
-
-    function currentMode(){
-      return localStorage.getItem(modeKey) || 'clean';
-    }
-    function setMode(m){
-      localStorage.setItem(modeKey, m);
-      // Reset completion for today when switching modes
-      localStorage.removeItem(doneExKey);
-      localStorage.removeItem(doneDietKey);
-      // Update theme buttons + banner look
-      btnClean.classList.toggle('active-clean', m==='clean');
-      btnFast.classList.toggle('active-fast', m==='fast');
-      banner.classList.toggle('wg-clean', m==='clean');
-      banner.classList.toggle('wg-fast',  m==='fast');
-      renderPlan();
-      exDone.checked = false; dtDone.checked = false;
+    function renderTracker(plan) {
+      trackerContainer.innerHTML = '';
+      plan.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'tracker-card fade-in';
+        card.innerHTML = `
+          <h3>${item.day}</h3>
+          <p><img src="${item.icon}" width="24"> Exercise: ${item.exercise}</p>
+          <p>Diet: ${item.diet}</p>
+          <button class="btn" onclick="completeTask(${idx})">Mark Complete</button>
+        `;
+        trackerContainer.appendChild(card);
+      });
+      triggerFadeIn();
     }
 
-    function planFor(mode){
-      return mode==='clean'
-        ? {ex: cleanExercises[dayIndex], dt: cleanDiet[dayIndex]}
-        : {ex: fastExercises[dayIndex],  dt: fastDiet[dayIndex]};
+    function completeTask(dayIndex) {
+      showToast("Great job! Task completed.", "success");
     }
 
-    function renderPlan(){
-      const {ex, dt} = planFor(currentMode());
-      exText.textContent = ex.text; exIcon.src = ex.icon;
-      dtText.textContent = dt.text; dtIcon.src = dt.icon;
-    }
+    const cleanBtn = document.getElementById('cleanBulkBtn');
+    const fastBtn = document.getElementById('fastBulkBtn');
+    const readMore = document.getElementById('readMoreToggle');
+    const fullDesc = document.getElementById('bulkDescFull');
+    const shortDesc = document.getElementById('bulkDescShort');
 
-    function checkCompletion(){
-      if(exDone.checked && dtDone.checked){
-        const msgs = [
-          "Nice work! Keep going!",
-          "You’ve crushed today’s goal — victory is yours!",
-          "Solid grind today. Tomorrow’s another win waiting.",
-          "That’s how champions train!",
-          "Boom! Two tasks, zero excuses."
-        ];
-        customAlert(msgs[Math.floor(Math.random()*msgs.length)]);
+    cleanBtn.onclick = () => {
+      document.documentElement.style.setProperty('--theme-color', '#ff9800');
+      cleanBtn.classList.add('active');
+      fastBtn.classList.remove('active');
+      renderTracker(cleanBulkPlan);
+      localStorage.setItem('wg_mode', 'clean');
+    };
+    fastBtn.onclick = () => {
+      document.documentElement.style.setProperty('--theme-color', '#ff5722');
+      fastBtn.classList.add('active');
+      cleanBtn.classList.remove('active');
+      renderTracker(fastBulkPlan);
+      localStorage.setItem('wg_mode', 'fast');
+    };
+
+    readMore.onclick = () => {
+      if (fullDesc.style.display === 'none') {
+        fullDesc.style.display = 'block';
+        readMore.textContent = "Read Less";
+        localStorage.setItem('wg_readmore', 'open');
+      } else {
+        fullDesc.style.display = 'none';
+        readMore.textContent = "Read More";
+        localStorage.removeItem('wg_readmore');
       }
-    }
+    };
 
-    // Init
-    setMode(currentMode()); // sets theme + plan
-    // Persist read-more state
-    if(localStorage.getItem(readKey)==='open'){
-      descShort.classList.add('hidden'); descLong.classList.remove('hidden');
-    }
-    // Restore completion
-    exDone.checked = localStorage.getItem(doneExKey) === 'true';
-    dtDone.checked = localStorage.getItem(doneDietKey) === 'true';
-
-    // Events
-    btnClean.addEventListener('click', ()=>setMode('clean'));
-    btnFast.addEventListener('click',  ()=>setMode('fast'));
-
-    exDone.addEventListener('change', ()=>{ localStorage.setItem(doneExKey, exDone.checked); checkCompletion(); });
-    dtDone.addEventListener('change', ()=>{ localStorage.setItem(doneDietKey, dtDone.checked); checkCompletion(); });
-
-    readMore.addEventListener('click', ()=>{
-      descShort.classList.add('hidden'); descLong.classList.remove('hidden');
-      localStorage.setItem(readKey, 'open');
-    });
-    readLess.addEventListener('click', ()=>{
-      descLong.classList.add('hidden'); descShort.classList.remove('hidden');
-      localStorage.removeItem(readKey);
-    });
+    // Restore state
+    window.onload = () => {
+      const mode = localStorage.getItem('wg_mode') || 'clean';
+      const readState = localStorage.getItem('wg_readmore');
+      if (mode === 'fast') fastBtn.click(); else cleanBtn.click();
+      if (readState === 'open') readMore.click();
+      triggerFadeIn();
+    };
   </script>
 </body>
-  </html>
-  
+</html>
