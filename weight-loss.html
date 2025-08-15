@@ -1,11 +1,40 @@
 
-  <!doctype html>
+        <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Fitness Sphere — Weight Loss</title>
   <link rel="stylesheet" href="styles.css"/>
+  <style>
+    :root { --theme-color: #2196f3; } /* default Slow & Steady */
+    body { transition: background-color .3s ease, color .3s ease; }
+    .section { margin-bottom: 40px; }
+    .tracker-card {
+      border: 2px solid var(--theme-color);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      background: #fff;
+      transition: transform .3s ease, opacity .3s ease, border-color .3s ease;
+    }
+    .mode-toggle{ display:flex; gap:10px; margin: 10px 0 14px; }
+    .mode-toggle button{ flex:1; padding:10px; border:none; font-weight:700; cursor:pointer;
+      transition: background-color .3s ease, color .3s ease, transform .2s ease; }
+    .mode-toggle .active{ background: var(--theme-color); color:#fff; }
+    .mode-toggle button:active{ transform: scale(.98); }
+    .read-more{ color: var(--theme-color); cursor:pointer; font-weight:600; }
+    .note { padding:10px 12px; border-radius:10px; background:#ffe6ec; color:#b4002c; border:1px solid #ffb3c4; }
+    .pair { display:flex; align-items:flex-start; gap:14px; }
+    .pair img { width:60px; height:60px; object-fit:contain }
+    .muted{ color:#8fa7d0; }
+    .fade-in{ opacity:0; transform:translateY(18px); }
+    .fade-in.visible{ opacity:1; transform:none; }
+    .calc-card{ border:1px dashed var(--theme-color); border-radius:12px; padding:14px; }
+    .calc-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width:640px){ .calc-grid{ grid-template-columns: 1fr; } }
+    .small { font-size:.92rem; }
+  </style>
 </head>
 <body>
   <nav class="nav">
@@ -13,7 +42,7 @@
       <a class="brand" href="index.html"><img src="logo.png" alt="logo" width="120"/></a>
       <div class="links" data-menu>
         <a class="link" href="calories.html">Calories</a>
-        <a class="link" href="weight-loss.html">Weight Loss</a>
+        <a class="link active" href="weight-loss.html">Weight Loss</a>
         <a class="link" href="weight-gain.html">Weight Gain</a>
         <a class="link" href="exercises.html">Exercises</a>
         <a class="link" href="premium.html">Premium</a>
@@ -23,92 +52,308 @@
   </nav>
 
   <main class="container section">
-    <h1>Weight Loss Guide</h1>
-    <p class="lead">Get a structured daily plan with workouts and diet tips to help you lose weight effectively.</p>
+    <h1 class="fade-in">Weight Loss Guide & Tracker</h1>
 
-    <!-- Daily Tracker Card -->
-    <div class="card" id="dailyTracker">
-      <h2>Today's Plan</h2>
-      <div class="grid" style="grid-template-columns: 1fr 1fr;">
-        <div>
-          <img id="exerciseIcon" src="" alt="Exercise icon" width="60"/>
-          <p id="exerciseText"></p>
-          <label><input type="checkbox" id="exerciseDone"/> Completed</label>
+    <!-- Intro -->
+    <section class="fade-in">
+      <p>Choose the approach that fits your lifestyle and timeline. Track simple daily tasks to build momentum and burn fat sustainably.</p>
+    </section>
+
+    <!-- Mode toggle + descriptions -->
+    <section class="fade-in">
+      <div class="mode-toggle">
+        <button id="slowBtn" class="active">Slow & Steady</button>
+        <button id="rapidBtn">Rapid Cut</button>
+      </div>
+
+      <p id="descShort" class="muted">
+        <strong>Slow & Steady:</strong> A sustainable deficit with moderate workouts and balanced eating.
+        <span id="readMore" class="read-more">Read more</span>
+      </p>
+      <div id="descLong" class="muted" style="display:none">
+        <p><strong>Slow & Steady:</strong> Aim for a gentle calorie deficit (~300–500 kcal/day). Walk daily, lift 2–3×/week, and build habits you can keep for months. Expect ~0.25–0.5 kg/week loss.</p>
+        <p><strong>Rapid Cut:</strong> Short, focused phases with a bigger deficit (~600–900 kcal/day) and higher-intensity training (HIIT, circuits). Useful for timelines but harder to maintain. Cycle back to maintenance if energy or mood dips.</p>
+        <p class="note"><strong>Caution:</strong> Rapid strategies aren’t for everyone. If you have health conditions or you’re new to intense exercise, talk to a healthcare professional first.</p>
+        <span id="readLess" class="read-more">Show less</span>
+      </div>
+    </section>
+
+    <!-- Daily tracker -->
+    <section id="tracker" class="fade-in"></section>
+
+    <!-- Calorie Deficit Calculator -->
+    <section class="fade-in">
+      <h2>Calorie Deficit Calculator</h2>
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div>
+            <label>Weight (kg)</label>
+            <input id="wl_weight" type="number" placeholder="e.g. 70"/>
+          </div>
+          <div>
+            <label>Height (cm)</label>
+            <input id="wl_height" type="number" placeholder="e.g. 175"/>
+          </div>
+          <div>
+            <label>Age (years)</label>
+            <input id="wl_age" type="number" placeholder="e.g. 23"/>
+          </div>
+          <div>
+            <label>Gender</label>
+            <select id="wl_gender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div>
+            <label>Activity</label>
+            <select id="wl_activity">
+              <option value="1.2">Sedentary</option>
+              <option value="1.375">Lightly active (1–3x/wk)</option>
+              <option value="1.55">Moderately active (3–5x/wk)</option>
+              <option value="1.725">Very active (6–7x/wk)</option>
+              <option value="1.9">Athlete/physical job</option>
+            </select>
+          </div>
+          <div>
+            <label>Goal Loss Rate</label>
+            <select id="wl_goal">
+              <option value="0.25">0.25 kg/week (gentle)</option>
+              <option value="0.5" selected>0.5 kg/week (moderate)</option>
+              <option value="0.75">0.75 kg/week (aggressive)</option>
+              <option value="1">1 kg/week (very aggressive)</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <img id="dietIcon" src="" alt="Diet icon" width="60"/>
-          <p id="dietText"></p>
-          <label><input type="checkbox" id="dietDone"/> Completed</label>
+        <div class="mt-2">
+          <button id="wl_calc" class="btn">Calculate</button>
+          <span class="small muted">Your inputs are saved on this device.</span>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Your existing content can stay here -->
-    <section>
-      <h3>Weight Loss Tips</h3>
+    <!-- Extra tips -->
+    <section class="fade-in">
+      <h3>Smart Weight Loss Tips</h3>
       <ul>
-        <li>Focus on a calorie deficit with balanced nutrition.</li>
-        <li>Include strength training and cardio in your routine.</li>
-        <li>Stay hydrated and get enough sleep.</li>
+        <li>Prioritize protein and vegetables at each meal to stay full.</li>
+        <li>Walk daily — steps add up more than you think.</li>
+        <li>Sleep 7–9 hours to protect mood, cravings, and recovery.</li>
+        <li>Be patient: consistent small wins beat sporadic big pushes.</li>
       </ul>
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script src="ui.js"></script>
   <script>
-    const exercises = [
-      {text: "30 min brisk walk", icon: "icons/walk.png"},
-      {text: "20 min HIIT workout", icon: "icons/hiit.png"},
-      {text: "15 min jump rope", icon: "icons/jumprope.png"},
-      {text: "Cycling for 30 min", icon: "icons/cycle.png"},
-      {text: "Full-body stretching", icon: "icons/stretch.png"},
-      {text: "10 min stair climbing", icon: "icons/stairs.png"},
-      {text: "20 min bodyweight workout", icon: "icons/bodyweight.png"}
+    // ---------- PLANS & ICONS ----------
+    // Put these PNGs inside /icons:
+    // walk.png, hiit.png, jumprope.png, cycle.png, stretch.png, stairs.png, bodyweight.png,
+    // protein.png, water.png, veggies.png, nosnack.png, plate.png, grains.png, track.png
+    const slowPlan = [
+      { day:"Day 1", ex:{t:"Walk 30–45 min", icon:"icons/walk.png"},
+        diet:{t:"Protein+veggies dinner", icon:"icons/veggies.png"} },
+      { day:"Day 2", ex:{t:"Bodyweight circuit 20 min", icon:"icons/bodyweight.png"},
+        diet:{t:"Drink 2–3L water", icon:"icons/water.png"} },
+      { day:"Day 3", ex:{t:"Cycling 25 min easy", icon:"icons/cycle.png"},
+        diet:{t:"Balanced plate (¼ protein, ¼ carbs, ½ veg)", icon:"icons/plate.png"} },
+      { day:"Day 4", ex:{t:"Stairs 10–15 min", icon:"icons/stairs.png"},
+        diet:{t:"Swap refined carbs for whole grains", icon:"icons/grains.png"} },
+      { day:"Day 5", ex:{t:"Stretch + Walk 20 min", icon:"icons/stretch.png"},
+        diet:{t:"No late-night snacks", icon:"icons/nosnack.png"} },
+      { day:"Day 6", ex:{t:"Jump rope 5×1 min easy", icon:"icons/jumprope.png"},
+        diet:{t:"Track meals today", icon:"icons/track.png"} },
+      { day:"Day 7", ex:{t:"Free choice: 30 min activity", icon:"icons/walk.png"},
+        diet:{t:"Lean protein at lunch", icon:"icons/protein.png"} },
     ];
 
-    const diets = [
-      {text: "Have a high-protein breakfast", icon: "icons/protein.png"},
-      {text: "Replace soda with water", icon: "icons/water.png"},
-      {text: "Eat more vegetables", icon: "icons/veggies.png"},
-      {text: "Avoid late-night snacks", icon: "icons/nosnack.png"},
-      {text: "Use smaller plates", icon: "icons/plate.png"},
-      {text: "Opt for whole grains", icon: "icons/grains.png"},
-      {text: "Track your calorie intake", icon: "icons/track.png"}
+    const rapidPlan = [
+      { day:"Day 1", ex:{t:"HIIT 12–15 min", icon:"icons/hiit.png"},
+        diet:{t:"120–200 kcal cut at dinner", icon:"icons/plate.png"} },
+      { day:"Day 2", ex:{t:"Jump rope 10×1 min", icon:"icons/jumprope.png"},
+        diet:{t:"High-protein breakfast", icon:"icons/protein.png"} },
+      { day:"Day 3", ex:{t:"Stairs 20 min", icon:"icons/stairs.png"},
+        diet:{t:"No snacks after 8 pm", icon:"icons/nosnack.png"} },
+      { day:"Day 4", ex:{t:"HIIT 10–12 min", icon:"icons/hiit.png"},
+        diet:{t:"3L water target", icon:"icons/water.png"} },
+      { day:"Day 5", ex:{t:"Bodyweight circuit 25 min", icon:"icons/bodyweight.png"},
+        diet:{t:"Half plate veggies at lunch", icon:"icons/veggies.png"} },
+      { day:"Day 6", ex:{t:"Cycle 30 min", icon:"icons/cycle.png"},
+        diet:{t:"Track meals today", icon:"icons/track.png"} },
+      { day:"Day 7", ex:{t:"Active recovery 30 min", icon:"icons/stretch.png"},
+        diet:{t:"Whole grains swap", icon:"icons/grains.png"} },
     ];
 
-    const dayIndex = new Date().getDay(); // 0-6
-    document.getElementById('exerciseText').textContent = exercises[dayIndex].text;
-    document.getElementById('exerciseIcon').src = exercises[dayIndex].icon;
-    document.getElementById('dietText').textContent = diets[dayIndex].text;
-    document.getElementById('dietIcon').src = diets[dayIndex].icon;
+    // ---------- ELEMENTS ----------
+    const trackerEl = document.getElementById('tracker');
+    const slowBtn = document.getElementById('slowBtn');
+    const rapidBtn = document.getElementById('rapidBtn');
+    const descShort = document.getElementById('descShort');
+    const descLong = document.getElementById('descLong');
+    const readMore = document.getElementById('readMore');
+    const readLess = document.getElementById('readLess');
 
-    const exerciseDone = document.getElementById('exerciseDone');
-    const dietDone = document.getElementById('dietDone');
+    // ---------- STATE KEYS ----------
+    const MODE_KEY = 'wl_mode'; // 'slow' | 'rapid'
+    const READ_KEY = 'wl_read_open';
+    // Persist completion per day+mode for today only
+    const TODAY = new Date().toISOString().slice(0,10);
+    const DONE_EX_KEY   = (m)=>`wl_${m}_${TODAY}_ex_done`;
+    const DONE_DIET_KEY = (m)=>`wl_${m}_${TODAY}_diet_done`;
 
-    exerciseDone.checked = localStorage.getItem('wl_ex_done') === 'true';
-    dietDone.checked = localStorage.getItem('wl_diet_done') === 'true';
-
-    function checkCompletion() {
-      if (exerciseDone.checked && dietDone.checked) {
-        const messages = [
-          "Nice work! Keep going!",
-          "You’ve crushed today’s goal — victory is yours!",
-          "Solid grind today. Tomorrow’s another win waiting.",
-          "That’s how champions train!",
-          "Boom! Two tasks, zero excuses."
-        ];
-        customAlert(messages[Math.floor(Math.random()*messages.length)]);
-      }
+    // ---------- RENDER ----------
+    function setMode(mode){
+      localStorage.setItem(MODE_KEY, mode);
+      document.documentElement.style.setProperty('--theme-color', mode==='rapid' ? '#e91e63' : '#2196f3');
+      slowBtn.classList.toggle('active', mode==='slow');
+      rapidBtn.classList.toggle('active', mode==='rapid');
+      renderPlan(mode==='rapid' ? rapidPlan : slowPlan, mode);
     }
 
-    exerciseDone.addEventListener('change', () => {
-      localStorage.setItem('wl_ex_done', exerciseDone.checked);
-      checkCompletion();
+    function planItem(plan, idx){ return plan[idx % plan.length]; }
+    function renderPlan(plan, mode){
+      trackerEl.innerHTML = '';
+      const dayIndex = new Date().getDay(); // rotates through 0-6
+      const item = planItem(plan, dayIndex);
+
+      // Exercise card
+      const exCard = document.createElement('div');
+      exCard.className = 'tracker-card fade-in';
+      exCard.innerHTML = `
+        <h3>${item.day} — Exercise</h3>
+        <div class="pair">
+          <img src="${item.ex.icon}" alt="exercise icon"/>
+          <div>
+            <p>${item.ex.t}</p>
+            <label><input id="exDone" type="checkbox"> Completed</label>
+          </div>
+        </div>
+      `;
+
+      // Diet card
+      const dietCard = document.createElement('div');
+      dietCard.className = 'tracker-card fade-in';
+      dietCard.innerHTML = `
+        <h3>${item.day} — Diet</h3>
+        <div class="pair">
+          <img src="${item.diet.icon}" alt="diet icon"/>
+          <div>
+            <p>${item.diet.t}</p>
+            <label><input id="dietDone" type="checkbox"> Completed</label>
+          </div>
+        </div>
+      `;
+
+      trackerEl.appendChild(exCard);
+      trackerEl.appendChild(dietCard);
+
+      // Restore completion
+      const exDone = document.getElementById('exDone');
+      const dietDone = document.getElementById('dietDone');
+      exDone.checked = localStorage.getItem(DONE_EX_KEY(mode)) === 'true';
+      dietDone.checked = localStorage.getItem(DONE_DIET_KEY(mode)) === 'true';
+
+      exDone.addEventListener('change', ()=>{
+        localStorage.setItem(DONE_EX_KEY(mode), exDone.checked);
+        if(exDone.checked && dietDone.checked) showToast("Crushed it! Both tasks done.", "success");
+      });
+      dietDone.addEventListener('change', ()=>{
+        localStorage.setItem(DONE_DIET_KEY(mode), dietDone.checked);
+        if(exDone.checked && dietDone.checked) showToast("Crushed it! Both tasks done.", "success");
+      });
+
+      // Reveal animations
+      if (typeof triggerFadeIn === 'function') triggerFadeIn();
+    }
+
+    // ---------- READ MORE ----------
+    readMore.addEventListener('click', ()=>{
+      descShort.style.display = 'none';
+      descLong.style.display = 'block';
+      localStorage.setItem(READ_KEY, 'open');
     });
-    dietDone.addEventListener('change', () => {
-      localStorage.setItem('wl_diet_done', dietDone.checked);
-      checkCompletion();
+    readLess.addEventListener('click', ()=>{
+      descLong.style.display = 'none';
+      descShort.style.display = 'block';
+      localStorage.removeItem(READ_KEY);
     });
+
+    // ---------- MODE BUTTONS ----------
+    slowBtn.addEventListener('click', ()=> setMode('slow'));
+    rapidBtn.addEventListener('click', ()=> setMode('rapid'));
+
+    // ---------- CALCULATOR ----------
+    const weightEl = document.getElementById('wl_weight');
+    const heightEl = document.getElementById('wl_height');
+    const ageEl    = document.getElementById('wl_age');
+    const genderEl = document.getElementById('wl_gender');
+    const actEl    = document.getElementById('wl_activity');
+    const goalEl   = document.getElementById('wl_goal');
+    const calcBtn  = document.getElementById('wl_calc');
+
+    // Restore saved inputs
+    const SAVED = JSON.parse(localStorage.getItem('wl_calc') || '{}');
+    if (SAVED.weight) weightEl.value = SAVED.weight;
+    if (SAVED.height) heightEl.value = SAVED.height;
+    if (SAVED.age)    ageEl.value    = SAVED.age;
+    if (SAVED.gender) genderEl.value = SAVED.gender;
+    if (SAVED.activity) actEl.value  = SAVED.activity;
+    if (SAVED.goal)     goalEl.value = SAVED.goal;
+
+    calcBtn.addEventListener('click', ()=>{
+      const w = parseFloat(weightEl.value);
+      const h = parseFloat(heightEl.value);
+      const a = parseInt(ageEl.value,10);
+      const g = genderEl.value;
+      const act = parseFloat(actEl.value);
+      const goal = parseFloat(goalEl.value); // kg/week
+
+      if(!w || !h || !a){ return showToast("Please fill weight, height and age.", "danger"); }
+
+      // Save inputs
+      localStorage.setItem('wl_calc', JSON.stringify({
+        weight:w, height:h, age:a, gender:g, activity:actEl.value, goal:goalEl.value
+      }));
+
+      // Mifflin-St Jeor BMR
+      // BMR (men)   = 10w + 6.25h - 5a + 5
+      // BMR (women) = 10w + 6.25h - 5a - 161
+      const BMR = g==='male' ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a - 161);
+      const TDEE = BMR * act;
+
+      // Deficit from desired weekly loss: ~7700 kcal per kg
+      const dailyDeficit = Math.max(0, Math.min(1200, (7700 * goal) / 7));
+      const targetCalories = Math.max(1000, Math.round(TDEE - dailyDeficit)); // floor so it’s not extreme
+
+      const content = `
+        <p><strong>BMR:</strong> ${Math.round(BMR)} kcal/day</p>
+        <p><strong>TDEE:</strong> ${Math.round(TDEE)} kcal/day (with your activity)</p>
+        <p><strong>Suggested daily calories:</strong> ${targetCalories} kcal/day</p>
+        <p class="small muted">Tip: Recalculate whenever your weight changes or activity shifts.</p>
+      `;
+      createModal({
+        title: "Your Calorie Targets",
+        content,
+        buttons: [{ text:"OK", class:"primary" }]
+      });
+    });
+
+    // ---------- INIT ----------
+    (function init(){
+      // Mode + read state
+      const savedMode = localStorage.getItem(MODE_KEY) || 'slow';
+      const readOpen  = localStorage.getItem(READ_KEY) === 'open';
+      setMode(savedMode);
+      if(readOpen){ descShort.style.display='none'; descLong.style.display='block'; }
+
+      // Scroll reveals (ui.js provides triggerFadeIn/initScrollReveal)
+      if(typeof initScrollReveal === 'function') initScrollReveal();
+      else {
+        // minimal fallback
+        document.querySelectorAll('.fade-in').forEach(el=>el.classList.add('visible'));
+      }
+    })();
   </script>
 </body>
-</html>
+  </html>
+  
