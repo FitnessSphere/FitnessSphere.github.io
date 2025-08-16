@@ -1,257 +1,82 @@
-
-<!DOCTYPE html>
+     
+  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weight Gain</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #e0e0e0; /* default professional gray */
-      color: #333;
-      transition: background 1s ease, color 1s ease;
-    }
-
-    header {
-      padding: 15px;
-      background: #444;
-      color: white;
-    }
-
-    header img {
-      max-height: 50px;
-      vertical-align: middle;
-    }
-
-    header h1 {
-      display: inline-block;
-      margin-left: 10px;
-      font-size: 22px;
-    }
-
-    nav {
-      margin: 15px 0;
-    }
-
-    nav a {
-      margin: 0 10px;
-      text-decoration: none;
-      color: #444;
-      font-weight: bold;
-      padding: 5px 10px;
-      border-radius: 6px;
-      transition: background 0.3s;
-    }
-
-    nav a:hover {
-      background: #ddd;
-    }
-
-    h2 {
-      margin-top: 20px;
-    }
-
-    .mode-btn {
-      display: inline-block;
-      margin: 15px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.3s ease, background 0.5s ease;
-      color: white;
-    }
-
-    .mode-btn:hover {
-      transform: scale(1.05);
-    }
-
-    .fast-bulk { background: linear-gradient(135deg, #ff7b54, #ffb347); }
-    .slow-bulk { background: linear-gradient(135deg, #6dd5ed, #2193b0); }
-
-    .calculator {
-      margin: 20px;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .calculator input {
-      margin: 10px;
-      padding: 10px;
-      width: 80%;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .calc-btn {
-      background: #2196f3;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .calc-btn:hover {
-      background: #1769aa;
-    }
-
-    .result {
-      margin-top: 15px;
-      font-weight: bold;
-      color: #333;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .tasks {
-      margin: 30px auto;
-      max-width: 500px;
-      padding: 20px;
-      background: #fafafa;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .task {
-      font-size: 18px;
-      margin: 15px 0;
-      padding: 12px;
-      background: #f0f0f0;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s ease, opacity 0.5s ease;
-    }
-
-    .task.completed {
-      background: #c8e6c9;
-      text-decoration: line-through;
-    }
-
-    .motivation {
-      margin-top: 20px;
-      font-size: 18px;
-      font-style: italic;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    @media (max-width: 600px) {
-      nav a {
-        display: block;
-        margin: 8px auto;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitnessSphere - Weight Gain</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="data.js" defer></script>
+  <script src="ui.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
+  <header class="animated-header">
+    <div class="logo">FitnessSphere</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="weight-loss.html">Weight Loss</a></li>
+        <li><a href="weight-gain.html" class="active">Weight Gain</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<header>
-  <img src="logo.png" alt="Logo">
-  <h1>Weight Gain Tracker</h1>
-</header>
+  <main>
+    <section class="hero weight-gain-hero">
+      <h1>Gain Weight Effectively</h1>
+      <p>Structured plans and tracking to support healthy weight gain.</p>
+    </section>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="weightgain.html">Weight Gain</a>
-  <a href="weightloss.html">Weight Loss</a>
-</nav>
+    <section class="modes">
+      <h2>Choose Your Mode</h2>
+      <div class="mode-options">
+        <button class="mode-btn healthy-bulk">Healthy Bulk</button>
+        <button class="mode-btn fast-bulk">Fast Bulk</button>
+      </div>
+    </section>
 
-<h2>Select Your Mode</h2>
-<button class="mode-btn fast-bulk" onclick="setMode('fast')">Fast Bulk</button>
-<button class="mode-btn slow-bulk" onclick="setMode('slow')">Slow Bulk</button>
+    <section class="calculator">
+      <h2>Calorie Surplus Calculator</h2>
+      <form id="surplus-form">
+        <label for="age">Age:</label>
+        <input type="number" id="age" required />
 
-<div class="calculator">
-  <h3>Calorie Surplus Calculator</h3>
-  <input type="number" id="maintenance" placeholder="Enter maintenance calories">
-  <input type="number" id="surplus" placeholder="Enter surplus calories">
-  <button class="calc-btn" onclick="calculateSurplus()">Calculate</button>
-  <div class="result" id="result"></div>
-</div>
+        <label for="gender">Gender:</label>
+        <select id="gender" required>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
 
-<div class="tasks">
-  <h3>Daily Task</h3>
-  <div id="task"></div>
-  <div class="motivation" id="motivation"></div>
-</div>
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" required />
 
-<script>
-  // Modes
-  function setMode(mode) {
-    if (mode === 'fast') {
-      document.body.style.background = "linear-gradient(135deg, #ff7b54, #ffb347)";
-      document.body.style.color = "white";
-    } else {
-      document.body.style.background = "linear-gradient(135deg, #6dd5ed, #2193b0)";
-      document.body.style.color = "white";
-    }
-  }
+        <label for="height">Height (cm):</label>
+        <input type="number" id="height" required />
 
-  // Calculator
-  function calculateSurplus() {
-    const maintenance = parseInt(document.getElementById("maintenance").value);
-    const surplus = parseInt(document.getElementById("surplus").value);
-    const resultDiv = document.getElementById("result");
+        <label for="activity">Activity Level:</label>
+        <select id="activity" required>
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Lightly Active</option>
+          <option value="1.55">Moderately Active</option>
+          <option value="1.725">Very Active</option>
+          <option value="1.9">Extra Active</option>
+        </select>
 
-    if (!isNaN(maintenance) && !isNaN(surplus)) {
-      const total = maintenance + surplus;
-      resultDiv.innerHTML = "Your target calories: " + total;
-      resultDiv.style.opacity = 1;
-    } else {
-      resultDiv.innerHTML = "Please enter valid numbers.";
-      resultDiv.style.opacity = 1;
-    }
-  }
+        <button type="submit" class="calc-btn">Calculate Surplus</button>
+      </form>
+      <div id="surplus-result"></div>
+    </section>
 
-  // Daily Tasks
-  const tasks = [
-    "Eat 5 nutrient-rich meals today",
-    "Add an extra protein snack",
-    "Drink 3 liters of water",
-    "Do a 20-min strength workout",
-    "Track your calories honestly",
-    "Get 8 hours of sleep",
-    "Add healthy fats to your meals"
-  ];
+    <section class="tasks">
+      <h2>Daily Weight Gain Tasks</h2>
+      <div id="task-container"></div>
+      <div id="motivation" class="motivation"></div>
+    </section>
+  </main>
 
-  const motivations = [
-    "Keep pushing, progress takes time!",
-    "Small steps build big results.",
-    "You are stronger than you think.",
-    "Fuel your body, fuel your growth!",
-    "Consistency is the key to success."
-  ];
-
-  function loadTask() {
-    const today = new Date();
-    const dayIndex = today.getDate() % tasks.length; 
-    const task = tasks[dayIndex];
-    const taskDiv = document.getElementById("task");
-    const motivationDiv = document.getElementById("motivation");
-
-    taskDiv.innerHTML = `<div class='task' onclick='completeTask(this)'>${task}</div>`;
-    motivationDiv.style.opacity = 0;
-  }
-
-  function completeTask(el) {
-    el.classList.add("completed");
-    const motivationDiv = document.getElementById("motivation");
-    motivationDiv.innerHTML = motivations[Math.floor(Math.random()*motivations.length)];
-    motivationDiv.style.opacity = 1;
-  }
-
-  loadTask();
-</script>
-
+  <footer>
+    <p>&copy; 2025 FitnessSphere. All rights reserved.</p>
+  </footer>
 </body>
 </html>
