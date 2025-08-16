@@ -5,88 +5,86 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Fitness Sphere — Weight Gain</title>
-  <!-- use existing main stylesheet so the page matches weight-loss layout -->
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Theme variables (will be changed by JS when a mode is selected) */
+    /* Default theme = mint/emerald (matches main/weight-loss base look) */
     :root{
-      --theme-color: #2196f3; /* default blue (weight-loss look) */
-      --theme-gradient-start: #2196f3;
-      --theme-gradient-end: #60a5fa;
-      --outline: rgba(33,150,243,0.14);
+      --theme-color: #34d399;        /* mint/emerald */
+      --theme-gradient-start: #34d399;
+      --theme-gradient-end: #60a5fa; /* subtle secondary */
+      --outline: rgba(52,211,153,0.14);
       --btn-text: #071022;
+      --bg: #0b1020;
+      --bg-soft: #111834;
+      --card: #141c3a;
+      --text: #e6f1ff;
+      --muted: #9fb2cc;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
 
     /* Keep page dark like main / weight-loss by default */
-    body { background: var(--bg); color: var(--text); transition: background .25s ease, color .25s ease; }
+    html,body{ height:100%; }
+    body { background: var(--bg); color: var(--text); margin:0; font-family: Inter, system-ui, Arial, sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; transition: background .25s ease, color .25s ease; }
 
-    /* Header override so logo + nav align exactly as weight-loss */
-    .nav.grad-mode {
-      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      box-shadow: none;
-    }
+    /* Basic container/nav layout (match weight-loss) */
+    .container { max-width:1100px; margin:0 auto; padding:0 16px; }
+    .nav { position:sticky; top:0; background:rgba(11,16,32,.7); backdrop-filter: blur(6px); z-index:50; border-bottom:1px solid #1f2a4d; }
+    .nav-inner { display:flex; align-items:center; justify-content:space-between; padding:10px 0; gap:12px; }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .brand img { height:36px; display:block; }
+    .links { display:flex; gap:18px; align-items:center; flex-wrap:wrap; }
+    .link { color:var(--text); text-decoration:none; padding:8px 10px; border-radius:10px; opacity:.95; }
+    .link.active { outline:2px solid rgba(255,255,255,.04); }
 
-    /* Buttons that should change color with mode */
-    .btn.mode-graded {
-      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
-      color: var(--btn-text);
-      border: none;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    }
+    /* When a mode is selected we add .grad-mode to .nav; this style is only present when active */
+    .nav.grad-mode { background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
 
-    /* Outlined sections when a mode is selected */
-    .outlined {
-      border: 2px solid var(--theme-color);
-      border-radius: 12px;
-      background: rgba(0,0,0,0.04);
-    }
+    /* Hero and sections (follow weight-loss look) */
+    .hero { position:relative; padding:64px 0 28px; background:radial-gradient(ellipse at 50% -80px, #203069 0%, transparent 60%); overflow:hidden; border-radius:10px; }
+    .hero h1 { font-size:32px; line-height:1.05; margin:0 0 8px; color:var(--text); }
+    .lead { color:var(--muted); margin:0 0 6px; }
+
+    /* Buttons that change color with mode (fixed colors) */
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:none; cursor:pointer; font-weight:700; transition: transform .12s ease, box-shadow .12s ease; }
+    .btn.secondary { background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); }
+    .btn.mode-graded { background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+
+    /* Outlined sections when a mode selected */
+    .outlined { border:2px solid var(--theme-color); border-radius:12px; padding:14px; background: rgba(255,255,255,0.01); }
 
     /* Read more link color */
-    .read-more-theme { color: var(--theme-color); cursor: pointer; font-weight:600; }
+    .read-more-theme { color:var(--theme-color); cursor:pointer; font-weight:600; }
 
     /* Task box */
-    .task-box {
-      display:flex; gap:12px; align-items:center;
-      padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02));
-      border: 2px solid rgba(255,255,255,0.04);
-      transition: opacity .45s ease, transform .35s ease, border-color .25s ease;
-    }
+    .task-box { display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:2px solid rgba(255,255,255,0.04); transition: opacity .45s ease, transform .35s ease, border-color .25s ease; }
+    .task-box .title { font-weight:700; color:var(--text); }
+    .task-box .desc { color:var(--muted); margin-top:6px; font-size:14px; }
     .task-box.outlined { border-color: var(--theme-color); }
 
-    .task-box.completed { opacity: 0; transform: scale(.99); pointer-events: none; }
+    .task-box.completed { opacity: 0; transform: scale(.995); pointer-events: none; }
 
-    .motivation {
-      margin-top:10px; font-weight:700; color: var(--theme-color); display:none;
-    }
+    .motivation { margin-top:10px; font-weight:700; color: var(--theme-color); display:none; }
 
-    /* small helper for disabled look */
-    .hint-muted { color: var(--muted); }
+    /* result card */
+    .tracker-card { border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border:2px solid rgba(255,255,255,0.02); color:var(--text); }
 
-    /* ensure calculate button stands out even if theme not selected yet */
-    #wg_calcBtn { min-width:140px; }
+    /* small helpers */
+    .muted { color:var(--muted); }
+    .grid { display:grid; gap:12px; }
 
-    /* Make sure logo fits */
-    .brand img { height:36px; }
-
-    /* alignment for nav links */
-    .nav .links { gap:18px; align-items:center; }
-
-    /* Make section outlines visible */
-    .section.outlined { padding:14px; margin-bottom:22px; }
-
-    /* small responsive tweaks */
-    @media (max-width:600px){
-      .nav-inner { gap:10px; }
-      .brand img { height:32px; }
+    @media (max-width:720px){
+      .nav-inner { gap:8px; }
+      .brand img{ height:32px; }
+      .hero { padding:40px 0 18px; }
     }
   </style>
 </head>
 <body>
-  <!-- Nav (matches weight-loss structure and includes logo top-left) -->
-  <nav class="nav">
+  <nav class="nav" id="mainNav">
     <div class="container nav-inner">
+      <!-- logo top-left -->
       <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere logo" /></a>
+
       <div class="links" data-menu>
         <a class="link" href="index.html">Home</a>
         <a class="link" href="calories.html">Calories</a>
@@ -95,21 +93,21 @@
         <a class="link active" href="weight-gain.html">Weight Gain</a>
         <a class="link" href="premium.html">Premium</a>
       </div>
+
       <button class="btn secondary" data-menu-btn>Menu</button>
     </div>
   </nav>
 
   <main class="container section" style="padding-top:18px;">
-    <!-- Hero: same layout as weight-loss but uses theme outline only after mode selected -->
     <section class="hero section" id="hero">
       <h1>Weight Gain Guide & Tracker</h1>
-      <p class="lead">Choose a bulking mode, track two daily tasks (diet & exercise), and follow a calorie surplus plan.</p>
+      <p class="lead">Choose a bulking mode, track diet & exercise tasks, and follow a calorie surplus plan.</p>
 
-      <div style="margin-top:14px; display:flex; gap:12px; flex-wrap:wrap;">
+      <div style="margin-top:14px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
         <button id="btnHealthy" class="btn mode-graded" aria-pressed="false">Healthy Bulk</button>
         <button id="btnFast" class="btn mode-graded" aria-pressed="false">Fast Bulk</button>
         <div style="align-self:center; margin-left:auto;">
-          <span id="modeHint" class="hint-muted">No mode selected</span>
+          <span id="modeHint" class="muted">No mode selected</span>
         </div>
       </div>
 
@@ -123,10 +121,9 @@
       </div>
     </section>
 
-    <!-- Calorie Surplus Calculator -->
-    <section id="calculator" class="section" style="margin-top:6px;">
+    <section id="calculator" class="section" style="margin-top:10px;">
       <h2>Calorie Surplus Calculator</h2>
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; align-items:end;">
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); align-items:end;">
         <label>Weight (kg)<input id="wg_weight" type="number" min="20" max="300" step="0.1" /></label>
         <label>Height (cm)<input id="wg_height" type="number" min="120" max="230" /></label>
         <label>Age<input id="wg_age" type="number" min="12" max="100" /></label>
@@ -150,29 +147,23 @@
         </label>
       </div>
 
-      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         <button id="wg_calcBtn" class="btn mode-graded">Calculate</button>
         <button id="wg_resetBtn" class="btn secondary">Reset</button>
-        <div style="align-self:center; margin-left:auto;">
-          <small class="muted">Calculated with Mifflin–St Jeor</small>
-        </div>
+        <div style="margin-left:auto;" class="muted"><small>Calculated with Mifflin–St Jeor</small></div>
       </div>
 
       <div id="wg_result" class="tracker-card" style="margin-top:12px; display:none;"></div>
     </section>
 
-    <!-- Tasks: only two tasks total (diet, exercise). Shows 1 per day (alternates) and enforces 24h real-world lock -->
-    <section id="tasksSection" class="section">
+    <section id="tasksSection" class="section" style="margin-top:10px;">
       <h2>Daily Task</h2>
-      <div id="taskWrap" style="max-width:720px;">
-        <!-- Task block inserted by JS -->
-      </div>
+      <div id="taskWrap" style="max-width:720px;"></div>
       <div id="taskMotivate" class="motivation">Nice! Keep the streak — you’ll get the next task tomorrow.</div>
       <div id="taskInfo" class="muted" style="margin-top:8px;"></div>
     </section>
 
-    <!-- Tips -->
-    <section id="tipsSection" class="section">
+    <section id="tipsSection" class="section" style="margin-top:8px;">
       <h3>Bulking Tips</h3>
       <p class="muted">Simple, realistic tips for clean and effective weight gain.</p>
       <ul>
@@ -185,17 +176,16 @@
     </section>
   </main>
 
-  <!-- keep loading shared scripts used across the site (ui helpers) -->
   <script src="app.js"></script>
   <script src="ui.js"></script>
   <script>
-    /* MODE colors (fixed — NOT animated) */
+    /* MODE colors (fixed — NOT animated). Default UI starts mint theme and NO mode selected. */
     const MODES = {
       healthy: {
         name: 'Healthy Bulk',
-        color: '#ffb347',              // theme color (outline & small accents)
-        gradStart: '#ffcc33',         // gradient start
-        gradEnd: '#ffb347',           // gradient end
+        color: '#ffb347',
+        gradStart: '#ffcc33',
+        gradEnd: '#ffb347',
         textOnBtn: '#071022'
       },
       fast: {
@@ -207,7 +197,7 @@
       }
     };
 
-    // Initialize UI elements
+    // UI elements
     const btnHealthy = document.getElementById('btnHealthy');
     const btnFast = document.getElementById('btnFast');
     const modeHint = document.getElementById('modeHint');
@@ -220,56 +210,103 @@
     const taskWrap = document.getElementById('taskWrap');
     const taskMotivate = document.getElementById('taskMotivate');
     const taskInfo = document.getElementById('taskInfo');
+    const navEl = document.getElementById('mainNav');
 
-    // Two tasks only
+    // Two tasks only (diet & exercise)
     const TASKS = [
-      { id: 'diet', title: 'Diet — Eat 3 calorie-dense meals + one snack', desc: 'Include added healthy fats (peanut butter, ghee) and whole calories.' },
-      { id: 'exercise', title: 'Exercise — Strength session (30–45 min)', desc: 'Focus on compound lifts: squats, rows, presses. Keep protein high.' }
+      { id: 'diet', title: 'Diet — Eat 3 calorie-dense meals + one snack', desc: 'Include healthy fats (peanut butter, ghee) and whole calories.' },
+      { id: 'exercise', title: 'Exercise — Strength session (30–45 min)', desc: 'Compound lifts: squats, rows, presses. Keep protein high.' }
     ];
 
-    // Utility: set CSS vars for theme
+    // Apply theme vars when selecting a mode
     function applyModeTheme(modeKey){
       const mode = MODES[modeKey];
       document.documentElement.style.setProperty('--theme-color', mode.color);
       document.documentElement.style.setProperty('--theme-gradient-start', mode.gradStart);
       document.documentElement.style.setProperty('--theme-gradient-end', mode.gradEnd);
       document.documentElement.style.setProperty('--btn-text', mode.textOnBtn);
-      // add visual outlines to the sections to match weight-loss behavior
+
+      // visually mark sections with outline (match weight-loss behaviour)
       document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
-      // make nav show gradient bar like weight-loss (but fixed)
-      document.querySelector('.nav').classList.add('grad-mode');
-      // mark active state on buttons
+
+      // nav gradient look
+      navEl.classList.add('grad-mode');
+
+      // update button aria states
       btnHealthy.setAttribute('aria-pressed', modeKey === 'healthy');
       btnFast.setAttribute('aria-pressed', modeKey === 'fast');
-      // hint text
+
+      // update hint
       modeHint.textContent = `${MODES[modeKey].name} selected`;
       modeHint.style.color = mode.color;
-      // ensure calc button visible style (mode-graded already)
     }
 
-    // Save & restore mode
+    // Revert to default mint theme (deselect)
+    function revertToDefaultTheme(){
+      // reset CSS vars to original mint defaults
+      document.documentElement.style.setProperty('--theme-color', '#34d399');
+      document.documentElement.style.setProperty('--theme-gradient-start', '#34d399');
+      document.documentElement.style.setProperty('--theme-gradient-end', '#60a5fa');
+      document.documentElement.style.setProperty('--btn-text', '#071022');
+
+      // remove outlines and nav gradient
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('outlined'));
+      navEl.classList.remove('grad-mode');
+
+      // reset aria-pressed and hint
+      btnHealthy.setAttribute('aria-pressed', 'false');
+      btnFast.setAttribute('aria-pressed', 'false');
+      modeHint.textContent = 'No mode selected';
+      modeHint.style.color = ''; // back to muted
+    }
+
+    // Set or toggle mode: pass key ('healthy'/'fast') or null to deselect
     function setMode(modeKey){
+      const currently = localStorage.getItem('wg_mode');
+      if(modeKey === null){
+        localStorage.removeItem('wg_mode');
+        revertToDefaultTheme();
+        buildTaskUI();
+        return;
+      }
+      // If clicking the already-selected mode -> deselect
+      if(currently === modeKey){
+        setMode(null);
+        return;
+      }
+      // Save selection and apply theme
       localStorage.setItem('wg_mode', modeKey);
       applyModeTheme(modeKey);
-      // When selecting mode, rebuild tasks & calculator outlines
       buildTaskUI();
-      // show calculator and tasks outlines (they exist on page already)
-      document.getElementById('calculator').classList.add('outlined');
-      document.getElementById('tasksSection').classList.add('outlined');
-      document.getElementById('tipsSection').classList.add('outlined');
     }
 
-    const savedMode = localStorage.getItem('wg_mode');
-    if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
-
+    // Buttons toggle behavior (allow deselect)
     btnHealthy.addEventListener('click', ()=> setMode('healthy'));
     btnFast.addEventListener('click', ()=> setMode('fast'));
 
+    // Prevent auto-applying a saved mode on load — start in mint default
+    // However keep saved values for calculator inputs (but do not auto-apply theme)
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedCalc = localStorage.getItem('wg_calc');
+      if(savedCalc){
+        try{
+          const d = JSON.parse(savedCalc);
+          document.getElementById('wg_weight').value = d.w || '';
+          document.getElementById('wg_height').value = d.h || '';
+          document.getElementById('wg_age').value = d.a || '';
+          document.getElementById('wg_gender').value = d.g || 'male';
+          document.getElementById('wg_activity').value = d.act || '1.2';
+          // DO NOT auto-apply theme on load — user wanted default mint at start
+        }catch(e){}
+      }
+      buildTaskUI();
+    });
+
     // Read more / show less
     readMore.addEventListener('click', ()=> { descLong.style.display = 'block'; readMore.style.display='none'; });
-    readLess.addEventListener('click', ()=> { descLong.style.display = 'none'; readMore.style.display='inline'; });
+    if(readLess) readLess.addEventListener('click', ()=> { descLong.style.display = 'none'; readMore.style.display='inline'; });
 
-    // Calculator logic (Mifflin-St Jeor + TDEE + surplus based on mode)
+    // Calculator (Mifflin-St Jeor + activity + surplus)
     function calcSurplus(){
       const w = parseFloat(document.getElementById('wg_weight').value||0);
       const h = parseFloat(document.getElementById('wg_height').value||0);
@@ -283,6 +320,7 @@
       }
       let bmr = g === 'male' ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a -161);
       const tdee = Math.round(bmr * act);
+      // use selected mode if there is one, otherwise use dropdown
       const modeKey = localStorage.getItem('wg_mode') || document.getElementById('wg_speed').value;
       const surplus = (modeKey === 'fast' || document.getElementById('wg_speed').value === 'fast') ? 600 : 300;
       const target = tdee + surplus;
@@ -302,8 +340,7 @@
       localStorage.removeItem('wg_calc');
     });
 
-    // Tasks logic: only two tasks. Show one per day (alternates) using real-world day number.
-    // Enforce 24-hour lock per task using stored timestamp.
+    // Tasks: show one of two tasks per real-world day (alternating), enforce 24h lock per task
     function nowISO(){ return new Date().toISOString(); }
     function msSince(ts){ return Date.now() - (new Date(ts)).getTime(); }
 
@@ -312,24 +349,19 @@
       taskMotivate.style.display = 'none';
       taskInfo.textContent = '';
 
-      // Determine which index to show today: alternate by day (real-world day count)
-      const days = Math.floor(Date.now() / 86400000); // UTC day count
-      const idx = days % TASKS.length; // 0 or 1
+      const days = Math.floor(Date.now() / 86400000);
+      const idx = days % TASKS.length;
       const task = TASKS[idx];
 
-      // check last completion time for this task
       const key = 'wg_task_done_' + task.id;
       const doneTS = localStorage.getItem(key);
       const done = doneTS ? (msSince(doneTS) < 24*60*60*1000) : false;
 
-      // if completed within 24h -> show motivation and next availability
       if(done){
-        // Show motivational message and time until next task
-        taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
+        // show motivate + countdown
         taskMotivate.textContent = (task.id === 'diet') ? 'Great job on your diet — keep it up!' : 'Awesome workout — recovery matters!';
         taskMotivate.style.display = 'block';
-
-        // show countdown until 24h passes
+        taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
         updateCountdown(doneTS);
         const timer = setInterval(()=> {
           if(!document.getElementById('timeRemain')) { clearInterval(timer); return; }
@@ -338,11 +370,8 @@
         return;
       }
 
-      // if not done, render the task box with checkbox
       const box = document.createElement('div');
       box.className = 'task-box';
-      box.id = 'task-' + task.id;
-      // outline if mode selected
       if(localStorage.getItem('wg_mode')) box.classList.add('outlined');
 
       const cb = document.createElement('input');
@@ -352,36 +381,21 @@
 
       const content = document.createElement('div');
       content.style.flex='1';
-      const ttitle = document.createElement('div');
-      ttitle.style.fontWeight='700';
-      ttitle.textContent = `Day task — ${task.title}`;
-      const tdesc = document.createElement('div');
-      tdesc.className = 'muted';
-      tdesc.style.marginTop='6px';
-      tdesc.textContent = task.desc;
+      const ttitle = document.createElement('div'); ttitle.className='title'; ttitle.textContent = `Day task — ${task.title}`;
+      const tdesc = document.createElement('div'); tdesc.className='desc'; tdesc.textContent = task.desc;
 
-      content.appendChild(ttitle);
-      content.appendChild(tdesc);
-
-      box.appendChild(cb);
-      box.appendChild(content);
-
+      content.appendChild(ttitle); content.appendChild(tdesc);
+      box.appendChild(cb); box.appendChild(content);
       taskWrap.appendChild(box);
 
-      // When checkbox toggled -> fade, save timestamp, show motivation
       cb.addEventListener('change', (e) => {
         if(!e.target.checked) return;
-        // visual fade
         box.classList.add('completed');
-        // save ts
         const ts = nowISO();
         localStorage.setItem(key, ts);
-        // show motivation
         taskMotivate.textContent = (task.id === 'diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
         taskMotivate.style.display = 'block';
-        // update taskInfo to explain next availability
         taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
-        // start countdown to 24h
         updateCountdown(ts);
         const tmr = setInterval(()=> {
           if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; }
@@ -396,10 +410,6 @@
       if(!el) return;
       if(remainMs <= 0){
         el.textContent = 'now (refresh page)';
-        // clear stored done to allow next show
-        // (we keep the localStorage key but letting buildTaskUI re-run on next load will show next task)
-        // To allow immediate change we can remove key:
-        //localStorage.removeItem('wg_task_done_diet'); // not auto remove here to avoid surprising deletion
         return;
       }
       const hrs = Math.floor(remainMs / (1000*60*60));
@@ -407,34 +417,7 @@
       const secs = Math.floor((remainMs % (1000*60)) / 1000);
       el.textContent = `${hrs}h ${mins}m ${secs}s`;
     }
-
-    // Build UI once on load
-    document.addEventListener('DOMContentLoaded', () => {
-      // restore calc inputs if saved
-      const savedCalc = localStorage.getItem('wg_calc');
-      if(savedCalc){
-        try{
-          const d = JSON.parse(savedCalc);
-          document.getElementById('wg_weight').value = d.w || '';
-          document.getElementById('wg_height').value = d.h || '';
-          document.getElementById('wg_age').value = d.a || '';
-          document.getElementById('wg_gender').value = d.g || 'male';
-          document.getElementById('wg_activity').value = d.act || '1.2';
-          if(d.mode && MODES[d.mode]) applyModeTheme(d.mode);
-        }catch(e){}
-      }
-      // initial task build
-      buildTaskUI();
-
-      // ensure correct outline if mode already set
-      if(localStorage.getItem('wg_mode')){
-        document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
-        document.querySelector('.nav').classList.add('grad-mode');
-      }
-    });
-
-    // If user changes speed dropdown but no explicit mode selected, allow calc to still work using dropdown
-    // (calcSurplus already checks wg_speed value)
   </script>
 </body>
-</html>
+  </html>
+          
