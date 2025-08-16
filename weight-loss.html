@@ -1,276 +1,324 @@
 
-<!doctype html>
+      <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Fitness Sphere — Weight Loss</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="css/styles.css"/>
   <style>
     :root { --theme-color: #2196f3; }
-    body { transition: background-color .3s ease, color .3s ease; }
-    .section { margin-bottom: 40px; }
-    .tracker-card {
-      border: 2px solid var(--theme-color);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 14px;
-      background: #fff;
-      transition: transform .3s ease, opacity .3s ease, border-color .3s ease;
-    }
-    .mode-toggle{ display:flex; gap:10px; margin: 10px 0 14px; }
-    .mode-toggle button{ flex:1; padding:10px; border:none; font-weight:700; cursor:pointer;
-      transition: background-color .3s ease, color .3s ease, transform .2s ease; }
-    .mode-toggle .active{ background: var(--theme-color); color:#fff; }
-    .mode-toggle button:active{ transform: scale(.98); }
-    .read-more{ color: var(--theme-color); cursor:pointer; font-weight:600; }
-    .note { padding:10px 12px; border-radius:10px; background:#ffe6ec; color:#b4002c; border:1px solid #ffb3c4; }
-    .pair { display:flex; align-items:flex-start; gap:14px; }
-    .pair img { width:60px; height:60px; object-fit:contain }
-    .muted{ color:#8fa7d0; }
-    .fade-in{ opacity:0; transform:translateY(18px); transition:opacity .5s, transform .5s; }
-    .fade-in.visible{ opacity:1; transform:none; }
-    .calc-card{ border:1px dashed var(--theme-color); border-radius:12px; padding:14px; }
-    .calc-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    @media (max-width:640px){ .calc-grid{ grid-template-columns: 1fr; } }
-    .small { font-size:.92rem; }
+    .pair img { width:60px; height:60px; object-fit:contain; border-radius:8px }
+    .tracker-card.completed { opacity:0.55; transform:scale(.995); filter:grayscale(.15); }
+    .tracker-card .done-badge { display:inline-block;background:#183b66;color:#cfe6ff;padding:6px 10px;border-radius:999px;font-weight:700;margin-left:8px }
   </style>
 </head>
 <body>
-<nav class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="index.html"><img src="logo.png" alt="logo" width="120"/></a>
-    <div class="links" data-menu>
-      <a class="link" href="calories.html">Calories</a>
-      <a class="link active" href="weight-loss.html">Weight Loss</a>
-      <a class="link" href="weight-gain.html">Weight Gain</a>
-      <a class="link" href="exercises.html">Exercises</a>
-      <a class="link" href="premium.html">Premium</a>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="logo" width="120" onerror="this.onerror=null;this.src='logo.png'">
+      </a>
+      <div class="links" data-menu>
+        <a class="link" href="calories.html">Calories</a>
+        <a class="link active" href="weight-loss.html">Weight Loss</a>
+        <a class="link" href="weight-gain.html">Weight Gain</a>
+        <a class="link" href="exercises.html">Exercises</a>
+        <a class="link" href="premium.html">Premium</a>
+      </div>
+      <button class="btn secondary" data-menu-btn>Menu</button>
     </div>
-    <button class="btn secondary" data-menu-btn>Menu</button>
-  </div>
-</nav>
+  </nav>
 
-<main class="container section">
-  <h1 class="fade-in">Weight Loss Guide & Tracker</h1>
+  <main class="container section">
+    <h1 class="fade-in">Weight Loss Guide & Tracker</h1>
 
-  <!-- Intro -->
-  <section class="fade-in">
-    <p>Choose the approach that fits your lifestyle and timeline. Track simple daily tasks to build momentum and burn fat sustainably.</p>
-  </section>
+    <section class="fade-in">
+      <p class="muted">Choose the approach that fits your lifestyle. Track simple daily tasks to build momentum and burn fat sustainably.</p>
+    </section>
 
-  <!-- Mode toggle + descriptions -->
-  <section class="fade-in">
-    <div class="mode-toggle">
-      <button id="slowBtn" class="active">Slow & Steady</button>
-      <button id="rapidBtn">Rapid Cut</button>
-    </div>
+    <section class="fade-in">
+      <div class="mode-toggle">
+        <button id="slowBtn" class="active">Slow &amp; Steady</button>
+        <button id="rapidBtn">Rapid Cut</button>
+      </div>
 
-    <p id="descShort" class="muted">
-      <strong>Slow & Steady:</strong> A sustainable deficit with moderate workouts and balanced eating.
-      <span id="readMore" class="read-more">Read more</span>
-    </p>
-    <div id="descLong" class="muted" style="display:none">
-      <p><strong>Slow & Steady:</strong> Aim for a gentle calorie deficit (~300–500 kcal/day). Walk daily, lift 2–3×/week, and build habits you can keep for months. Expect ~0.25–0.5 kg/week loss.</p>
-      <p><strong>Rapid Cut:</strong> Short, focused phases with a bigger deficit (~600–900 kcal/day) and higher-intensity training (HIIT, circuits). Useful for timelines but harder to maintain. Cycle back to maintenance if energy or mood dips.</p>
-      <p class="note"><strong>Caution:</strong> Rapid strategies aren’t for everyone. If you have health conditions or you’re new to intense exercise, talk to a healthcare professional first.</p>
-      <span id="readLess" class="read-more">Show less</span>
-    </div>
-  </section>
+      <p id="descShort" class="muted">
+        <strong>Slow &amp; Steady:</strong> A sustainable deficit with moderate workouts and balanced eating.
+        <span id="readMore" class="read-more">Read more</span>
+      </p>
 
-  <!-- Daily tracker -->
-  <section id="tracker" class="fade-in"></section>
+      <div id="descLong" class="muted" style="display:none">
+        <p><strong>Slow &amp; Steady:</strong> Aim for a gentle deficit (~300–500 kcal/day). Walk daily, lift 2–3×/week. Expect ~0.25–0.5 kg/week.</p>
+        <p><strong>Rapid Cut:</strong> Short phases with a larger deficit (~600–900 kcal/day) and higher-intensity training. Use carefully.</p>
+        <p id="rapidCaution" class="notice warn" style="display:none"><strong>Caution:</strong> Rapid cuts can be aggressive; monitor energy & mood.</p>
+        <span id="readLess" class="read-more">Show less</span>
+      </div>
+    </section>
 
-  <!-- Calorie Deficit Calculator -->
-  <section class="fade-in">
-    <h2>Calorie Deficit Calculator</h2>
-    <div class="calc-card">
-      <div class="calc-grid">
-        <div>
-          <label>Weight (kg)</label>
-          <input id="wl_weight" type="number" placeholder="e.g. 70"/>
+    <section id="tracker" class="fade-in" aria-live="polite"></section>
+
+    <section class="fade-in">
+      <h2>Calorie Deficit Calculator</h2>
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div><label>Weight (kg)</label><input id="wl_weight" type="number" placeholder="e.g. 70"/></div>
+          <div><label>Height (cm)</label><input id="wl_height" type="number" placeholder="e.g. 175"/></div>
+          <div><label>Age (years)</label><input id="wl_age" type="number" placeholder="e.g. 23"/></div>
+          <div><label>Gender</label>
+            <select id="wl_gender"><option value="male">Male</option><option value="female">Female</option></select>
+          </div>
+          <div><label>Activity</label>
+            <select id="wl_activity">
+              <option value="1.2">Sedentary</option>
+              <option value="1.375">Lightly active</option>
+              <option value="1.55">Moderately active</option>
+              <option value="1.725">Very active</option>
+              <option value="1.9">Athlete/physical job</option>
+            </select>
+          </div>
+          <div><label>Goal Loss Rate</label>
+            <select id="wl_goal">
+              <option value="0.25">0.25 kg/week</option>
+              <option value="0.5" selected>0.5 kg/week</option>
+              <option value="0.75">0.75 kg/week</option>
+              <option value="1">1 kg/week</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label>Height (cm)</label>
-          <input id="wl_height" type="number" placeholder="e.g. 175"/>
-        </div>
-        <div>
-          <label>Age (years)</label>
-          <input id="wl_age" type="number" placeholder="e.g. 23"/>
-        </div>
-        <div>
-          <label>Gender</label>
-          <select id="wl_gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
-        <div>
-          <label>Activity</label>
-          <select id="wl_activity">
-            <option value="1.2">Sedentary</option>
-            <option value="1.375">Lightly active (1–3x/wk)</option>
-            <option value="1.55">Moderately active (3–5x/wk)</option>
-            <option value="1.725">Very active (6–7x/wk)</option>
-            <option value="1.9">Athlete/physical job</option>
-          </select>
-        </div>
-        <div>
-          <label>Goal Loss Rate</label>
-          <select id="wl_goal">
-            <option value="0.25">0.25 kg/week (gentle)</option>
-            <option value="0.5" selected>0.5 kg/week (moderate)</option>
-            <option value="0.75">0.75 kg/week (aggressive)</option>
-            <option value="1">1 kg/week (very aggressive)</option>
-          </select>
+
+        <div class="mt-2" style="display:flex;gap:10px;">
+          <button id="wl_calc" class="btn">Calculate</button>
+          <button id="wl_clear" class="btn secondary">Clear</button>
+          <span class="small muted" style="align-self:center">Inputs saved locally.</span>
         </div>
       </div>
-      <div class="mt-2">
-        <button id="wl_calc" class="btn">Calculate</button>
-        <span class="small muted">Your inputs are saved on this device.</span>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Extra tips -->
-  <section class="fade-in">
-    <h3>Smart Weight Loss Tips</h3>
-    <ul>
-      <li>Prioritize protein and vegetables at each meal to stay full.</li>
-      <li>Walk daily — steps add up more than you think.</li>
-      <li>Sleep 7–9 hours to protect mood, cravings, and recovery.</li>
-      <li>Be patient: consistent small wins beat sporadic big pushes.</li>
-    </ul>
-  </section>
-</main>
+    <section class="fade-in">
+      <h3>Smart Weight Loss Tips</h3>
+      <ul class="muted">
+        <li>Prioritize protein and vegetables at each meal.</li>
+        <li>Walk daily — steps add up.</li>
+        <li>Sleep 7–9 hours to protect mood and recovery.</li>
+      </ul>
+    </section>
+  </main>
 
-<script src="ui.js"></script>
-<script>
-const trackerEl = document.getElementById('tracker');
-const slowBtn = document.getElementById('slowBtn');
-const rapidBtn = document.getElementById('rapidBtn');
-const descShort = document.getElementById('descShort');
-const descLong = document.getElementById('descLong');
-const readMore = document.getElementById('readMore');
-const readLess = document.getElementById('readLess');
-const MODE_KEY = 'wl_mode';
-const READ_KEY = 'wl_read_open';
-const TODAY = new Date().toISOString().slice(0,10);
-const DONE_EX_KEY   = m=>`wl_${m}_${TODAY}_ex_done`;
-const DONE_DIET_KEY = m=>`wl_${m}_${TODAY}_diet_done`;
+  <script src="js/ui.js"></script>
+  <script>
+  (function(){
+    // safe fallbacks if ui.js missing
+    if (typeof showToast !== 'function') window.showToast = (m,t)=>alert(m);
+    if (typeof showModal !== 'function') window.showModal = (title, html)=>alert(title + '\n' + (html.replace(/<[^>]+>/g,'')));
+    if (typeof triggerFadeIn !== 'function') window.triggerFadeIn = ()=>document.querySelectorAll('.fade-in').forEach(e=>e.classList.add('visible'));
 
-// ---------- PLANS ----------
-const slowPlan = [
-  { day:"Day 1", ex:{t:"Walk 30–45 min", icon:"icons/walk.png"}, diet:{t:"Protein+veggies dinner", icon:"icons/veggies.png"} },
-  { day:"Day 2", ex:{t:"Bodyweight circuit 20 min", icon:"icons/bodyweight.png"}, diet:{t:"Drink 2–3L water", icon:"icons/water.png"} },
-  { day:"Day 3", ex:{t:"Cycling 25 min easy", icon:"icons/cycle.png"}, diet:{t:"Balanced plate (¼ protein, ¼ carbs, ½ veg)", icon:"icons/plate.png"} },
-  { day:"Day 4", ex:{t:"Stairs 10–15 min", icon:"icons/stairs.png"}, diet:{t:"Swap refined carbs for whole grains", icon:"icons/grains.png"} },
-  { day:"Day 5", ex:{t:"Stretch + Walk 20 min", icon:"icons/stretch.png"}, diet:{t:"No late-night snacks", icon:"icons/nosnack.png"} },
-  { day:"Day 6", ex:{t:"Jump rope 5×1 min easy", icon:"icons/jumprope.png"}, diet:{t:"Track meals today", icon:"icons/track.png"} },
-  { day:"Day 7", ex:{t:"Free choice: 30 min activity", icon:"icons/walk.png"}, diet:{t:"Lean protein at lunch", icon:"icons/protein.png"} },
-];
+    // Plans (same as original)
+    const slowPlan = [
+      { day:"Day 1", ex:{t:"Walk 30–45 min", icon:"icons/walk.png"}, diet:{t:"Protein+veggies dinner", icon:"icons/veggies.png"} },
+      { day:"Day 2", ex:{t:"Bodyweight circuit 20 min", icon:"icons/bodyweight.png"}, diet:{t:"Drink 2–3L water", icon:"icons/water.png"} },
+      { day:"Day 3", ex:{t:"Cycling 25 min easy", icon:"icons/cycle.png"}, diet:{t:"Balanced plate (¼ protein, ¼ carbs, ½ veg)", icon:"icons/plate.png"} },
+      { day:"Day 4", ex:{t:"Stairs 10–15 min", icon:"icons/stairs.png"}, diet:{t:"Swap refined carbs for whole grains", icon:"icons/grains.png"} },
+      { day:"Day 5", ex:{t:"Stretch + Walk 20 min", icon:"icons/stretch.png"}, diet:{t:"No late-night snacks", icon:"icons/nosnack.png"} },
+      { day:"Day 6", ex:{t:"Jump rope 5×1 min easy", icon:"icons/jumprope.png"}, diet:{t:"Track meals today", icon:"icons/track.png"} },
+      { day:"Day 7", ex:{t:"Free choice: 30 min activity", icon:"icons/walk.png"}, diet:{t:"Lean protein at lunch", icon:"icons/protein.png"} }
+    ];
+    const rapidPlan = [
+      { day:"Day 1", ex:{t:"HIIT 12–15 min", icon:"icons/hiit.png"}, diet:{t:"120–200 kcal cut at dinner", icon:"icons/plate.png"} },
+      { day:"Day 2", ex:{t:"Jump rope 10×1 min", icon:"icons/jumprope.png"}, diet:{t:"High-protein breakfast", icon:"icons/protein.png"} },
+      { day:"Day 3", ex:{t:"Stairs 20 min", icon:"icons/stairs.png"}, diet:{t:"No snacks after 8 pm", icon:"icons/nosnack.png"} },
+      { day:"Day 4", ex:{t:"HIIT 10–12 min", icon:"icons/hiit.png"}, diet:{t:"3L water target", icon:"icons/water.png"} },
+      { day:"Day 5", ex:{t:"Bodyweight circuit 25 min", icon:"icons/bodyweight.png"}, diet:{t:"Half plate veggies at lunch", icon:"icons/veggies.png"} },
+      { day:"Day 6", ex:{t:"Cycle 30 min", icon:"icons/cycle.png"}, diet:{t:"Track meals today", icon:"icons/track.png"} },
+      { day:"Day 7", ex:{t:"Active recovery 30 min", icon:"icons/stretch.png"}, diet:{t:"Whole grains swap", icon:"icons/grains.png"} }
+    ];
 
-const rapidPlan = [
-  { day:"Day 1", ex:{t:"HIIT 12–15 min", icon:"icons/hiit.png"}, diet:{t:"120–200 kcal cut at dinner", icon:"icons/plate.png"} },
-  { day:"Day 2", ex:{t:"Jump rope 10×1 min", icon:"icons/jumprope.png"}, diet:{t:"High-protein breakfast", icon:"icons/protein.png"} },
-  { day:"Day 3", ex:{t:"Stairs 20 min", icon:"icons/stairs.png"}, diet:{t:"No snacks after 8 pm", icon:"icons/nosnack.png"} },
-  { day:"Day 4", ex:{t:"HIIT 10–12 min", icon:"icons/hiit.png"}, diet:{t:"3L water target", icon:"icons/water.png"} },
-  { day:"Day 5", ex:{t:"Bodyweight circuit 25 min", icon:"icons/bodyweight.png"}, diet:{t:"Half plate veggies at lunch", icon:"icons/veggies.png"} },
-  { day:"Day 6", ex:{t:"Cycle 30 min", icon:"icons/cycle.png"}, diet:{t:"Track meals today", icon:"icons/track.png"} },
-  { day:"Day 7", ex:{t:"Active recovery 30 min", icon:"icons/stretch.png"}, diet:{t:"Whole grains swap", icon:"icons/grains.png"} },
-];
+    // Elements
+    const trackerEl = document.getElementById('tracker');
+    const slowBtn = document.getElementById('slowBtn');
+    const rapidBtn = document.getElementById('rapidBtn');
+    const descShort = document.getElementById('descShort');
+    const descLong = document.getElementById('descLong');
+    const readMore = document.getElementById('readMore');
+    const readLess = document.getElementById('readLess');
+    const rapidCaution = document.getElementById('rapidCaution');
 
-// ---------- RENDER TRACKER ----------
-function setMode(mode){
-  localStorage.setItem(MODE_KEY, mode);
-  document.documentElement.style.setProperty('--theme-color', mode==='rapid' ? '#e91e63' : '#2196f3');
-  slowBtn.classList.toggle('active', mode==='slow');
-  rapidBtn.classList.toggle('active', mode==='rapid');
-  renderPlan(mode==='rapid' ? rapidPlan : slowPlan, mode);
-}
+    // storage helpers
+    const today = ()=>new Date().toISOString().slice(0,10);
+    const doneKey = (mode, date, idx, type)=>`wl_${mode}_${date}_${idx}_${type}`;
+    const completedCardKey = (mode, date, idx)=>`wl_${mode}_${date}_${idx}_completed`;
 
-function planItem(plan, idx){ return plan[idx % plan.length]; }
+    // render tracker for full week with persisted states
+    function renderPlan(plan, mode){
+      trackerEl.innerHTML = '';
+      const date = today();
+      plan.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'tracker-card fade-in';
+        const exId = `wl_ex_${mode}_${date}_${idx}`;
+        const dietId = `wl_diet_${mode}_${date}_${idx}`;
+        const completedKey = completedCardKey(mode,date,idx);
 
-function renderPlan(plan, mode){
-  trackerEl.innerHTML='';
-  const dayIndex = new Date().getDay();
-  const item = planItem(plan, dayIndex);
+        card.innerHTML = `
+          <h3>${item.day} <span class="muted small" style="margin-left:8px">— ${item.ex.t.split(' ')[0]}</span></h3>
+          <div class="pair" style="gap:12px;align-items:center">
+            <img src="${item.ex.icon}" onerror="this.onerror=null;this.src='icons/placeholder.png'"/>
+            <div style="flex:1">
+              <p style="margin:0 0 6px">${item.ex.t}</p>
+              <label class="muted"><input type="checkbox" id="${exId}"> Completed</label>
+            </div>
+          </div>
 
-  function createCard(title,obj,key){
-    const card = document.createElement('div');
-    card.className='tracker-card fade-in';
-    card.innerHTML=`<h3>${item.day} — ${title}</h3>
-      <div class="pair">
-        <img src="${obj.icon}" alt="${title} icon"/>
-        <div>
-          <p>${obj.t}</p>
-          <label><input type="checkbox" id="${key}"> Completed</label>
-        </div>
-      </div>`;
-    trackerEl.appendChild(card);
-    return document.getElementById(key);
-  }
+          <h3 style="margin-top:12px">${item.day} — Diet</h3>
+          <div class="pair" style="gap:12px;align-items:center">
+            <img src="${item.diet.icon}" onerror="this.onerror=null;this.src='icons/placeholder.png'"/>
+            <div style="flex:1">
+              <p style="margin:0 0 6px">${item.diet.t}</p>
+              <label class="muted"><input type="checkbox" id="${dietId}"> Completed</label>
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn secondary" id="clear_${idx}">Clear</button>
+          </div>
+        `;
+        trackerEl.appendChild(card);
 
-  const exDone = createCard('Exercise', item.ex, 'exDone');
-  const dietDone = createCard('Diet', item.diet, 'dietDone');
+        const exChk = document.getElementById(exId);
+        const dietChk = document.getElementById(dietId);
+        const clearBtn = document.getElementById(`clear_${idx}`);
 
-  // Restore state
-  exDone.checked = localStorage.getItem(DONE_EX_KEY(mode))==='true';
-  dietDone.checked = localStorage.getItem(DONE_DIET_KEY(mode))==='true';
+        // restore states
+        try {
+          exChk.checked = localStorage.getItem(doneKey(mode,date,idx,'ex')) === 'true';
+          dietChk.checked = localStorage.getItem(doneKey(mode,date,idx,'diet')) === 'true';
+          if (localStorage.getItem(completedKey) === 'true') {
+            markCardCompleted(card, exChk, dietChk);
+          }
+        } catch(e){}
 
-  exDone.addEventListener('change', ()=>{ localStorage.setItem(DONE_EX_KEY(mode), exDone.checked); if(exDone.checked && dietDone.checked) showToast("Crushed it! Both tasks done.","success"); });
-  dietDone.addEventListener('change', ()=>{ localStorage.setItem(DONE_DIET_KEY(mode), dietDone.checked); if(exDone.checked && dietDone.checked) showToast("Crushed it! Both tasks done.","success"); });
+        // bind change events
+        function onChange() {
+          try {
+            localStorage.setItem(doneKey(mode,date,idx,'ex'), exChk.checked);
+            localStorage.setItem(doneKey(mode,date,idx,'diet'), dietChk.checked);
+          } catch(e){}
+          if (exChk.checked && dietChk.checked) {
+            // mark completed: disable checkboxes, style card, persist completed
+            try { localStorage.setItem(completedKey,'true'); } catch(e){}
+            markCardCompleted(card, exChk, dietChk);
+            showToast('Amazing — both tasks done today!', 'success');
+          }
+        }
+        exChk.addEventListener('change', onChange);
+        dietChk.addEventListener('change', onChange);
 
-  document.querySelectorAll('.fade-in').forEach(el=>setTimeout(()=>el.classList.add('visible'),50));
-}
+        // clear button resets that day's state
+        clearBtn.addEventListener('click', ()=>{
+          try {
+            localStorage.removeItem(doneKey(mode,date,idx,'ex'));
+            localStorage.removeItem(doneKey(mode,date,idx,'diet'));
+            localStorage.removeItem(completedKey);
+          } catch(e){}
+          exChk.checked = false; dietChk.checked = false;
+          exChk.disabled = false; dietChk.disabled = false;
+          card.classList.remove('completed');
+          showToast('Day reset', 'info');
+        });
+      });
+      triggerFadeIn();
+    }
 
-// ---------- READ MORE ----------
-readMore.addEventListener('click', ()=>{ descShort.style.display='none'; descLong.style.display='block'; localStorage.setItem(READ_KEY,'open'); });
-readLess.addEventListener('click', ()=>{ descLong.style.display='none'; descShort.style.display='block'; localStorage.removeItem(READ_KEY); });
+    function markCardCompleted(card, exChk, dietChk) {
+      card.classList.add('completed');
+      exChk.disabled = true;
+      dietChk.disabled = true;
+      // append a small badge if not present
+      if (!card.querySelector('.done-badge')) {
+        const h = card.querySelector('h3');
+        const b = document.createElement('span');
+        b.className = 'done-badge';
+        b.textContent = 'Done';
+        h.appendChild(b);
+      }
+    }
 
-// ---------- MODE BUTTONS ----------
-slowBtn.addEventListener('click', ()=>setMode('slow'));
-rapidBtn.addEventListener('click', ()=>setMode('rapid'));
+    // mode & readmore logic (persisted)
+    function setMode(mode){
+      document.documentElement.style.setProperty('--theme-color', mode==='rapid' ? '#e91e63' : '#2196f3');
+      slowBtn.classList.toggle('active', mode==='slow');
+      rapidBtn.classList.toggle('active', mode==='rapid');
+      try { localStorage.setItem('wl_mode', mode); } catch(e){}
+      renderPlan(mode==='rapid' ? rapidPlan : slowPlan, mode);
+      rapidCaution.style.display = (mode==='rapid' && localStorage.getItem('wl_read_open')==='true') ? 'block' : 'none';
+    }
 
-// ---------- CALCULATOR ----------
-const weightEl = document.getElementById('wl_weight');
-const heightEl = document.getElementById('wl_height');
-const ageEl    = document.getElementById('wl_age');
-const genderEl = document.getElementById('wl_gender');
-const actEl    = document.getElementById('wl_activity');
-const goalEl   = document.getElementById('wl_goal');
-const calcBtn  = document.getElementById('wl_calc');
+    readMore.addEventListener('click', ()=>{ descShort.style.display='none'; descLong.style.display='block'; try{localStorage.setItem('wl_read_open','true')}catch(e){} });
+    readLess.addEventListener('click', ()=>{ descLong.style.display='none'; descShort.style.display='block'; try{localStorage.removeItem('wl_read_open')}catch(e){} });
 
-const SAVED = JSON.parse(localStorage.getItem('wl_calc')||'{}');
-if(SAVED.weight) weightEl.value=SAVED.weight;
-if(SAVED.height) heightEl.value=SAVED.height;
-if(SAVED.age)    ageEl.value=SAVED.age;
-if(SAVED.gender) genderEl.value=SAVED.gender;
-if(SAVED.activity) actEl.value=SAVED.activity;
-if(SAVED.goal)     goalEl.value=SAVED.goal;
+    slowBtn.addEventListener('click', ()=> setMode('slow'));
+    rapidBtn.addEventListener('click', ()=> setMode('rapid'));
 
-calcBtn.addEventListener('click', ()=>{
-  const w=parseFloat(weightEl.value), h=parseFloat(heightEl.value), a=parseInt(ageEl.value,10), g=genderEl.value;
-  const act=parseFloat(actEl.value), goal=parseFloat(goalEl.value);
-  if(!w||!h||!a){ return showToast("Please fill weight, height and age.","danger"); }
+    // calculator
+    const weightEl = document.getElementById('wl_weight');
+    const heightEl = document.getElementById('wl_height');
+    const ageEl = document.getElementById('wl_age');
+    const genderEl = document.getElementById('wl_gender');
+    const actEl = document.getElementById('wl_activity');
+    const goalEl = document.getElementById('wl_goal');
+    const calcBtn = document.getElementById('wl_calc');
+    const clearBtn = document.getElementById('wl_clear');
 
-  localStorage.setItem('wl_calc', JSON.stringify({weight:w,height:h,age:a,gender:g,activity:actEl.value,goal:goalEl.value}));
+    // restore inputs if saved
+    try {
+      const SAVED = JSON.parse(localStorage.getItem('wl_calc') || '{}');
+      if (SAVED.weight) weightEl.value = SAVED.weight;
+      if (SAVED.height) heightEl.value = SAVED.height;
+      if (SAVED.age) ageEl.value = SAVED.age;
+      if (SAVED.gender) genderEl.value = SAVED.gender;
+      if (SAVED.activity) actEl.value = SAVED.activity;
+      if (SAVED.goal) goalEl.value = SAVED.goal;
+    } catch(e){}
 
-  const BMR = g==='male'?10*w+6.25*h-5*a+5:10*w+6.25*h-5*a-161;
-  const TDEE = BMR*act;
-  const dailyDeficit = Math.max(0,Math.min(1200,(7700*goal)/7));
-  const targetCalories = Math.max(1000,Math.round(TDEE-dailyDeficit));
+    calcBtn.addEventListener('click', ()=>{
+      const w = parseFloat(weightEl.value), h = parseFloat(heightEl.value), a = parseInt(ageEl.value,10);
+      const g = genderEl.value, act = parseFloat(actEl.value), goal = parseFloat(goalEl.value);
+      if (!w || !h || !a) { showToast('Please fill weight, height and age.', 'error'); return; }
 
-  createModal({title:"Your Calorie Targets", content:`<p><strong>BMR:</strong> ${Math.round(BMR)} kcal/day</p><p><strong>TDEE:</strong> ${Math.round(TDEE)} kcal/day</p><p><strong>Suggested daily calories:</strong> ${targetCalories} kcal/day</p><p class="small muted">Tip: Recalculate whenever your weight changes or activity shifts.</p>`, buttons:[{text:"OK",class:"primary"}]});
-});
+      try {
+        localStorage.setItem('wl_calc', JSON.stringify({ weight:w, height:h, age:a, gender:g, activity:actEl.value, goal:goalEl.value }));
+      } catch(e){}
 
-// ---------- INIT ----------
-(function init(){
-  const savedMode = localStorage.getItem(MODE_KEY)||'slow';
-  const readOpen  = localStorage.getItem(READ_KEY)==='open';
-  setMode(savedMode);
-  if(readOpen){ descShort.style.display='none'; descLong.style.display='block'; }
-})();
-</script>
+      const BMR = g==='male' ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a - 161);
+      const TDEE = Math.round(BMR * act);
+      const dailyDeficit = Math.max(0, Math.min(1200, (7700 * goal) / 7));
+      const targetCalories = Math.max(1000, Math.round(TDEE - dailyDeficit));
+
+      const content = `
+        <p><strong>BMR:</strong> ${Math.round(BMR)} kcal/day</p>
+        <p><strong>TDEE:</strong> ${TDEE} kcal/day</p>
+        <p><strong>Suggested daily calories:</strong> ${targetCalories} kcal/day</p>
+        <p class="muted small">Recalculate after any weight or activity changes.</p>
+      `;
+      showModal('Your Calorie Targets', content);
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      try { localStorage.removeItem('wl_calc'); } catch(e){}
+      weightEl.value=''; heightEl.value=''; ageEl.value=''; genderEl.selectedIndex=0; actEl.selectedIndex=0; goalEl.selectedIndex=1;
+      showToast('Calculator cleared', 'info');
+    });
+
+    // init on load
+    window.addEventListener('load', ()=>{
+      const savedMode = localStorage.getItem('wl_mode') || 'slow';
+      setMode(savedMode);
+      if (localStorage.getItem('wl_read_open') === 'true') {
+        descShort.style.display='none'; descLong.style.display='block';
+      }
+      triggerFadeIn();
+    });
+
+  })();
+  </script>
 </body>
 </html>
