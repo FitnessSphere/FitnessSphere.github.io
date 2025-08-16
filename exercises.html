@@ -1,60 +1,185 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Fitness Sphere — Exercises</title>
-  <link rel="stylesheet" href="styles.css"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Fitness Sphere — Exercises</title>
+<link rel="stylesheet" href="../css/styles.css"/>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0; padding: 0;
+    background-color: #f0f4f8;
+  }
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: #fff;
+    padding: 12px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky; top: 0; z-index: 10;
+  }
+  nav .links {
+    display: flex; gap: 12px;
+    flex-wrap: wrap;
+  }
+  nav a {
+    text-decoration: none;
+    color: #28a745;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 5px;
+    transition: 0.2s;
+  }
+  nav a:hover { background-color: #e6f4ea; color: #20c997; }
+  nav .brand img { height: 40px; }
+  main.container {
+    max-width: 950px;
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  h1 { color: #333; margin-bottom: 10px; }
+  p.lead { color: #555; margin-bottom: 20px; }
+  .grid { display: grid; gap: 15px; }
+  .card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  select, button {
+    width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;
+    margin-top: 5px;
+  }
+  button { background-color: #28a745; color: #fff; border: none; cursor: pointer; }
+  button:hover { background-color: #20c997; }
+  .exercise-card img {
+    width: 100%; border-radius: 8px; margin-bottom: 10px;
+  }
+  .exercise-card h3 { margin: 0 0 5px; }
+  .exercise-card p { margin: 0 0 10px; font-size: 14px; color: #555; }
+  .exercise-card button { width: auto; padding: 6px 12px; font-size: 14px; margin-right: 5px; }
+  .modal-bg {
+    display: none;
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center; align-items: center;
+    z-index: 100;
+  }
+  .modal {
+    background: #fff; border-radius: 10px; padding: 20px;
+    max-width: 500px; width: 90%; text-align: left;
+  }
+  .modal h3 { margin-top: 0; }
+  .modal-close { float: right; cursor: pointer; font-weight: bold; }
+</style>
 </head>
 <body>
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="logo.svg" alt="logo" width="120"/></a>
-      <div class="links" data-menu>
-        <a class="link" href="calories.html">Calories</a>
-        <a class="link" href="weight-loss.html">Weight Loss</a>
-        <a class="link" href="weight-gain.html">Weight Gain</a>
-        <a class="link" href="exercises.html">Exercises</a>
-        <a class="link" href="premium.html">Premium</a>
-      </div>
-      <button class="btn secondary" data-menu-btn>Menu</button>
+
+<nav>
+  <a href="../index.html" class="brand"><img src="../img/logo.svg" alt="Logo"></a>
+  <div class="links">
+    <a href="calories.html">Calories</a>
+    <a href="weightgain.html">Weight Gain</a>
+    <a href="weightloss.html">Weight Loss</a>
+    <a href="exercises.html">Exercises</a>
+    <a href="premium.html">Premium</a>
+  </div>
+</nav>
+
+<main class="container">
+  <h1>Exercise Library</h1>
+  <p class="lead">Browse by goal and body area. Tap “How to” for steps or “Calories Estimator” for a quick burn estimate.</p>
+
+  <div class="grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+      <label>Goal</label>
+      <select id="filterGoal">
+        <option>All</option>
+        <option>Strength</option>
+        <option>Cardio</option>
+        <option>HIIT</option>
+        <option>Stability</option>
+        <option>Mobility</option>
+      </select>
     </div>
-  </nav>
-
-  <main class="container section">
-    <h1>Exercise Library</h1>
-    <p class="lead">Browse by goal and body area. Tap “How to” for steps or “Calories Estimator” for a quick burn estimate.</p>
-
-    <div class="grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="card">
-        <label>Goal</label>
-        <select id="filterGoal">
-          <option>All</option>
-          <option>Strength</option>
-          <option>Cardio</option>
-          <option>HIIT</option>
-          <option>Stability</option>
-          <option>Mobility</option>
-        </select>
-      </div>
-      <div class="card">
-        <label>Body</label>
-        <select id="filterBody">
-          <option>All</option>
-          <option>Full</option>
-          <option>Upper</option>
-          <option>Lower</option>
-          <option>Core</option>
-        </select>
-      </div>
+    <div class="card">
+      <label>Body Area</label>
+      <select id="filterBody">
+        <option>All</option>
+        <option>Full</option>
+        <option>Upper</option>
+        <option>Lower</option>
+        <option>Core</option>
+      </select>
     </div>
+  </div>
 
-    <div id="exerciseList" class="grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));"></div>
-  </main>
+  <div id="exerciseList" class="grid mt-3" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); margin-top:20px;"></div>
+</main>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
-  <script src="exercises.js"></script>
+<!-- Modal for How-To and Calories -->
+<div class="modal-bg" id="exerciseModal">
+  <div class="modal">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="../js/ui.js"></script>
+<script>
+const exercises = [
+  {name:"Push Up", goal:"Strength", body:"Upper", img:"../img/pushup.jpg", how:"Keep body straight, lower chest to floor, push up.", calories:5},
+  {name:"Squat", goal:"Strength", body:"Lower", img:"../img/squat.jpg", how:"Keep back straight, bend knees to 90°, return up.", calories:7},
+  {name:"Plank", goal:"Stability", body:"Core", img:"../img/plank.jpg", how:"Hold straight body on elbows for time.", calories:4},
+  {name:"Jumping Jacks", goal:"Cardio", body:"Full", img:"../img/jumping.jpg", how:"Jump with legs and arms together.", calories:6},
+  {name:"Burpees", goal:"HIIT", body:"Full", img:"../img/burpee.jpg", how:"Drop into squat, kick feet back, jump up.", calories:10}
+];
+
+// Render exercises
+function renderExercises() {
+  const list = document.getElementById('exerciseList');
+  list.innerHTML = '';
+  const goal = document.getElementById('filterGoal').value;
+  const body = document.getElementById('filterBody').value;
+
+  exercises.forEach(ex=>{
+    if((goal==='All'||ex.goal===goal)&&(body==='All'||ex.body===body)){
+      const card = document.createElement('div');
+      card.className='card exercise-card fade-in';
+      card.innerHTML=`<img src="${ex.img}" alt="${ex.name}"><h3>${ex.name}</h3>
+        <p>Goal: ${ex.goal} | Body: ${ex.body}</p>
+        <button onclick="showModal('${ex.name}','${ex.how}','${ex.calories}')">How To</button>
+        <button onclick="showModal('${ex.name}','${ex.how}','${ex.calories}',true)">Calories Estimator</button>`;
+      list.appendChild(card);
+      setTimeout(()=>card.classList.add('visible'),50);
+    }
+  });
+}
+
+// Modal handling
+const modal = document.getElementById('exerciseModal');
+const modalContent = document.getElementById('modalContent');
+document.getElementById('modalClose').onclick=()=>modal.style.display='none';
+
+function showModal(name,how,cal,calOnly=false){
+  if(calOnly){
+    modalContent.innerHTML=`<h3>${name} — Calories Estimator</h3><p>Estimated calories burned per minute: <b>${cal}</b> kcal</p>`;
+  }else{
+    modalContent.innerHTML=`<h3>${name} — How to do</h3><p>${how}</p><p>Estimated calories burned per min: <b>${cal}</b> kcal</p>`;
+  }
+  modal.style.display='flex';
+}
+
+// Filters
+document.getElementById('filterGoal').onchange=renderExercises;
+document.getElementById('filterBody').onchange=renderExercises;
+
+window.addEventListener('load',renderExercises);
+</script>
+
 </body>
-</html>
+        </html>
+  
