@@ -1,185 +1,266 @@
 
-<!DOCTYPE html>
+    <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Fitness Sphere — Exercises</title>
-<link rel="stylesheet" href="../css/styles.css"/>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    margin: 0; padding: 0;
-    background-color: #f0f4f8;
-  }
-  nav {
-    display: flex; justify-content: space-between; align-items: center;
-    background-color: #fff;
-    padding: 12px 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: sticky; top: 0; z-index: 10;
-  }
-  nav .links {
-    display: flex; gap: 12px;
-    flex-wrap: wrap;
-  }
-  nav a {
-    text-decoration: none;
-    color: #28a745;
-    font-weight: bold;
-    padding: 6px 12px;
-    border-radius: 5px;
-    transition: 0.2s;
-  }
-  nav a:hover { background-color: #e6f4ea; color: #20c997; }
-  nav .brand img { height: 40px; }
-  main.container {
-    max-width: 950px;
-    margin: 20px auto;
-    padding: 0 15px;
-  }
-  h1 { color: #333; margin-bottom: 10px; }
-  p.lead { color: #555; margin-bottom: 20px; }
-  .grid { display: grid; gap: 15px; }
-  .card {
-    background-color: #fff;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .card:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
-  select, button {
-    width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;
-    margin-top: 5px;
-  }
-  button { background-color: #28a745; color: #fff; border: none; cursor: pointer; }
-  button:hover { background-color: #20c997; }
-  .exercise-card img {
-    width: 100%; border-radius: 8px; margin-bottom: 10px;
-  }
-  .exercise-card h3 { margin: 0 0 5px; }
-  .exercise-card p { margin: 0 0 10px; font-size: 14px; color: #555; }
-  .exercise-card button { width: auto; padding: 6px 12px; font-size: 14px; margin-right: 5px; }
-  .modal-bg {
-    display: none;
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.6);
-    justify-content: center; align-items: center;
-    z-index: 100;
-  }
-  .modal {
-    background: #fff; border-radius: 10px; padding: 20px;
-    max-width: 500px; width: 90%; text-align: left;
-  }
-  .modal h3 { margin-top: 0; }
-  .modal-close { float: right; cursor: pointer; font-weight: bold; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fitness Sphere — Exercises</title>
+
+  <!-- site stylesheet (your dark theme) -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    /* page-specific adjustments */
+    .nav .links { flex-wrap: wrap; gap: 14px; }
+    .controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:18px 0; }
+    .search { flex:1; min-width:180px; }
+    .card-actions { display:flex; gap:10px; margin-top:12px; }
+    .exercise-card { border-radius:14px; padding:18px; background:linear-gradient(180deg,#0f1530,#0b1220); border:1px solid #213054; box-shadow:var(--shadow); }
+    .exercise-icon { width:56px; height:56px; border-radius:10px; object-fit:cover; margin-right:12px; }
+    .meta { color:var(--muted); font-size:0.95rem; margin-top:6px; }
+    .count { color:var(--muted); font-size:0.95rem; }
+    .pill { padding:6px 10px; border-radius:999px; background:#0e1632; border:1px solid #223268; color:#bcd1ff; font-size:13px; display:inline-block; }
+    @media (max-width:640px){
+      .controls { flex-direction:column; align-items:stretch; }
+      .card-actions { flex-direction:column; align-items:stretch; }
+    }
+  </style>
 </head>
 <body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="Logo" width="120" onerror="this.onerror=null;this.src='logo.png'">
+      </a>
 
-<nav>
-  <a href="../index.html" class="brand"><img src="../img/logo.svg" alt="Logo"></a>
-  <div class="links">
-    <a href="calories.html">Calories</a>
-    <a href="weightgain.html">Weight Gain</a>
-    <a href="weightloss.html">Weight Loss</a>
-    <a href="exercises.html">Exercises</a>
-    <a href="premium.html">Premium</a>
-  </div>
-</nav>
+      <div class="links" data-menu>
+        <a class="link" href="calories.html">Calories</a>
+        <a class="link" href="weight-gain.html">Weight Gain</a>
+        <a class="link" href="weight-loss.html">Weight Loss</a>
+        <!-- removed Exercises link here (we're on it) -->
+        <a class="link" href="premium.html">Premium</a>
+      </div>
 
-<main class="container">
-  <h1>Exercise Library</h1>
-  <p class="lead">Browse by goal and body area. Tap “How to” for steps or “Calories Estimator” for a quick burn estimate.</p>
+      <button class="btn secondary" data-menu-btn>Menu</button>
+    </div>
+  </nav>
 
-  <div class="grid" style="grid-template-columns: 1fr 1fr;">
-    <div class="card">
-      <label>Goal</label>
+  <main class="container section">
+    <h1 class="fade-in">Exercise Library</h1>
+    <p class="lead muted">Browse by goal and body area. Tap “How to” for steps or “Calories Estimator” to estimate burn.</p>
+
+    <div class="controls fade-in" role="region" aria-label="Search and filters">
+      <input id="searchInput" class="search" placeholder="Search exercises (push up, squat, rowing...)">
       <select id="filterGoal">
-        <option>All</option>
-        <option>Strength</option>
-        <option>Cardio</option>
-        <option>HIIT</option>
-        <option>Stability</option>
-        <option>Mobility</option>
+        <option value="All">All goals</option>
+        <option value="Strength">Strength</option>
+        <option value="Cardio">Cardio</option>
+        <option value="HIIT">HIIT</option>
+        <option value="Mobility">Mobility</option>
+        <option value="Stability">Stability</option>
+        <option value="Flexibility">Flexibility</option>
       </select>
-    </div>
-    <div class="card">
-      <label>Body Area</label>
       <select id="filterBody">
-        <option>All</option>
-        <option>Full</option>
-        <option>Upper</option>
-        <option>Lower</option>
-        <option>Core</option>
+        <option value="All">All body</option>
+        <option value="Full">Full</option>
+        <option value="Upper">Upper</option>
+        <option value="Lower">Lower</option>
+        <option value="Core">Core</option>
       </select>
+
+      <div style="margin-left:auto" class="count"><span id="resultCount">0</span> exercises</div>
     </div>
-  </div>
 
-  <div id="exerciseList" class="grid mt-3" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); margin-top:20px;"></div>
-</main>
+    <div id="exerciseList" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));"></div>
+  </main>
 
-<!-- Modal for How-To and Calories -->
-<div class="modal-bg" id="exerciseModal">
-  <div class="modal">
-    <span class="modal-close" id="modalClose">&times;</span>
-    <div id="modalContent"></div>
-  </div>
-</div>
+  <script src="js/ui.js"></script>
 
-<script src="../js/ui.js"></script>
-<script>
-const exercises = [
-  {name:"Push Up", goal:"Strength", body:"Upper", img:"../img/pushup.jpg", how:"Keep body straight, lower chest to floor, push up.", calories:5},
-  {name:"Squat", goal:"Strength", body:"Lower", img:"../img/squat.jpg", how:"Keep back straight, bend knees to 90°, return up.", calories:7},
-  {name:"Plank", goal:"Stability", body:"Core", img:"../img/plank.jpg", how:"Hold straight body on elbows for time.", calories:4},
-  {name:"Jumping Jacks", goal:"Cardio", body:"Full", img:"../img/jumping.jpg", how:"Jump with legs and arms together.", calories:6},
-  {name:"Burpees", goal:"HIIT", body:"Full", img:"../img/burpee.jpg", how:"Drop into squat, kick feet back, jump up.", calories:10}
-];
-
-// Render exercises
-function renderExercises() {
-  const list = document.getElementById('exerciseList');
-  list.innerHTML = '';
-  const goal = document.getElementById('filterGoal').value;
-  const body = document.getElementById('filterBody').value;
-
-  exercises.forEach(ex=>{
-    if((goal==='All'||ex.goal===goal)&&(body==='All'||ex.body===body)){
-      const card = document.createElement('div');
-      card.className='card exercise-card fade-in';
-      card.innerHTML=`<img src="${ex.img}" alt="${ex.name}"><h3>${ex.name}</h3>
-        <p>Goal: ${ex.goal} | Body: ${ex.body}</p>
-        <button onclick="showModal('${ex.name}','${ex.how}','${ex.calories}')">How To</button>
-        <button onclick="showModal('${ex.name}','${ex.how}','${ex.calories}',true)">Calories Estimator</button>`;
-      list.appendChild(card);
-      setTimeout(()=>card.classList.add('visible'),50);
+  <script>
+  (function(){
+    // Safe fallbacks if ui.js didn't load
+    if (typeof showToast !== 'function') window.showToast = (m,t)=>alert(m);
+    if (typeof createModal !== 'function' && typeof showModal === 'function') {
+      // wrap showModal into createModal-like
+      window.createModal = function(opts){
+        showModal(opts.title || '', opts.content || '');
+      };
+    } else if (typeof createModal !== 'function') {
+      window.createModal = function(opts){ alert((opts.title||'') + '\n\n' + (opts.content||'')); };
     }
-  });
-}
+    if (typeof triggerFadeIn !== 'function') window.triggerFadeIn = ()=>document.querySelectorAll('.fade-in').forEach(e=>e.classList.add('visible'));
 
-// Modal handling
-const modal = document.getElementById('exerciseModal');
-const modalContent = document.getElementById('modalContent');
-document.getElementById('modalClose').onclick=()=>modal.style.display='none';
+    // ---------- Exercise dataset ----------
+    // For each exercise: id, name, goal, body, difficulty, met (approx), icon, howTo (array)
+    const EXERCISES = [
+      { id:'pushup', name:'Push Up', goal:'Strength', body:'Upper', difficulty:'Medium', met:8, icon:'icons/pushup.png',
+        howTo: ['Start in a plank position','Lower chest to near-floor','Push up until arms are extended','Keep core tight'] },
+      { id:'pullup', name:'Pull Up', goal:'Strength', body:'Upper', difficulty:'Hard', met:8, icon:'icons/pullup.png',
+        howTo:['Grab bar with overhand grip','Pull chin above bar','Lower down with control'] },
+      { id:'benchpress', name:'Bench Press', goal:'Strength', body:'Upper', difficulty:'Hard', met:6, icon:'icons/bench.png',
+        howTo:['Lie on bench','Grip bar slightly wider than shoulders','Lower to chest','Press up explosively'] },
+      { id:'squat', name:'Back Squat', goal:'Strength', body:'Lower', difficulty:'Hard', met:6, icon:'icons/squat.png',
+        howTo:['Feet shoulder-width','Push hips back','Knees track toes','Drive up through heels'] },
+      { id:'deadlift', name:'Deadlift', goal:'Strength', body:'Full', difficulty:'Hard', met:6, icon:'icons/deadlift.png',
+        howTo:['Stand mid-bar','Hips back','Lift bar keeping back flat','Lock hips at top'] },
+      { id:'lunge', name:'Forward Lunge', goal:'Strength', body:'Lower', difficulty:'Medium', met:5, icon:'icons/lunge.png',
+        howTo:['Step forward','Lower until both knees ~90°','Push back to start','Alternate legs'] },
+      { id:'burpee', name:'Burpee', goal:'HIIT', body:'Full', difficulty:'Hard', met:10, icon:'icons/burpee.png',
+        howTo:['Squat and place hands','Kick feet back to plank','Do a push-up','Jump up explosively'] },
+      { id:'jumpingjacks', name:'Jumping Jacks', goal:'Cardio', body:'Full', difficulty:'Easy', met:8, icon:'icons/jumpingjack.png',
+        howTo:['Stand tall','Jump feet out and clap overhead','Return to start'] },
+      { id:'mountainclimber', name:'Mountain Climber', goal:'HIIT', body:'Core', difficulty:'Medium', met:8, icon:'icons/mountain.png',
+        howTo:['Start in plank','Drive knees to chest in alternating pattern'] },
+      { id:'plank', name:'Plank', goal:'Stability', body:'Core', difficulty:'Medium', met:3, icon:'icons/plank.png',
+        howTo:['Forearms on floor','Maintain straight line from head to heels','Hold position'] },
+      { id:'rowing', name:'Rowing (Machine)', goal:'Cardio', body:'Full', difficulty:'Medium', met:7, icon:'icons/rowing.png',
+        howTo:['Set damper','Drive with legs','Pull handle to chest','Recover smoothly'] },
+      { id:'cycling', name:'Indoor Cycling', goal:'Cardio', body:'Lower', difficulty:'Medium', met:7, icon:'icons/cycle.png',
+        howTo:['Set resistance','Pedal at steady cadence','Maintain posture'] },
+      { id:'running', name:'Running (steady)', goal:'Cardio', body:'Full', difficulty:'Medium', met:9, icon:'icons/run.png',
+        howTo:['Warm up','Run at steady pace','Cool down'] },
+      { id:'jumprope', name:'Jump Rope', goal:'Cardio', body:'Full', difficulty:'Medium', met:12, icon:'icons/jumprope.png',
+        howTo:['Stand tall','Turn rope with wrists','Jump with slight knee bend'] },
+      { id:'romanian', name:'Romanian Deadlift', goal:'Strength', body:'Lower', difficulty:'Hard', met:6, icon:'icons/rdl.png',
+        howTo:['Hinge at hips','Keep slight knee bend','Lower bar to mid-shin','Squeeze glutes to stand'] },
+      { id:'shoulderpress', name:'Overhead Press', goal:'Strength', body:'Upper', difficulty:'Medium', met:6, icon:'icons/press.png',
+        howTo:['Stand with barbell/dumbbells','Press overhead','Lower with control'] },
+      { id:'dip', name:'Triceps Dip', goal:'Strength', body:'Upper', difficulty:'Medium', met:5, icon:'icons/dip.png',
+        howTo:['Support on bars/bench','Lower until elbows ~90°','Press to start'] },
+      { id:'legpress', name:'Leg Press', goal:'Strength', body:'Lower', difficulty:'Medium', met:5, icon:'icons/legpress.png',
+        howTo:['Sit on machine','Push platform with heels','Control return'] },
+      { id:'glutbridge', name:'Glute Bridge', goal:'Strength', body:'Lower', difficulty:'Easy', met:3, icon:'icons/glute.png',
+        howTo:['Lie on back','Drive hips up','Squeeze glutes at top'] },
+      { id:'boxjump', name:'Box Jump', goal:'Power', body:'Lower', difficulty:'Hard', met:8, icon:'icons/boxjump.png',
+        howTo:['Stand in front of box','Swing arms and jump onto box','Step down carefully'] },
+      { id:'kettleswing', name:'Kettlebell Swing', goal:'Power', body:'Full', difficulty:'Medium', met:9, icon:'icons/kettle.png',
+        howTo:['Hinge at hips','Swing kettlebell to chest height','Control on return'] },
+      { id:'calfraise', name:'Calf Raise', goal:'Strength', body:'Lower', difficulty:'Easy', met:3, icon:'icons/calf.png',
+        howTo:['Stand on edge','Rise onto toes','Lower slowly'] },
+      { id:'legcurl', name:'Leg Curl', goal:'Strength', body:'Lower', difficulty:'Medium', met:4, icon:'icons/legcurl.png',
+        howTo:['Lie or sit on machine','Curl heels toward glutes','Slowly return'] },
+      { id:'latpulldown', name:'Lat Pulldown', goal:'Strength', body:'Upper', difficulty:'Medium', met:5, icon:'icons/lat.png',
+        howTo:['Grip bar','Pull to chest','Control back up'] },
+      { id:'bicyclecrunch', name:'Bicycle Crunch', goal:'Core', body:'Core', difficulty:'Medium', met:6, icon:'icons/bicycle.png',
+        howTo:['Lie on back','Alternate elbow-to-opposite-knee','Keep core engaged'] },
+      { id:'sideplank', name:'Side Plank', goal:'Stability', body:'Core', difficulty:'Medium', met:3, icon:'icons/sideplank.png',
+        howTo:['Lie on side','Prop on elbow','Lift hips keeping straight line'] },
+      { id:'farmerwalk', name:'Farmer\'s Walk', goal:'Strength', body:'Full', difficulty:'Medium', met:4, icon:'icons/farmer.png',
+        howTo:['Hold heavy weights','Walk upright for distance/time'] },
+      { id:'inclinebench', name:'Incline Bench', goal:'Strength', body:'Upper', difficulty:'Medium', met:6, icon:'icons/incline.png',
+        howTo:['Set bench incline','Press bar/dumbbells up','Lower with control'] },
+      { id:'hammercurl', name:'Hammer Curl', goal:'Strength', body:'Upper', difficulty:'Easy', met:3, icon:'icons/hammer.png',
+        howTo:['Hold dumbbells neutral','Curl with elbows fixed','Lower slowly'] }
+    ];
 
-function showModal(name,how,cal,calOnly=false){
-  if(calOnly){
-    modalContent.innerHTML=`<h3>${name} — Calories Estimator</h3><p>Estimated calories burned per minute: <b>${cal}</b> kcal</p>`;
-  }else{
-    modalContent.innerHTML=`<h3>${name} — How to do</h3><p>${how}</p><p>Estimated calories burned per min: <b>${cal}</b> kcal</p>`;
-  }
-  modal.style.display='flex';
-}
+    // ---------- Render & UI ----------
+    const exerciseList = document.getElementById('exerciseList');
+    const searchInput = document.getElementById('searchInput');
+    const filterGoal = document.getElementById('filterGoal');
+    const filterBody = document.getElementById('filterBody');
+    const resultCount = document.getElementById('resultCount');
 
-// Filters
-document.getElementById('filterGoal').onchange=renderExercises;
-document.getElementById('filterBody').onchange=renderExercises;
+    function renderExercises(list) {
+      exerciseList.innerHTML = '';
+      if (!list.length) {
+        exerciseList.innerHTML = '<div class="notice">No exercises match your search/filters.</div>';
+        resultCount.textContent = '0';
+        return;
+      }
+      resultCount.textContent = list.length;
+      list.forEach(ex=>{
+        const card = document.createElement('div');
+        card.className = 'exercise-card fade-in';
+        card.innerHTML = `
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <img class="exercise-icon" src="${ex.icon}" alt="${ex.name}" onerror="this.onerror=null;this.src='icons/placeholder.png'">
+            <div style="flex:1">
+              <h3 style="margin:0 0 6px">${ex.name}</h3>
+              <div class="meta">${ex.goal} | Body: ${ex.body} | ${ex.difficulty}</div>
+              <div class="card-actions">
+                <button class="btn" data-action="howto" data-id="${ex.id}">How To</button>
+                <button class="btn secondary" data-action="calories" data-id="${ex.id}">Calories Estimator</button>
+                <div style="margin-left:auto" class="pill">MET ${ex.met}</div>
+              </div>
+            </div>
+          </div>
+        `;
+        exerciseList.appendChild(card);
+      });
+      triggerFadeIn();
+    }
 
-window.addEventListener('load',renderExercises);
-</script>
+    // initial full render
+    renderExercises(EXERCISES);
 
+    // --- filtering & search ---
+    function applyFilters(){
+      const q = searchInput.value.trim().toLowerCase();
+      const g = filterGoal.value;
+      const b = filterBody.value;
+      const filtered = EXERCISES.filter(ex=>{
+        if (g !== 'All' && ex.goal !== g) return false;
+        if (b !== 'All' && ex.body !== b) return false;
+        if (q && !(ex.name.toLowerCase().includes(q) || (ex.goal + ' ' + ex.body).toLowerCase().includes(q))) return false;
+        return true;
+      });
+      renderExercises(filtered);
+    }
+
+    searchInput.addEventListener('input', ()=> applyFilters());
+    filterGoal.addEventListener('change', ()=> applyFilters());
+    filterBody.addEventListener('change', ()=> applyFilters());
+
+    // --- delegate card buttons (How To, Calories) ---
+    exerciseList.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      const ex = EXERCISES.find(x => x.id === id);
+      if (!ex) return;
+
+      if (action === 'howto') {
+        const steps = ex.howTo.map((s,i)=>`<li>${s}</li>`).join('');
+        createModal({
+          title: ex.name + ' — How to',
+          content: `<ol style="margin:0 0 10px 18px">${steps}</ol><p class="muted small">Difficulty: ${ex.difficulty}</p>`,
+          buttons: [{ text:'Close', class:'primary' }]
+        });
+      } else if (action === 'calories') {
+        // open a small estimator modal (weight in kg + duration)
+        const content = `
+          <div>
+            <label>Bodyweight (kg)</label>
+            <input id="estWeight" type="number" placeholder="e.g. 70" style="width:100%;margin-top:6px;margin-bottom:10px">
+            <label>Duration (minutes)</label>
+            <input id="estMinutes" type="number" placeholder="e.g. 30" style="width:100%;margin-top:6px;margin-bottom:10px">
+            <div class="muted small">MET value for ${ex.name}: <strong>${ex.met}</strong></div>
+          </div>
+        `;
+        createModal({
+          title: `${ex.name} — Calories Estimator`,
+          content,
+          buttons: [
+            { text:'Estimate', class:'primary', callback: ()=>{
+                const w = parseFloat(document.getElementById('estWeight').value);
+                const m = parseFloat(document.getElementById('estMinutes').value);
+                if (!w || !m) { showToast('Please enter weight and minutes', 'error'); return; }
+                // kcal/min = (MET * weight_kg * 3.5) / 200
+                const kcalPerMin = (ex.met * w * 3.5) / 200;
+                const total = Math.round(kcalPerMin * m);
+                createModal({ title:'Estimate Result', content:`<p><strong>Estimated calories burned:</strong> ${total} kcal</p><p class="muted small">Estimate uses MET lookup; actual burn varies.</p>`, buttons:[{text:'OK', class:'primary'}]});
+            } },
+            { text:'Close', class:'secondary' }
+          ]
+        });
+      }
+    });
+
+    // accessibility: focus search on load
+    window.addEventListener('load', ()=> { try{ searchInput.focus(); } catch(e){} });
+
+  })();
+  </script>
 </body>
-        </html>
-  
+</html>
