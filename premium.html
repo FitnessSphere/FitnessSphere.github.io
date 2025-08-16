@@ -6,6 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Fitness Sphere — Premium</title>
   <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .grid.features { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:20px; margin-top:20px; }
+    .card { border:2px solid #ddd; border-radius:10px; padding:16px; background:#fff; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card:hover { transform:translateY(-4px); box-shadow:0 4px 10px rgba(0,0,0,0.08); }
+    .mt-2 { margin-top:12px; }
+    .mt-3 { margin-top:20px; }
+    .notice { font-size:0.9em; color:#555; background:#f5f5f5; border-left:4px solid #ccc; padding:10px; border-radius:6px; }
+    input { padding:8px 10px; border-radius:5px; border:1px solid #ccc; }
+  </style>
 </head>
 <body>
   <nav class="nav">
@@ -16,7 +25,7 @@
         <a class="link" href="weight-loss.html">Weight Loss</a>
         <a class="link" href="weight-gain.html">Weight Gain</a>
         <a class="link" href="exercises.html">Exercises</a>
-        <a class="link" href="premium.html">Premium</a>
+        <a class="link active" href="premium.html">Premium</a>
       </div>
       <button class="btn secondary" data-menu-btn>Menu</button>
     </div>
@@ -24,37 +33,88 @@
 
   <main class="container section">
     <h1>Premium — Convenience Upgrades</h1>
-    <p class="lead">Core features remain free. Premium adds one-tap conveniences and deeper insights.</p>
+    <p class="lead">Core features remain free. Premium adds one-tap conveniences and smarter insights without unlocking paid content.</p>
 
     <div class="grid features">
       <div class="card">
-        <h3>Photo → Calories</h3>
-        <p>Upload a meal photo for a quick estimate (server AI). Manual tracking stays free.</p>
+        <h3>Quick Meal Input</h3>
+        <p>Save favorite meals and auto-fill calories for faster tracking.</p>
       </div>
       <div class="card">
-        <h3>Advanced Reports</h3>
-        <p>Monthly summaries, macro balance trends, export to CSV (planned).</p>
+        <h3>Persistent Settings</h3>
+        <p>Your preferred mode, bulk type, and activity levels are saved across visits.</p>
       </div>
       <div class="card">
-        <h3>Barcode Scan</h3>
-        <p>Fast packaged-food lookup (planned).</p>
+        <h3>Hints & Tips</h3>
+        <p>Inline suggestions for weight tracking, exercises, and macros without unlocking content.</p>
+      </div>
+      <div class="card">
+        <h3>UI Shortcuts</h3>
+        <p>One-click toggles for fast/clean bulk, calculator, and tracker views.</p>
+      </div>
+      <div class="card">
+        <h3>Enhanced Reports (Preview)</h3>
+        <p>See simplified summaries of weekly calories and activity trends. Full exports stay free.</p>
+      </div>
+      <div class="card">
+        <h3>Demo Only Unlock</h3>
+        <p>Try premium features temporarily on this browser. Nothing paid is unlocked.</p>
       </div>
     </div>
 
     <div class="card mt-3">
       <h3>Try Premium (Demo on this device)</h3>
       <form id="unlockForm" class="grid" style="grid-template-columns: 1fr 160px;">
-        <input id="code" placeholder="Enter code DEMO123 to unlock here"/>
+        <input id="code" placeholder="Enter code DEMO123 to unlock"/>
         <button class="btn">Unlock</button>
       </form>
       <button id="resetPremium" class="btn secondary mt-2">Reset to Free</button>
-      <div id="unlockStatus" class="notice mt-2">This demo unlocks premium on your browser only (no payments).</div>
+      <div id="unlockStatus" class="notice mt-2">This demo unlocks premium conveniences in this browser only (no payments).</div>
     </div>
 
-    <div class="notice mt-3">When you’re ready for real payments, connect Stripe Checkout via Netlify Functions or any backend.</div>
+    <div class="notice mt-3">For real payments, connect Stripe Checkout or any backend. Core features remain free.</div>
   </main>
 
   <script src="app.js"></script>
-  <script src="premium.js"></script>
+  <script>
+    // ---------- PREMIUM DEMO LOGIC ----------
+    const unlockForm = document.getElementById('unlockForm');
+    const resetBtn = document.getElementById('resetPremium');
+    const unlockStatus = document.getElementById('unlockStatus');
+
+    function setPremiumDemo(state){
+      if(state){
+        localStorage.setItem('premium_demo','true');
+        unlockStatus.textContent = "Premium demo enabled! Convenience features active here.";
+        unlockStatus.style.borderColor="#4caf50";
+      } else {
+        localStorage.removeItem('premium_demo');
+        unlockStatus.textContent = "Premium demo disabled. You're on free mode.";
+        unlockStatus.style.borderColor="#ccc";
+      }
+    }
+
+    unlockForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const code = document.getElementById('code').value.trim();
+      if(code === 'DEMO123'){
+        setPremiumDemo(true);
+      } else {
+        unlockStatus.textContent = "Incorrect code. Try DEMO123.";
+        unlockStatus.style.borderColor="#f44336";
+      }
+      document.getElementById('code').value='';
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      setPremiumDemo(false);
+    });
+
+    // Restore on load
+    window.onload = ()=>{
+      if(localStorage.getItem('premium_demo')==='true') setPremiumDemo(true);
+    };
+  </script>
 </body>
-</html>
+  </html>
+                                                                                  
