@@ -13,9 +13,7 @@
     body {
       transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .section {
-      margin-bottom: 40px;
-    }
+    .section { margin-bottom: 40px; }
     .tracker-card {
       border: 2px solid var(--theme-color);
       border-radius: 8px;
@@ -24,44 +22,28 @@
       background: #fff;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
-    .mode-toggle {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
+    .mode-toggle { display: flex; gap: 10px; margin-bottom: 15px; }
     .mode-toggle button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      flex: 1; padding: 10px; border: none; cursor: pointer;
+      font-weight: bold; transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .mode-toggle .active {
-      background-color: var(--theme-color);
-      color: white;
-    }
-    .read-more {
-      color: var(--theme-color);
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .mode-toggle .active { background-color: var(--theme-color); color: white; }
+    .read-more { color: var(--theme-color); cursor: pointer; font-weight: bold; }
+    .fade-in { opacity: 0; transform: translateY(20px); }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
     .note {
-      background-color: #fff3cd;
-      border: 1px solid #ffeeba;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      font-size: 0.9em;
-      color: #856404;
+      background-color: #fff3cd; border: 1px solid #ffeeba;
+      padding: 10px; border-radius: 5px; margin-top: 10px;
+      font-size: 0.9em; color: #856404;
+    }
+    .calc-card {
+      border: 2px solid var(--theme-color);
+      border-radius: 8px; padding: 15px; background: #fff;
+      margin-top: 20px;
+    }
+    .calc-card input, .calc-card select {
+      width: 100%; padding: 8px; margin-bottom: 10px;
+      border: 1px solid #ddd; border-radius: 5px;
     }
   </style>
 </head>
@@ -108,6 +90,33 @@
     </section>
 
     <section id="trackerContainer" class="fade-in"></section>
+
+    <section class="fade-in">
+      <h2>Calorie Surplus Calculator</h2>
+      <p>Use this calculator to estimate how many calories you need to eat above your maintenance level to gain weight effectively.</p>
+      <div class="calc-card">
+        <input id="wg_weight" type="number" placeholder="Weight (kg)">
+        <input id="wg_height" type="number" placeholder="Height (cm)">
+        <input id="wg_age" type="number" placeholder="Age (years)">
+        <select id="wg_gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <select id="wg_activity">
+          <option value="1.2">Sedentary (little exercise)</option>
+          <option value="1.375">Lightly active</option>
+          <option value="1.55">Moderately active</option>
+          <option value="1.725">Very active</option>
+          <option value="1.9">Extra active</option>
+        </select>
+        <select id="wg_goal">
+          <option value="0.25">+0.25 kg/week (slow gain)</option>
+          <option value="0.5">+0.5 kg/week (moderate gain)</option>
+          <option value="1">+1 kg/week (fast gain)</option>
+        </select>
+        <button class="btn" id="wg_calcBtn">Calculate</button>
+      </div>
+    </section>
 
     <section class="fade-in">
       <h2>Extra Tips for Weight Gain</h2>
@@ -166,7 +175,6 @@
     const fastBtn = document.getElementById('fastBulkBtn');
     const readMore = document.getElementById('readMoreToggle');
     const fullDesc = document.getElementById('bulkDescFull');
-    const shortDesc = document.getElementById('bulkDescShort');
     const cautionBox = document.getElementById('fastBulkCaution');
 
     cleanBtn.onclick = () => {
@@ -212,6 +220,48 @@
       if (readState === 'open') readMore.click();
       triggerFadeIn();
     };
+
+    // --- Surplus Calculator ---
+    document.getElementById('wg_calcBtn').onclick = () => {
+      const w = parseFloat(document.getElementById('wg_weight').value);
+      const h = parseFloat(document.getElementById('wg_height').value);
+      const a = parseInt(document.getElementById('wg_age').value);
+      const g = document.getElementById('wg_gender').value;
+      const act = parseFloat(document.getElementById('wg_activity').value);
+      const goal = parseFloat(document.getElementById('wg_goal').value);
+
+      if(!w || !h || !a){ showToast("Please fill all fields", "error"); return; }
+
+      let bmr = g === 'male'
+        ? 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a)
+        : 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
+
+      let tdee = bmr * act;
+      let surplus = goal * 7700 / 7; // kcal/day per kg/week
+      let targetCalories = tdee + surplus;
+
+      localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,goal}));
+
+      showModal("Calorie Surplus Result", `
+        <p><strong>BMR:</strong> ${Math.round(bmr)} kcal/day</p>
+        <p><strong>TDEE:</strong> ${Math.round(tdee)} kcal/day</p>
+        <p><strong>Required Calories for Goal:</strong> ${Math.round(targetCalories)} kcal/day</p>
+        <p class="note">A calorie surplus means eating more calories than your body burns. This fuels muscle growth and weight gain. Choose a gain rate that matches your comfort and training intensity.</p>
+      `);
+    };
+
+    // Restore calc values
+    const saved = localStorage.getItem('wg_calc');
+    if(saved){
+      const d = JSON.parse(saved);
+      document.getElementById('wg_weight').value = d.w;
+      document.getElementById('wg_height').value = d.h;
+      document.getElementById('wg_age').value = d.a;
+      document.getElementById('wg_gender').value = d.g;
+      document.getElementById('wg_activity').value = d.act;
+      document.getElementById('wg_goal').value = d.goal;
+    }
   </script>
 </body>
-</html>
+      </html>
+      
