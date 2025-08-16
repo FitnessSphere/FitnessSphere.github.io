@@ -5,103 +5,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calories & Nutrition Hub</title>
+<link rel="stylesheet" href="../css/styles.css">
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f0f4f8;
-    }
-    header {
-        background: linear-gradient(90deg, #28a745, #20c997);
-        color: white;
-        padding: 20px 10px;
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-    }
-    nav {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        background-color: #fff;
-        padding: 10px 0;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    nav a {
-        text-decoration: none;
-        color: #28a745;
-        font-weight: bold;
-    }
-    nav a:hover {
-        color: #20c997;
-    }
-    .container {
-        max-width: 900px;
-        margin: 20px auto;
-        padding: 0 15px;
-    }
-    .card {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-    h2 {
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 22px;
-    }
-    label {
-        display: block;
-        margin: 10px 0 5px;
-    }
-    input, select, button {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        margin-bottom: 10px;
-    }
-    button {
-        background-color: #28a745;
-        color: white;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #20c997;
-    }
-    .result {
-        background-color: #e9f7ef;
-        padding: 15px;
-        border-radius: 5px;
-        margin-top: 10px;
-        font-weight: bold;
-        color: #155724;
-    }
-    .toggle-content {
-        display: none;
-        margin-top: 10px;
-        background-color: #f8f9fa;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 14px;
-    }
-    .toggle-btn {
-        background: none;
-        border: none;
-        color: #007bff;
-        cursor: pointer;
-        padding: 0;
-        margin: 5px 0;
-        font-size: 14px;
-    }
-    .tips ul {
-        padding-left: 20px;
-    }
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0; padding: 0;
+    background-color: #f0f4f8;
+  }
+  header {
+    background: linear-gradient(90deg, #28a745, #20c997);
+    color: white;
+    padding: 20px 10px;
+    text-align: center;
+    font-size: 24px; font-weight: bold;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background-color: #fff;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky; top:0; z-index: 10;
+  }
+  nav a {
+    text-decoration: none;
+    color: #28a745;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+  nav a:hover {
+    background-color: #e6f4ea;
+    color: #20c997;
+  }
+  .container {
+    max-width: 950px;
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  .card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .card-header {
+    padding: 15px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-body {
+    padding: 20px;
+  }
+  input, select, button {
+    width: 100%; padding: 10px; margin-bottom: 12px;
+    border-radius: 6px; border: 1px solid #ccc;
+    transition: 0.2s;
+  }
+  input:focus, select:focus { outline:none; border-color: #28a745; box-shadow: 0 0 5px #28a745; }
+  button {
+    background-color: #28a745; color: white;
+    font-weight: bold; border:none; cursor:pointer;
+    transition: 0.3s;
+  }
+  button:hover { background-color: #20c997; }
+  .result {
+    background: linear-gradient(90deg,#e9f7ef,#d4f1e1);
+    padding: 15px; border-radius: 6px; margin-top:10px;
+    font-weight: bold; color:#155724;
+  }
+  .toggle-btn {
+    background: none; border: none; color: #007bff;
+    cursor: pointer; font-size: 14px; padding: 0;
+  }
+  .toggle-content { display: none; margin-top: 10px; font-size: 14px; }
+  .fade-in { opacity:0; transform: translateY(15px); transition: 0.5s; }
+  .fade-in.visible { opacity:1; transform: translateY(0); }
 </style>
 </head>
 <body>
@@ -109,248 +96,220 @@
 <header>Calories & Nutrition Hub</header>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="weightgain.html">Weight Gain</a>
-    <a href="weightloss.html">Weight Loss</a>
+  <a href="../index.html">Home</a>
+  <a href="weightgain.html">Weight Gain</a>
+  <a href="weightloss.html">Weight Loss</a>
+  <a href="calories.html">Calories</a>
+  <a href="exercises.html">Exercises</a>
+  <a href="premium.html">Premium</a>
 </nav>
 
 <div class="container">
 
-    <!-- BMR & TDEE Calculator -->
-    <div class="card">
-        <h2>💪 BMR & TDEE Calculator</h2>
-        <label for="weight">Weight (kg):</label>
-        <input type="number" id="weight" placeholder="Enter your weight">
-        <label for="height">Height (cm):</label>
-        <input type="number" id="height" placeholder="Enter your height">
-        <label for="age">Age (years):</label>
-        <input type="number" id="age" placeholder="Enter your age">
-        <label for="gender">Gender:</label>
-        <select id="gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select>
-        <label for="activity">Activity Level:</label>
-        <select id="activity">
-            <option value="1.2">Sedentary</option>
-            <option value="1.375">Lightly active</option>
-            <option value="1.55">Moderately active</option>
-            <option value="1.725">Very active</option>
-            <option value="1.9">Extra active</option>
-        </select>
-        <button onclick="calculateCalories()">Calculate</button>
-        <div class="result" id="result"></div>
+  <!-- BMR & TDEE Calculator -->
+  <div class="card fade-in">
+    <div class="card-header" style="background: linear-gradient(90deg,#28a745,#20c997);">💪 BMR & TDEE Calculator</div>
+    <div class="card-body">
+      <label for="weight">Weight (kg):</label>
+      <input type="number" id="weight" placeholder="Enter your weight">
+      <label for="height">Height (cm):</label>
+      <input type="number" id="height" placeholder="Enter your height">
+      <label for="age">Age (years):</label>
+      <input type="number" id="age" placeholder="Enter your age">
+      <label for="gender">Gender:</label>
+      <select id="gender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <label for="activity">Activity Level:</label>
+      <select id="activity">
+        <option value="1.2">Sedentary</option>
+        <option value="1.375">Lightly active</option>
+        <option value="1.55">Moderately active</option>
+        <option value="1.725">Very active</option>
+        <option value="1.9">Extra active</option>
+      </select>
+      <button id="calcBtn">Calculate</button>
+      <div class="result" id="result"></div>
     </div>
+  </div>
 
-    <!-- Macronutrient Breakdown -->
-    <div class="card">
-        <h2>🍽️ Macronutrient Breakdown</h2>
-        <p>Based on your calculated calories, get your recommended grams of protein, carbs, and fats.</p>
-        <button onclick="calculateMacros()">Show Macronutrients</button>
-        <div class="result" id="macrosResult"></div>
+  <!-- Macronutrient Breakdown -->
+  <div class="card fade-in">
+    <div class="card-header" style="background: linear-gradient(90deg,#ff9800,#ffb74d);">🍽️ Macronutrient Breakdown</div>
+    <div class="card-body">
+      <button id="macroBtn">Show Macronutrients</button>
+      <div class="result" id="macrosResult"></div>
     </div>
+  </div>
 
-    <!-- BMI Calculator -->
-    <div class="card">
-        <h2>⚖️ BMI Calculator</h2>
-        <label for="bmiWeight">Weight (kg):</label>
-        <input type="number" id="bmiWeight" placeholder="Enter your weight">
-        <label for="bmiHeight">Height (cm):</label>
-        <input type="number" id="bmiHeight" placeholder="Enter your height">
-        <button onclick="calculateBMI()">Calculate BMI</button>
-        <div class="result" id="bmiResult"></div>
+  <!-- BMI Calculator -->
+  <div class="card fade-in">
+    <div class="card-header" style="background: linear-gradient(90deg,#ff5722,#ff7043);">⚖️ BMI Calculator</div>
+    <div class="card-body">
+      <label for="bmiWeight">Weight (kg):</label>
+      <input type="number" id="bmiWeight" placeholder="Enter your weight">
+      <label for="bmiHeight">Height (cm):</label>
+      <input type="number" id="bmiHeight" placeholder="Enter your height">
+      <button id="bmiBtn">Calculate BMI</button>
+      <div class="result" id="bmiResult"></div>
     </div>
+  </div>
 
-    <!-- Water Intake Calculator -->
-    <div class="card">
-        <h2>💧 Daily Water Intake</h2>
-        <label for="waterWeight">Weight (kg):</label>
-        <input type="number" id="waterWeight" placeholder="Enter your weight">
-        <button onclick="calculateWater()">Calculate Water Intake</button>
-        <div class="result" id="waterResult"></div>
+  <!-- Water Intake -->
+  <div class="card fade-in">
+    <div class="card-header" style="background: linear-gradient(90deg,#03a9f4,#29b6f6);">💧 Daily Water Intake</div>
+    <div class="card-body">
+      <label for="waterWeight">Weight (kg):</label>
+      <input type="number" id="waterWeight" placeholder="Enter your weight">
+      <button id="waterBtn">Calculate Water Intake</button>
+      <div class="result" id="waterResult"></div>
     </div>
+  </div>
 
-    <!-- Meal Plan Generator -->
-    <div class="card">
-        <h2>🥗 Daily Meal Plan Generator</h2>
-        <p>Select your preference and generate a sample meal plan based on your maintenance calories.</p>
-
-        <label for="dietType">Diet Preference:</label>
-        <select id="dietType">
-            <option value="veg">Vegetarian</option>
-            <option value="nonveg">Non-Vegetarian</option>
-        </select>
-
-        <button onclick="generateMealPlan()">Generate Meal Plan</button>
-        <div class="result" id="mealPlanResult"></div>
-        <button id="copyMealBtn" style="display:none; margin-top:10px;" onclick="copyMealPlan()">Copy Meal Plan</button>
+  <!-- Meal Plan Generator -->
+  <div class="card fade-in">
+    <div class="card-header" style="background: linear-gradient(90deg,#9c27b0,#ba68c8);">🥗 Daily Meal Plan Generator</div>
+    <div class="card-body">
+      <label for="dietType">Diet Preference:</label>
+      <select id="dietType">
+        <option value="veg">Vegetarian</option>
+        <option value="nonveg">Non-Vegetarian</option>
+      </select>
+      <button id="mealBtn">Generate Meal Plan</button>
+      <div class="result" id="mealPlanResult" style="white-space: pre-wrap;"></div>
+      <button id="copyMealBtn" style="display:none; margin-top:10px;">Copy Meal Plan</button>
     </div>
+  </div>
 
-    <!-- Tips Section -->
-    <div class="card tips">
-        <h2>📌 Nutrition & Calorie Tips</h2>
-        <button class="toggle-btn" onclick="toggleTips()">Read more</button>
-        <div class="toggle-content" id="tipsContent">
-            <ul>
-                <li>Eat balanced meals with protein, carbs, and healthy fats.</li>
-                <li>Track your daily calories to ensure you meet your goals.</li>
-                <li>Stay hydrated; drink at least 2–3 liters of water daily.</li>
-                <li>Adjust calories gradually for sustainable weight loss or gain.</li>
-                <li>Include fiber-rich foods for better digestion and satiety.</li>
-                <li>Include lean protein sources such as eggs, fish, chicken, paneer, or legumes.</li>
-                <li>Distribute meals evenly throughout the day for better energy management.</li>
-            </ul>
-        </div>
+  <!-- Tips Section -->
+  <div class="card fade-in">
+    <div class="card-header" style="background: linear-gradient(90deg,#ff4081,#f06292);">📌 Nutrition & Calorie Tips</div>
+    <div class="card-body">
+      <button class="toggle-btn" id="tipsBtn">Read more</button>
+      <div class="toggle-content" id="tipsContent">
+        <ul>
+          <li>Eat balanced meals with protein, carbs, and healthy fats.</li>
+          <li>Track your daily calories to ensure you meet your goals.</li>
+          <li>Stay hydrated; drink at least 2–3 liters of water daily.</li>
+          <li>Adjust calories gradually for sustainable weight loss or gain.</li>
+          <li>Include fiber-rich foods for better digestion and satiety.</li>
+          <li>Include lean protein sources such as eggs, fish, chicken, paneer, or legumes.</li>
+          <li>Distribute meals evenly throughout the day for better energy management.</li>
+        </ul>
+      </div>
     </div>
+  </div>
 
 </div>
 
+<script src="../js/ui.js"></script>
 <script>
-function calculateCalories() {
-    let weight = parseFloat(document.getElementById('weight').value);
-    let height = parseFloat(document.getElementById('height').value);
-    let age = parseFloat(document.getElementById('age').value);
-    let gender = document.getElementById('gender').value;
-    let activity = parseFloat(document.getElementById('activity').value);
+  // Smooth fade-in for all cards
+  window.addEventListener('load',()=>document.querySelectorAll('.fade-in').forEach(el=>setTimeout(()=>el.classList.add('visible'),100)));
 
-    if(!weight || !height || !age) {
-        alert("Please fill all fields!");
-        return;
+  // Toast helpers from ui.js
+  function showError(msg){ showToast(msg,'error'); }
+  function showSuccess(msg){ showToast(msg,'success'); }
+
+  // Calories
+  document.getElementById('calcBtn').onclick=()=>{
+    let w=parseFloat(document.getElementById('weight').value);
+    let h=parseFloat(document.getElementById('height').value);
+    let a=parseInt(document.getElementById('age').value);
+    let g=document.getElementById('gender').value;
+    let act=parseFloat(document.getElementById('activity').value);
+    if(!w||!h||!a){ showError("Please fill all fields!"); return; }
+    let bmr=(g==='male')? (10*w + 6.25*h -5*a +5):(10*w+6.25*h-5*a-161);
+    let tdee=Math.round(bmr*act);
+    let deficit=tdee-500, surplus=tdee+500;
+    window.latestCalories=tdee;
+    document.getElementById('result').innerHTML=`Maintenance Calories: <b>${tdee} kcal</b><br>Calories for Weight Loss: <b>${deficit} kcal</b><br>Calories for Weight Gain: <b>${surplus} kcal</b>`;
+  };
+
+  // Macros
+  document.getElementById('macroBtn').onclick=()=>{
+    if(!window.latestCalories){ showError("Calculate calories first!"); return; }
+    let cal=window.latestCalories;
+    let p=Math.round(cal*0.3/4), c=Math.round(cal*0.45/4), f=Math.round(cal*0.25/9);
+    document.getElementById('macrosResult').innerHTML=`Protein: <b>${p} g</b><br>Carbs: <b>${c} g</b><br>Fats: <b>${f} g</b>`;
+  };
+
+  // BMI
+  document.getElementById('bmiBtn').onclick=()=>{
+    let w=parseFloat(document.getElementById('bmiWeight').value);
+    let h=parseFloat(document.getElementById('bmiHeight').value)/100;
+    if(!w||!h){ showError("Please fill all fields!"); return; }
+    let bmi=(w/(h*h)).toFixed(1);
+    let cat=bmi<18.5?'Underweight':bmi<24.9?'Normal weight':bmi<29.9?'Overweight':'Obese';
+    document.getElementById('bmiResult').innerHTML=`BMI: <b>${bmi}</b> (${cat})`;
+  };
+
+  // Water Intake
+  document.getElementById('waterBtn').onclick=()=>{
+    let w=parseFloat(document.getElementById('waterWeight').value);
+    if(!w){ showError("Please enter weight!"); return; }
+    let water=(w*35/1000).toFixed(1);
+    document.getElementById('waterResult').innerHTML=`Recommended Water Intake: <b>${water} L/day</b>`;
+  };
+
+  // Meal Plan
+  document.getElementById('mealBtn').onclick=()=>{
+    if(!window.latestCalories){ showError("Calculate calories first!"); return; }
+    let cal=window.latestCalories, diet=document.getElementById('dietType').value;
+    let breakfast=Math.round(cal*0.25), lunch=Math.round(cal*0.35), dinner=Math.round(cal*0.3), snacks=Math.round(cal*0.1);
+    let meal='';
+    if(diet==='veg'){
+      meal=`Breakfast (~${breakfast} kcal):
+- Oats with milk, banana, nuts
+- 1 glass fresh juice
+
+Lunch (~${lunch} kcal):
+- 2-3 chapatis + veg curry
+- 1 cup dal
+- Salad
+
+Dinner (~${dinner} kcal):
+- Veg pulao + paneer curry
+- 1 bowl curd
+
+Snacks (~${snacks} kcal):
+- Nuts or roasted chickpeas
+- 1 fruit`;
+    }else{
+      meal=`Breakfast (~${breakfast} kcal):
+- Eggs (2-3) + toast
+- 1 glass milk
+
+Lunch (~${lunch} kcal):
+- Grilled chicken/fish + rice/chapati
+- 1 cup dal (optional)
+- Salad
+
+Dinner (~${dinner} kcal):
+- Chicken/fish curry + rice/chapati
+- 1 bowl curd
+
+Snacks (~${snacks} kcal):
+- Nuts or roasted chickpeas
+- 1 fruit`;
     }
+    document.getElementById('mealPlanResult').innerText=meal;
+    document.getElementById('copyMealBtn').style.display='block';
+  };
 
-    let bmr = (gender === "male") ? (10*weight + 6.25*height - 5*age + 5) : (10*weight + 6.25*height - 5*age - 161);
-    let tdee = Math.round(bmr * activity);
-    let deficit = tdee - 500;
-    let surplus = tdee + 500;
+  document.getElementById('copyMealBtn').onclick=()=>{
+    let meal=document.getElementById('mealPlanResult').innerText;
+    navigator.clipboard.writeText(meal).then(()=>showSuccess("Meal plan copied!")).catch(()=>showError("Failed to copy."));
+  };
 
-    document.getElementById('result').innerHTML = `
-        Maintenance Calories: <b>${tdee} kcal</b><br>
-        Calories for Weight Loss: <b>${deficit} kcal</b><br>
-        Calories for Weight Gain: <b>${surplus} kcal</b>
-    `;
-    window.latestCalories = tdee;
-}
-
-function calculateMacros() {
-    if(!window.latestCalories) {
-        alert("Please calculate calories first!");
-        return;
-    }
-    let protein = Math.round(window.latestCalories * 0.3 / 4);
-    let carbs = Math.round(window.latestCalories * 0.45 / 4);
-    let fats = Math.round(window.latestCalories * 0.25 / 9);
-    document.getElementById('macrosResult').innerHTML = `
-        Protein: <b>${protein} g</b><br>
-        Carbs: <b>${carbs} g</b><br>
-        Fats: <b>${fats} g</b>
-    `;
-}
-
-function calculateBMI() {
-    let weight = parseFloat(document.getElementById('bmiWeight').value);
-    let height = parseFloat(document.getElementById('bmiHeight').value) / 100;
-    if(!weight || !height) {
-        alert("Please fill all fields!");
-        return;
-    }
-    let bmi = (weight / (height * height)).toFixed(1);
-    let category = '';
-    if(bmi < 18.5) category = 'Underweight';
-    else if(bmi < 24.9) category = 'Normal weight';
-    else if(bmi < 29.9) category = 'Overweight';
-    else category = 'Obese';
-    document.getElementById('bmiResult').innerHTML = `BMI: <b>${bmi}</b> (${category})`;
-}
-
-function calculateWater() {
-    let weight = parseFloat(document.getElementById('waterWeight').value);
-    if(!weight) {
-        alert("Please enter weight!");
-        return;
-    }
-    let water = (weight * 35 / 1000).toFixed(1);
-    document.getElementById('waterResult').innerHTML = `Recommended Water Intake: <b>${water} L/day</b>`;
-}
-
-function generateMealPlan() {
-    if(!window.latestCalories) {
-        alert("Please calculate calories first!");
-        return;
-    }
-    let calories = window.latestCalories;
-    let diet = document.getElementById('dietType').value;
-
-    let breakfastCalories = Math.round(calories * 0.25);
-    let lunchCalories = Math.round(calories * 0.35);
-    let dinnerCalories = Math.round(calories * 0.3);
-    let snacksCalories = Math.round(calories * 0.1);
-
-    let mealPlan = "";
-
-    if(diet === "veg") {
-        mealPlan = `
-Breakfast (~${breakfastCalories} kcal):
-- Oats with milk, banana, and nuts
-- 1 glass of fresh orange juice
-
-Lunch (~${lunchCalories} kcal):
-- 2-3 chapatis with mixed vegetable curry
-- 1 cup dal/lentils
-- Salad of cucumber, tomato, carrot
-
-Dinner (~${dinnerCalories} kcal):
-- Vegetable pulao or rice with paneer curry
-- 1 bowl of curd or raita
-
-Snacks (~${snacksCalories} kcal):
-- Handful of nuts or roasted chickpeas
-- 1 fruit like apple or papaya
-        `;
-    } else {
-        mealPlan = `
-Breakfast (~${breakfastCalories} kcal):
-- Eggs (2-3) with toast
-- 1 glass of milk
-
-Lunch (~${lunchCalories} kcal):
-- Grilled chicken or fish with rice/chapati
-- 1 cup dal/lentils (optional)
-- Salad of cucumber, tomato, carrot
-
-Dinner (~${dinnerCalories} kcal):
-- Chicken curry or fish curry with rice or chapati
-- 1 bowl of curd or raita
-
-Snacks (~${snacksCalories} kcal):
-- Handful of nuts or roasted chickpeas
-- 1 fruit like apple or banana
-        `;
-    }
-
-    document.getElementById('mealPlanResult').innerHTML = mealPlan.replace(/\n/g, "<br>");
-    document.getElementById('copyMealBtn').style.display = "block";
-}
-
-function copyMealPlan() {
-    let mealText = document.getElementById('mealPlanResult').innerText;
-    navigator.clipboard.writeText(mealText).then(() => {
-        alert("Meal plan copied to clipboard!");
-    }).catch(() => {
-        alert("Failed to copy. Please try again.");
-    });
-}
-
-function toggleTips() {
-    let content = document.getElementById("tipsContent");
-    let btn = document.querySelector(".toggle-btn");
-    if(content.style.display === "block") {
-        content.style.display = "none";
-        btn.textContent = "Read more";
-    } else {
-        content.style.display = "block";
-        btn.textContent = "Show less";
-    }
-}
+  // Tips toggle
+  document.getElementById('tipsBtn').onclick=()=>{
+    let c=document.getElementById('tipsContent');
+    let b=document.getElementById('tipsBtn');
+    if(c.style.display==='block'){ c.style.display='none'; b.textContent='Read more'; }
+    else{ c.style.display='block'; b.textContent='Show less'; }
+  };
 </script>
 
 </body>
