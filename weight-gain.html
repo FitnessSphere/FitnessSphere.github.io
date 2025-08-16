@@ -3,208 +3,255 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Weight Gain Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weight Gain</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      color: white;
-      background: #121212;
-      transition: background 1s ease, color 1s ease;
       text-align: center;
+      background: #e0e0e0; /* default professional gray */
+      color: #333;
+      transition: background 1s ease, color 1s ease;
     }
 
     header {
       padding: 15px;
-      background: rgba(0,0,0,0.6);
+      background: #444;
+      color: white;
     }
 
     header img {
-      height: 60px;
+      max-height: 50px;
       vertical-align: middle;
     }
 
+    header h1 {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 22px;
+    }
+
     nav {
-      margin-top: 10px;
+      margin: 15px 0;
     }
 
     nav a {
-      color: white;
+      margin: 0 10px;
       text-decoration: none;
+      color: #444;
       font-weight: bold;
-      margin: 0 15px;
       padding: 5px 10px;
-      border-radius: 8px;
-      transition: color 0.5s, background 0.5s;
+      border-radius: 6px;
+      transition: background 0.3s;
     }
 
     nav a:hover {
-      background: rgba(255,255,255,0.2);
+      background: #ddd;
     }
 
-    h1, h2 {
-      margin: 20px 0;
+    h2 {
+      margin-top: 20px;
     }
 
-    .button {
+    .mode-btn {
       display: inline-block;
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 16px;
+      margin: 15px;
+      padding: 12px 20px;
       border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.5s ease;
+      color: white;
+    }
+
+    .mode-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .fast-bulk { background: linear-gradient(135deg, #ff7b54, #ffb347); }
+    .slow-bulk { background: linear-gradient(135deg, #6dd5ed, #2193b0); }
+
+    .calculator {
+      margin: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .calculator input {
+      margin: 10px;
+      padding: 10px;
+      width: 80%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .calc-btn {
+      background: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.5s, color 0.5s, box-shadow 0.5s;
+      transition: background 0.3s ease;
     }
 
-    .task-box {
-      margin: 20px auto;
-      padding: 20px;
-      max-width: 500px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 12px;
-      animation: fadeIn 1s;
+    .calc-btn:hover {
+      background: #1769aa;
     }
 
-    .fade-message {
-      font-size: 18px;
+    .result {
+      margin-top: 15px;
       font-weight: bold;
-      display: none;
-      animation: fadeIn 1s;
+      color: #333;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
 
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
+    .tasks {
+      margin: 30px auto;
+      max-width: 500px;
+      padding: 20px;
+      background: #fafafa;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    /* Animated Gradient Backgrounds */
-    .fast-bulk {
-      background: linear-gradient(270deg, #ff0000, #ff7300, #ffd500);
-      background-size: 600% 600%;
-      animation: gradientShift 10s ease infinite;
+    .task {
+      font-size: 18px;
+      margin: 15px 0;
+      padding: 12px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, opacity 0.5s ease;
     }
 
-    .slow-bulk {
-      background: linear-gradient(270deg, #00c9ff, #00ff9d, #0072ff);
-      background-size: 600% 600%;
-      animation: gradientShift 12s ease infinite;
+    .task.completed {
+      background: #c8e6c9;
+      text-decoration: line-through;
     }
 
-    .dark-mode {
-      background: linear-gradient(270deg, #000000, #3a0ca3, #7209b7);
-      background-size: 600% 600%;
-      animation: gradientShift 15s ease infinite;
+    .motivation {
+      margin-top: 20px;
+      font-size: 18px;
+      font-style: italic;
+      opacity: 0;
+      transition: opacity 1s ease;
     }
 
-    .clean-mode {
-      background: linear-gradient(270deg, #ffffff, #e0e0e0, #f5f5f5);
-      background-size: 600% 600%;
-      color: black;
-      animation: gradientShift 12s ease infinite;
+    @media (max-width: 600px) {
+      nav a {
+        display: block;
+        margin: 8px auto;
+      }
     }
-
-    @keyframes gradientShift {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-
-    /* Mode-specific styles */
-    .fast-bulk .button { background: #ff4500; color: white; box-shadow: 0 0 10px #ff7300; }
-    .slow-bulk .button { background: #00b4d8; color: white; box-shadow: 0 0 10px #00ff9d; }
-    .dark-mode .button { background: #6a0dad; color: white; box-shadow: 0 0 10px #bb86fc; }
-    .clean-mode .button { background: #333; color: white; box-shadow: 0 0 10px #aaa; }
-
-    .fast-bulk nav a { color: #ffd500; }
-    .slow-bulk nav a { color: #00ffcc; }
-    .dark-mode nav a { color: #bb86fc; }
-    .clean-mode nav a { color: #333; }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="Logo">
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="weightgain.html">Weight Gain</a>
-      <a href="weightloss.html">Weight Loss</a>
-    </nav>
-  </header>
 
+<header>
+  <img src="logo.png" alt="Logo">
   <h1>Weight Gain Tracker</h1>
+</header>
 
-  <!-- Mode Buttons -->
-  <div>
-    <button class="button" onclick="setMode('fast-bulk')">Fast Bulk</button>
-    <button class="button" onclick="setMode('slow-bulk')">Slow Bulk</button>
-    <button class="button" onclick="setMode('dark-mode')">Dark Mode</button>
-    <button class="button" onclick="setMode('clean-mode')">Clean Mode</button>
-  </div>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="weightgain.html">Weight Gain</a>
+  <a href="weightloss.html">Weight Loss</a>
+</nav>
 
-  <!-- Daily Task -->
-  <div class="task-box" id="taskBox">
-    <h2>Daily Task</h2>
-    <p id="taskText">Loading...</p>
-    <button class="button" onclick="completeTask()">Complete Task</button>
-    <p class="fade-message" id="taskMessage"></p>
-  </div>
+<h2>Select Your Mode</h2>
+<button class="mode-btn fast-bulk" onclick="setMode('fast')">Fast Bulk</button>
+<button class="mode-btn slow-bulk" onclick="setMode('slow')">Slow Bulk</button>
 
-  <!-- Calorie Surplus Calculator -->
-  <div class="task-box">
-    <h2>Calorie Surplus Calculator</h2>
-    <label>Maintenance Calories: <input type="number" id="maintenance"></label><br><br>
-    <label>Surplus: <input type="number" id="surplus"></label><br><br>
-    <button class="button" onclick="calculateSurplus()">Calculate</button>
-    <p id="result"></p>
-  </div>
+<div class="calculator">
+  <h3>Calorie Surplus Calculator</h3>
+  <input type="number" id="maintenance" placeholder="Enter maintenance calories">
+  <input type="number" id="surplus" placeholder="Enter surplus calories">
+  <button class="calc-btn" onclick="calculateSurplus()">Calculate</button>
+  <div class="result" id="result"></div>
+</div>
 
-  <script>
-    const tasks = [
-      "Eat a calorie surplus meal today.",
-      "Drink 2 protein shakes.",
-      "Do a 45 min strength workout.",
-      "Get at least 8 hours of sleep.",
-      "Track your calories in an app."
-    ];
+<div class="tasks">
+  <h3>Daily Task</h3>
+  <div id="task"></div>
+  <div class="motivation" id="motivation"></div>
+</div>
 
-    let currentDay = 0;
-
-    function loadTask() {
-      if (currentDay < tasks.length) {
-        document.getElementById("taskText").textContent = tasks[currentDay];
-        document.getElementById("taskMessage").style.display = "none";
-      } else {
-        document.getElementById("taskText").textContent = "All tasks completed!";
-      }
+<script>
+  // Modes
+  function setMode(mode) {
+    if (mode === 'fast') {
+      document.body.style.background = "linear-gradient(135deg, #ff7b54, #ffb347)";
+      document.body.style.color = "white";
+    } else {
+      document.body.style.background = "linear-gradient(135deg, #6dd5ed, #2193b0)";
+      document.body.style.color = "white";
     }
+  }
 
-    function completeTask() {
-      const taskText = document.getElementById("taskText");
-      const taskMessage = document.getElementById("taskMessage");
-      taskMessage.textContent = "✅ Task completed!";
-      taskMessage.style.display = "block";
-      taskText.textContent = "";
-      currentDay++;
-      localStorage.setItem("currentDay", currentDay);
+  // Calculator
+  function calculateSurplus() {
+    const maintenance = parseInt(document.getElementById("maintenance").value);
+    const surplus = parseInt(document.getElementById("surplus").value);
+    const resultDiv = document.getElementById("result");
+
+    if (!isNaN(maintenance) && !isNaN(surplus)) {
+      const total = maintenance + surplus;
+      resultDiv.innerHTML = "Your target calories: " + total;
+      resultDiv.style.opacity = 1;
+    } else {
+      resultDiv.innerHTML = "Please enter valid numbers.";
+      resultDiv.style.opacity = 1;
     }
+  }
 
-    function calculateSurplus() {
-      let maintenance = parseInt(document.getElementById("maintenance").value);
-      let surplus = parseInt(document.getElementById("surplus").value);
-      if (!isNaN(maintenance) && !isNaN(surplus)) {
-        document.getElementById("result").textContent = "Your target calories: " + (maintenance + surplus);
-      }
-    }
+  // Daily Tasks
+  const tasks = [
+    "Eat 5 nutrient-rich meals today",
+    "Add an extra protein snack",
+    "Drink 3 liters of water",
+    "Do a 20-min strength workout",
+    "Track your calories honestly",
+    "Get 8 hours of sleep",
+    "Add healthy fats to your meals"
+  ];
 
-    function setMode(mode) {
-      document.body.className = mode;
-    }
+  const motivations = [
+    "Keep pushing, progress takes time!",
+    "Small steps build big results.",
+    "You are stronger than you think.",
+    "Fuel your body, fuel your growth!",
+    "Consistency is the key to success."
+  ];
 
-    window.onload = () => {
-      currentDay = parseInt(localStorage.getItem("currentDay")) || 0;
-      loadTask();
-    };
-  </script>
+  function loadTask() {
+    const today = new Date();
+    const dayIndex = today.getDate() % tasks.length; 
+    const task = tasks[dayIndex];
+    const taskDiv = document.getElementById("task");
+    const motivationDiv = document.getElementById("motivation");
+
+    taskDiv.innerHTML = `<div class='task' onclick='completeTask(this)'>${task}</div>`;
+    motivationDiv.style.opacity = 0;
+  }
+
+  function completeTask(el) {
+    el.classList.add("completed");
+    const motivationDiv = document.getElementById("motivation");
+    motivationDiv.innerHTML = motivations[Math.floor(Math.random()*motivations.length)];
+    motivationDiv.style.opacity = 1;
+  }
+
+  loadTask();
+</script>
+
 </body>
 </html>
