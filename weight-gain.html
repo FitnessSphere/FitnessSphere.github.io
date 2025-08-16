@@ -1,60 +1,48 @@
 
-      <!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Fitness Sphere — Weight Gain</title>
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <link rel="stylesheet" href="css/styles.css"/>
   <style>
-    :root {
-      --theme-color: #ff9800; /* Clean Bulk default */
-    }
-    body {
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+    :root { --theme-color: #ff9800; }
+    body { transition: background-color 0.3s ease, color 0.3s ease; }
     .section { margin-bottom: 40px; }
     .tracker-card {
       border: 2px solid var(--theme-color);
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
       background: #fff;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      transition: transform 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
     }
-    .mode-toggle { display: flex; gap: 10px; margin-bottom: 15px; }
+    .mode-toggle { display:flex; gap:10px; margin:10px 0 14px; }
     .mode-toggle button {
-      flex: 1; padding: 10px; border: none; cursor: pointer;
-      font-weight: bold; transition: background-color 0.3s ease, color 0.3s ease;
+      flex:1; padding:10px; border:none; font-weight:700; cursor:pointer;
+      transition: background-color .3s ease, color .3s ease, transform .2s ease;
     }
-    .mode-toggle .active { background-color: var(--theme-color); color: white; }
-    .read-more { color: var(--theme-color); cursor: pointer; font-weight: bold; }
-    .fade-in { opacity: 0; transform: translateY(20px); }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
-    .note {
-      background-color: #fff3cd; border: 1px solid #ffeeba;
-      padding: 10px; border-radius: 5px; margin-top: 10px;
-      font-size: 0.9em; color: #856404;
-    }
+    .mode-toggle .active { background: var(--theme-color); color:#fff; }
+    .mode-toggle button:active { transform: scale(.98); }
+    .fade-in { opacity:0; transform:translateY(18px); }
+    .fade-in.visible { opacity:1; transform:none; }
+    .read-more { color: var(--theme-color); cursor:pointer; font-weight:600; }
+    .note { padding:10px 12px; border-radius:10px; background:#fff3cd; color:#856404; border:1px solid #ffeeba; }
     .calc-card {
-      border: 2px solid var(--theme-color);
-      border-radius: 8px; padding: 15px; background: #fff;
-      margin-top: 20px;
+      border:1px dashed var(--theme-color); border-radius:12px; padding:14px; background:#fff; margin-top:20px;
     }
-    .calc-card input, .calc-card select {
-      width: 100%; padding: 8px; margin-bottom: 10px;
-      border: 1px solid #ddd; border-radius: 5px;
-    }
+    .calc-card input, .calc-card select { width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px; }
   </style>
 </head>
 <body>
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="../index.html"><img src="../assets/logo.png" alt="logo" width="120"/></a>
+      <a class="brand" href="index.html"><img src="assets/logo.png" alt="logo" width="120"/></a>
       <div class="links" data-menu>
         <a class="link" href="calories.html">Calories</a>
         <a class="link" href="weight-loss.html">Weight Loss</a>
-        <a class="link" href="weight-gain.html">Weight Gain</a>
+        <a class="link active" href="weight-gain.html">Weight Gain</a>
         <a class="link" href="exercises.html">Exercises</a>
         <a class="link" href="premium.html">Premium</a>
       </div>
@@ -66,7 +54,7 @@
     <h1 class="fade-in">Weight Gain Guide & Tracker</h1>
 
     <section class="fade-in">
-      <p>Welcome to the Weight Gain section of Fitness Sphere. Here you’ll find everything you need to pack on muscle mass or healthy weight in the way that suits you best.</p>
+      <p>Welcome to the Weight Gain section. Here you’ll find tools and daily plans to gain muscle or healthy weight sustainably.</p>
     </section>
 
     <section class="fade-in">
@@ -75,25 +63,20 @@
         <button id="fastBulkBtn">Fast Bulk</button>
       </div>
 
-      <p id="bulkDescShort">Clean Bulk: A balanced approach to gaining muscle with minimal fat.</p>
-      <div id="bulkDescFull" style="display:none;">
-        <p>
-          Clean Bulk focuses on nutrient-dense foods, lean proteins, and steady calorie increases to build muscle while keeping fat gain low.
-          Fast Bulk focuses on rapid weight gain by consuming large calorie surpluses, often less strict with food quality.
-        </p>
-        <p id="fastBulkCaution" class="note" style="display:none;">
-          <strong>Caution:</strong> Fast bulking can lead to excessive fat gain and digestive strain.
-          Ensure your training volume matches your calorie surplus, and monitor your weight weekly.
-        </p>
+      <p id="bulkDescShort" class="muted">
+        <strong>Clean Bulk:</strong> Balanced approach to gaining muscle with minimal fat. <span id="readMoreToggle" class="read-more">Read more</span>
+      </p>
+      <div id="bulkDescFull" class="muted" style="display:none">
+        <p><strong>Clean Bulk:</strong> Focus on nutrient-dense foods, lean protein, and steady calorie increases for minimal fat gain.</p>
+        <p><strong>Fast Bulk:</strong> Rapid weight gain with larger calorie surplus; less strict with food quality.</p>
+        <p id="fastBulkCaution" class="note" style="display:none"><strong>Caution:</strong> Fast bulk can lead to excess fat. Ensure training matches calorie surplus and monitor weekly.</p>
       </div>
-      <span id="readMoreToggle" class="read-more">Read More</span>
     </section>
 
     <section id="trackerContainer" class="fade-in"></section>
 
     <section class="fade-in">
       <h2>Calorie Surplus Calculator</h2>
-      <p>Use this calculator to estimate how many calories you need to eat above your maintenance level to gain weight effectively.</p>
       <div class="calc-card">
         <input id="wg_weight" type="number" placeholder="Weight (kg)">
         <input id="wg_height" type="number" placeholder="Height (cm)">
@@ -103,16 +86,16 @@
           <option value="female">Female</option>
         </select>
         <select id="wg_activity">
-          <option value="1.2">Sedentary (little exercise)</option>
+          <option value="1.2">Sedentary</option>
           <option value="1.375">Lightly active</option>
           <option value="1.55">Moderately active</option>
           <option value="1.725">Very active</option>
           <option value="1.9">Extra active</option>
         </select>
         <select id="wg_goal">
-          <option value="0.25">+0.25 kg/week (slow gain)</option>
-          <option value="0.5">+0.5 kg/week (moderate gain)</option>
-          <option value="1">+1 kg/week (fast gain)</option>
+          <option value="0.25">+0.25 kg/week</option>
+          <option value="0.5">+0.5 kg/week</option>
+          <option value="1">+1 kg/week</option>
         </select>
         <button class="btn" id="wg_calcBtn">Calculate</button>
       </div>
@@ -122,146 +105,134 @@
       <h2>Extra Tips for Weight Gain</h2>
       <ul>
         <li>Eat calorie-dense snacks between meals.</li>
-        <li>Track your calories daily to ensure a surplus.</li>
-        <li>Focus on progressive overload in strength training.</li>
-        <li>Get enough rest to allow muscle recovery.</li>
+        <li>Track calories daily to ensure a surplus.</li>
+        <li>Progressive overload in training is key.</li>
+        <li>Rest enough for muscle recovery.</li>
       </ul>
     </section>
   </main>
 
-  <script src="../js/ui.js"></script>
+  <script src="js/ui.js"></script>
   <script>
-    const trackerContainer = document.getElementById('trackerContainer');
+    // ---------- PLANS ----------
     const cleanBulkPlan = [
-      { day: "Day 1", exercise: "Full-body workout", diet: "High-protein breakfast", icon: "../icons/dumbbell.png" },
-      { day: "Day 2", exercise: "Rest & stretch", diet: "Oats & milk", icon: "../icons/stretch.png" },
-      { day: "Day 3", exercise: "Upper body strength", diet: "Chicken & rice", icon: "../icons/biceps.png" },
-      { day: "Day 4", exercise: "Cardio 20 min", diet: "Protein shake", icon: "../icons/cardio.png" },
-      { day: "Day 5", exercise: "Lower body strength", diet: "Sweet potatoes", icon: "../icons/squat.png" },
-      { day: "Day 6", exercise: "Yoga & mobility", diet: "Eggs & toast", icon: "../icons/yoga.png" },
-      { day: "Day 7", exercise: "Rest", diet: "Balanced meals", icon: "../icons/plate.png" }
+      { day:"Day 1", ex:{t:"Full-body workout", icon:"icons/dumbbell.png"}, diet:{t:"High-protein breakfast", icon:"icons/protein.png"} },
+      { day:"Day 2", ex:{t:"Rest & stretch", icon:"icons/stretch.png"}, diet:{t:"Oats & milk", icon:"icons/oats.png"} },
+      { day:"Day 3", ex:{t:"Upper body strength", icon:"icons/biceps.png"}, diet:{t:"Chicken & rice", icon:"icons/chicken.png"} },
+      { day:"Day 4", ex:{t:"Cardio 20 min", icon:"icons/cardio.png"}, diet:{t:"Protein shake", icon:"icons/protein.png"} },
+      { day:"Day 5", ex:{t:"Lower body strength", icon:"icons/squat.png"}, diet:{t:"Sweet potatoes", icon:"icons/sweetpotato.png"} },
+      { day:"Day 6", ex:{t:"Yoga & mobility", icon:"icons/yoga.png"}, diet:{t:"Eggs & toast", icon:"icons/eggs.png"} },
+      { day:"Day 7", ex:{t:"Rest", icon:"icons/plate.png"}, diet:{t:"Balanced meals", icon:"icons/plate.png"} }
     ];
     const fastBulkPlan = [
-      { day: "Day 1", exercise: "Push workout", diet: "Pasta with cheese", icon: "../icons/push.png" },
-      { day: "Day 2", exercise: "Rest", diet: "Smoothies", icon: "../icons/smoothie.png" },
-      { day: "Day 3", exercise: "Pull workout", diet: "Burgers & fries", icon: "../icons/burger.png" },
-      { day: "Day 4", exercise: "Leg day", diet: "Milkshakes", icon: "../icons/milkshake.png" },
-      { day: "Day 5", exercise: "Core training", diet: "Rice & curry", icon: "../icons/abs.png" },
-      { day: "Day 6", exercise: "Rest", diet: "Pizza", icon: "../icons/pizza.png" },
-      { day: "Day 7", exercise: "Active rest", diet: "Ice cream", icon: "../icons/icecream.png" }
+      { day:"Day 1", ex:{t:"Push workout", icon:"icons/push.png"}, diet:{t:"Pasta with cheese", icon:"icons/pasta.png"} },
+      { day:"Day 2", ex:{t:"Rest", icon:"icons/rest.png"}, diet:{t:"Smoothies", icon:"icons/smoothie.png"} },
+      { day:"Day 3", ex:{t:"Pull workout", icon:"icons/pull.png"}, diet:{t:"Burgers & fries", icon:"icons/burger.png"} },
+      { day:"Day 4", ex:{t:"Leg day", icon:"icons/leg.png"}, diet:{t:"Milkshakes", icon:"icons/milkshake.png"} },
+      { day:"Day 5", ex:{t:"Core training", icon:"icons/core.png"}, diet:{t:"Rice & curry", icon:"icons/rice.png"} },
+      { day:"Day 6", ex:{t:"Rest", icon:"icons/rest.png"}, diet:{t:"Pizza", icon:"icons/pizza.png"} },
+      { day:"Day 7", ex:{t:"Active rest", icon:"icons/stretch.png"}, diet:{t:"Ice cream", icon:"icons/icecream.png"} }
     ];
 
-    function renderTracker(plan) {
-      trackerContainer.innerHTML = '';
-      plan.forEach((item, idx) => {
-        const card = document.createElement('div');
-        card.className = 'tracker-card fade-in';
-        card.innerHTML = `
-          <h3>${item.day}</h3>
-          <p><img src="${item.icon}" width="24"> Exercise: ${item.exercise}</p>
-          <p>Diet: ${item.diet}</p>
-          <button class="btn" onclick="completeTask(${idx})">Mark Complete</button>
-        `;
-        trackerContainer.appendChild(card);
-      });
-      triggerFadeIn();
-    }
-
-    function completeTask(dayIndex) {
-      showToast("Great job! Task completed.", "success");
-    }
-
+    // ---------- ELEMENTS ----------
+    const trackerEl = document.getElementById('trackerContainer');
     const cleanBtn = document.getElementById('cleanBulkBtn');
     const fastBtn = document.getElementById('fastBulkBtn');
-    const readMore = document.getElementById('readMoreToggle');
+    const readMoreBtn = document.getElementById('readMoreToggle');
     const fullDesc = document.getElementById('bulkDescFull');
     const cautionBox = document.getElementById('fastBulkCaution');
 
-    cleanBtn.onclick = () => {
-      document.documentElement.style.setProperty('--theme-color', '#ff9800');
-      cleanBtn.classList.add('active');
-      fastBtn.classList.remove('active');
-      renderTracker(cleanBulkPlan);
-      localStorage.setItem('wg_mode', 'clean');
-      cautionBox.style.display = 'none';
-    };
-    fastBtn.onclick = () => {
-      document.documentElement.style.setProperty('--theme-color', '#ff5722');
-      fastBtn.classList.add('active');
-      cleanBtn.classList.remove('active');
-      renderTracker(fastBulkPlan);
-      localStorage.setItem('wg_mode', 'fast');
-      if (localStorage.getItem('wg_readmore') === 'open') {
-        cautionBox.style.display = 'block';
-      }
-    };
+    function renderPlan(plan){
+      trackerEl.innerHTML='';
+      plan.forEach(item=>{
+        const exCard = document.createElement('div');
+        exCard.className='tracker-card fade-in';
+        exCard.innerHTML = `
+          <h3>${item.day} — Exercise</h3>
+          <div class="pair">
+            <img src="${item.ex.icon}" alt="exercise"/>
+            <div><p>${item.ex.t}</p><label><input type="checkbox"> Completed</label></div>
+          </div>
+          <h3>Diet</h3>
+          <div class="pair">
+            <img src="${item.diet.icon}" alt="diet"/>
+            <div><p>${item.diet.t}</p><label><input type="checkbox"> Completed</label></div>
+          </div>
+        `;
+        trackerEl.appendChild(exCard);
+      });
+      if(typeof triggerFadeIn==='function') triggerFadeIn();
+    }
 
-    readMore.onclick = () => {
-      const isHidden = fullDesc.style.display === 'none';
-      fullDesc.style.display = isHidden ? 'block' : 'none';
-      readMore.textContent = isHidden ? "Read Less" : "Read More";
-
-      if (isHidden) {
-        localStorage.setItem('wg_readmore', 'open');
-        if (localStorage.getItem('wg_mode') === 'fast') {
-          cautionBox.style.display = 'block';
-        }
+    function setMode(mode){
+      if(mode==='clean'){
+        document.documentElement.style.setProperty('--theme-color','#ff9800');
+        cleanBtn.classList.add('active'); fastBtn.classList.remove('active');
+        renderPlan(cleanBulkPlan);
+        cautionBox.style.display='none';
       } else {
-        localStorage.removeItem('wg_readmore');
-        cautionBox.style.display = 'none';
+        document.documentElement.style.setProperty('--theme-color','#ff5722');
+        fastBtn.classList.add('active'); cleanBtn.classList.remove('active');
+        renderPlan(fastBulkPlan);
+        if(localStorage.getItem('wg_readmore')==='open') cautionBox.style.display='block';
       }
+      localStorage.setItem('wg_mode', mode);
+    }
+
+    cleanBtn.onclick = ()=> setMode('clean');
+    fastBtn.onclick = ()=> setMode('fast');
+
+    readMoreBtn.onclick = ()=>{
+      const isHidden = fullDesc.style.display==='none';
+      fullDesc.style.display = isHidden?'block':'none';
+      readMoreBtn.textContent = isHidden?"Read Less":"Read More";
+      if(isHidden){ localStorage.setItem('wg_readmore','open'); if(localStorage.getItem('wg_mode')==='fast') cautionBox.style.display='block'; }
+      else { localStorage.removeItem('wg_readmore'); cautionBox.style.display='none'; }
     };
 
-    // Restore state
-    window.onload = () => {
-      const mode = localStorage.getItem('wg_mode') || 'clean';
-      const readState = localStorage.getItem('wg_readmore');
-      if (mode === 'fast') fastBtn.click(); else cleanBtn.click();
-      if (readState === 'open') readMore.click();
-      triggerFadeIn();
-    };
+    // ---------- Surplus Calculator ----------
+    document.getElementById('wg_calcBtn').onclick = ()=>{
+      const w=parseFloat(document.getElementById('wg_weight').value);
+      const h=parseFloat(document.getElementById('wg_height').value);
+      const a=parseInt(document.getElementById('wg_age').value);
+      const g=document.getElementById('wg_gender').value;
+      const act=parseFloat(document.getElementById('wg_activity').value);
+      const goal=parseFloat(document.getElementById('wg_goal').value);
+      if(!w||!h||!a){ showToast("Please fill all fields","danger"); return; }
 
-    // --- Surplus Calculator ---
-    document.getElementById('wg_calcBtn').onclick = () => {
-      const w = parseFloat(document.getElementById('wg_weight').value);
-      const h = parseFloat(document.getElementById('wg_height').value);
-      const a = parseInt(document.getElementById('wg_age').value);
-      const g = document.getElementById('wg_gender').value;
-      const act = parseFloat(document.getElementById('wg_activity').value);
-      const goal = parseFloat(document.getElementById('wg_goal').value);
-
-      if(!w || !h || !a){ showToast("Please fill all fields", "error"); return; }
-
-      let bmr = g === 'male'
-        ? 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a)
-        : 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
-
-      let tdee = bmr * act;
-      let surplus = goal * 7700 / 7; // kcal/day per kg/week
+      let bmr = g==='male'? (88.362 + 13.397*w + 4.799*h -5.677*a) : (447.593 + 9.247*w + 3.098*h -4.33*a);
+      let tdee = bmr*act;
+      let surplus = (goal*7700)/7;
       let targetCalories = tdee + surplus;
 
-      localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,goal}));
+      localStorage.setItem('wg_calc',JSON.stringify({w,h,a,g,act,goal}));
 
-      showModal("Calorie Surplus Result", `
+      showModal("Calorie Surplus Result",`
         <p><strong>BMR:</strong> ${Math.round(bmr)} kcal/day</p>
         <p><strong>TDEE:</strong> ${Math.round(tdee)} kcal/day</p>
-        <p><strong>Required Calories for Goal:</strong> ${Math.round(targetCalories)} kcal/day</p>
-        <p class="note">A calorie surplus means eating more calories than your body burns. This fuels muscle growth and weight gain. Choose a gain rate that matches your comfort and training intensity.</p>
+        <p><strong>Target Calories:</strong> ${Math.round(targetCalories)} kcal/day</p>
+        <p class="note">Eat more than your TDEE for weight gain. Choose a pace comfortable with your training.</p>
       `);
     };
 
-    // Restore calc values
-    const saved = localStorage.getItem('wg_calc');
-    if(saved){
-      const d = JSON.parse(saved);
-      document.getElementById('wg_weight').value = d.w;
-      document.getElementById('wg_height').value = d.h;
-      document.getElementById('wg_age').value = d.a;
-      document.getElementById('wg_gender').value = d.g;
-      document.getElementById('wg_activity').value = d.act;
-      document.getElementById('wg_goal').value = d.goal;
-    }
+    // ---------- Restore state ----------
+    window.onload = ()=>{
+      const mode=localStorage.getItem('wg_mode')||'clean';
+      const readState = localStorage.getItem('wg_readmore');
+      setMode(mode);
+      if(readState==='open') readMoreBtn.click();
+      // restore calculator
+      const saved = localStorage.getItem('wg_calc');
+      if(saved){
+        const d=JSON.parse(saved);
+        document.getElementById('wg_weight').value=d.w;
+        document.getElementById('wg_height').value=d.h;
+        document.getElementById('wg_age').value=d.a;
+        document.getElementById('wg_gender').value=d.g;
+        document.getElementById('wg_activity').value=d.act;
+        document.getElementById('wg_goal').value=d.goal;
+      }
+    };
   </script>
 </body>
-      </html>
-      
+</html>
