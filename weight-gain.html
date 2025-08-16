@@ -3,265 +3,208 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitness Tracker</title>
+  <title>Weight Gain Tracker</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      color: #fff;
-      background: linear-gradient(135deg, #1e1e2f, #252547);
-      overflow-x: hidden;
-    }
-
-    /* Floating Particles */
-    .particles {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
-      overflow: hidden;
-    }
-    .particle {
-      position: absolute;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      animation: float 20s infinite;
-    }
-    @keyframes float {
-      from { transform: translateY(100vh); opacity: 0; }
-      50%  { opacity: 1; }
-      to   { transform: translateY(-20vh); opacity: 0; }
+      color: white;
+      background: #121212;
+      transition: background 1s ease, color 1s ease;
+      text-align: center;
     }
 
     header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(8px);
-    }
-    header img {
-      width: 50px;
-      height: 50px;
-      margin-right: 15px;
-    }
-    header h1 {
-      font-size: 1.8em;
-      background: linear-gradient(90deg,#ff6a00,#ee0979);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    h2 {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 1.6em;
-      color: #fff;
-      background: linear-gradient(90deg,#06beb6,#48b1bf);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 10px rgba(0,255,255,0.6);
-      transition: transform 0.3s;
-    }
-    h2:hover {
-      transform: scale(1.05);
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .task {
-      background: rgba(255,255,255,0.1);
-      margin: 10px 0;
       padding: 15px;
-      border-radius: 12px;
-      transition: 0.3s;
-    }
-    .task.completed {
-      opacity: 0.6;
-    }
-    .motivation {
-      font-size: 1.1em;
-      font-style: italic;
-      color: #00ffaa;
-      display: none;
-      animation: fadeIn 1.2s forwards;
-    }
-    @keyframes fadeIn {
-      from {opacity:0; transform: translateY(10px);}
-      to {opacity:1; transform: translateY(0);}
+      background: rgba(0,0,0,0.6);
     }
 
-    .calc-box {
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 15px;
-      margin-top: 25px;
-      text-align: center;
+    header img {
+      height: 60px;
+      vertical-align: middle;
     }
-    .calc-box input, .calc-box select {
-      margin: 5px 0;
-      padding: 8px;
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 0 15px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      transition: color 0.5s, background 0.5s;
+    }
+
+    nav a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    h1, h2 {
+      margin: 20px 0;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
       border: none;
       border-radius: 8px;
-      width: 90%;
-    }
-    .calc-box button {
-      background: linear-gradient(90deg,#ff512f,#dd2476);
-      border: none;
-      color: #fff;
-      padding: 12px 20px;
-      margin-top: 10px;
-      border-radius: 10px;
       cursor: pointer;
-      font-size: 1em;
-      transition: 0.3s;
+      transition: background 0.5s, color 0.5s, box-shadow 0.5s;
     }
-    .calc-box button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255,100,150,0.7);
+
+    .task-box {
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 500px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      animation: fadeIn 1s;
     }
-    .result {
-      margin-top: 15px;
-      font-size: 1.2em;
-      color: #00ffcc;
+
+    .fade-message {
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+      animation: fadeIn 1s;
     }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    /* Animated Gradient Backgrounds */
+    .fast-bulk {
+      background: linear-gradient(270deg, #ff0000, #ff7300, #ffd500);
+      background-size: 600% 600%;
+      animation: gradientShift 10s ease infinite;
+    }
+
+    .slow-bulk {
+      background: linear-gradient(270deg, #00c9ff, #00ff9d, #0072ff);
+      background-size: 600% 600%;
+      animation: gradientShift 12s ease infinite;
+    }
+
+    .dark-mode {
+      background: linear-gradient(270deg, #000000, #3a0ca3, #7209b7);
+      background-size: 600% 600%;
+      animation: gradientShift 15s ease infinite;
+    }
+
+    .clean-mode {
+      background: linear-gradient(270deg, #ffffff, #e0e0e0, #f5f5f5);
+      background-size: 600% 600%;
+      color: black;
+      animation: gradientShift 12s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Mode-specific styles */
+    .fast-bulk .button { background: #ff4500; color: white; box-shadow: 0 0 10px #ff7300; }
+    .slow-bulk .button { background: #00b4d8; color: white; box-shadow: 0 0 10px #00ff9d; }
+    .dark-mode .button { background: #6a0dad; color: white; box-shadow: 0 0 10px #bb86fc; }
+    .clean-mode .button { background: #333; color: white; box-shadow: 0 0 10px #aaa; }
+
+    .fast-bulk nav a { color: #ffd500; }
+    .slow-bulk nav a { color: #00ffcc; }
+    .dark-mode nav a { color: #bb86fc; }
+    .clean-mode nav a { color: #333; }
   </style>
 </head>
 <body>
-  <div class="particles"></div>
-
   <header>
     <img src="logo.png" alt="Logo">
-    <h1>Fitness Tracker</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="weightgain.html">Weight Gain</a>
+      <a href="weightloss.html">Weight Loss</a>
+    </nav>
   </header>
 
-  <div class="container">
-    <h2>Daily Tasks</h2>
-    <div id="tasks"></div>
+  <h1>Weight Gain Tracker</h1>
 
+  <!-- Mode Buttons -->
+  <div>
+    <button class="button" onclick="setMode('fast-bulk')">Fast Bulk</button>
+    <button class="button" onclick="setMode('slow-bulk')">Slow Bulk</button>
+    <button class="button" onclick="setMode('dark-mode')">Dark Mode</button>
+    <button class="button" onclick="setMode('clean-mode')">Clean Mode</button>
+  </div>
+
+  <!-- Daily Task -->
+  <div class="task-box" id="taskBox">
+    <h2>Daily Task</h2>
+    <p id="taskText">Loading...</p>
+    <button class="button" onclick="completeTask()">Complete Task</button>
+    <p class="fade-message" id="taskMessage"></p>
+  </div>
+
+  <!-- Calorie Surplus Calculator -->
+  <div class="task-box">
     <h2>Calorie Surplus Calculator</h2>
-    <div class="calc-box">
-      <input id="wg_weight" type="number" placeholder="Weight (kg)">
-      <input id="wg_height" type="number" placeholder="Height (cm)">
-      <input id="wg_age" type="number" placeholder="Age">
-      <select id="wg_gender">
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
-      <select id="wg_activity">
-        <option value="1.2">Sedentary</option>
-        <option value="1.375">Lightly active</option>
-        <option value="1.55">Moderately active</option>
-        <option value="1.725">Very active</option>
-      </select>
-      <input id="wg_goal" type="number" placeholder="Weekly Goal (kg)">
-      <button id="wg_calc">Calculate</button>
-      <div class="result" id="calc_result"></div>
-    </div>
+    <label>Maintenance Calories: <input type="number" id="maintenance"></label><br><br>
+    <label>Surplus: <input type="number" id="surplus"></label><br><br>
+    <button class="button" onclick="calculateSurplus()">Calculate</button>
+    <p id="result"></p>
   </div>
 
   <script>
-    // ---------- PARTICLES ----------
-    const particleContainer = document.querySelector('.particles');
-    for (let i = 0; i < 30; i++) {
-      const p = document.createElement('div');
-      p.classList.add('particle');
-      p.style.left = Math.random()*100 + 'vw';
-      p.style.animationDuration = (15+Math.random()*15)+'s';
-      p.style.width = p.style.height = (10+Math.random()*20)+'px';
-      particleContainer.appendChild(p);
+    const tasks = [
+      "Eat a calorie surplus meal today.",
+      "Drink 2 protein shakes.",
+      "Do a 45 min strength workout.",
+      "Get at least 8 hours of sleep.",
+      "Track your calories in an app."
+    ];
+
+    let currentDay = 0;
+
+    function loadTask() {
+      if (currentDay < tasks.length) {
+        document.getElementById("taskText").textContent = tasks[currentDay];
+        document.getElementById("taskMessage").style.display = "none";
+      } else {
+        document.getElementById("taskText").textContent = "All tasks completed!";
+      }
     }
 
-    // ---------- DAILY TASKS ----------
-    const tasksData = [
-      "Do 20 push-ups and 10 squats",
-      "Drink 2 liters of water",
-      "Eat a high-protein breakfast",
-      "Jog for 20 minutes",
-      "Stretch before bed",
-      "Meditate for 10 minutes",
-      "Avoid junk food all day"
-    ];
-    const messages = [
-      "Great job! You're building momentum!",
-      "Awesome! Keep up the energy!",
-      "Nice! Consistency is key!",
-      "Amazing effort! You're unstoppable!",
-      "Excellent! Your discipline is growing!",
-      "Fantastic! You're on the right path!",
-      "Incredible! You've completed the week!"
-    ];
-    const tasksContainer = document.getElementById('tasks');
-    const startDate = new Date(localStorage.getItem('startDate') || new Date());
-    localStorage.setItem('startDate', startDate);
+    function completeTask() {
+      const taskText = document.getElementById("taskText");
+      const taskMessage = document.getElementById("taskMessage");
+      taskMessage.textContent = "✅ Task completed!";
+      taskMessage.style.display = "block";
+      taskText.textContent = "";
+      currentDay++;
+      localStorage.setItem("currentDay", currentDay);
+    }
 
-    const today = new Date();
-    const diffDays = Math.floor((today - new Date(startDate)) / (1000*60*60*24));
-    const currentDay = Math.min(diffDays, tasksData.length-1);
-
-    tasksData.forEach((task, i) => {
-      const div = document.createElement('div');
-      div.className = 'task';
-      if (i > currentDay) {
-        div.style.display = 'none'; // hide future tasks
-      } else {
-        div.innerHTML = `
-          <input type="checkbox" id="task${i}">
-          <label for="task${i}">${task}</label>
-          <div class="motivation" id="msg${i}">${messages[i]}</div>
-        `;
+    function calculateSurplus() {
+      let maintenance = parseInt(document.getElementById("maintenance").value);
+      let surplus = parseInt(document.getElementById("surplus").value);
+      if (!isNaN(maintenance) && !isNaN(surplus)) {
+        document.getElementById("result").textContent = "Your target calories: " + (maintenance + surplus);
       }
-      tasksContainer.appendChild(div);
+    }
 
-      const checkbox = div.querySelector('input');
-      const msg = div.querySelector('.motivation');
+    function setMode(mode) {
+      document.body.className = mode;
+    }
 
-      if(localStorage.getItem('task'+i)==='done'){
-        checkbox.checked = true;
-        msg.style.display='block';
-        div.classList.add('completed');
-      }
-
-      if(checkbox){
-        checkbox.addEventListener('change', ()=>{
-          if(checkbox.checked){
-            localStorage.setItem('task'+i,'done');
-            msg.style.display='block';
-            div.classList.add('completed');
-          } else {
-            localStorage.removeItem('task'+i);
-            msg.style.display='none';
-            div.classList.remove('completed');
-          }
-        });
-      }
-    });
-
-    // ---------- CALCULATOR ----------
-    document.getElementById('wg_calc').addEventListener('click', ()=>{
-      const w=parseFloat(document.getElementById('wg_weight').value);
-      const h=parseFloat(document.getElementById('wg_height').value);
-      const a=parseInt(document.getElementById('wg_age').value);
-      const g=document.getElementById('wg_gender').value;
-      const act=parseFloat(document.getElementById('wg_activity').value);
-      const goal=parseFloat(document.getElementById('wg_goal').value);
-      if(!w||!h||!a||!goal){ 
-        document.getElementById('calc_result').innerText="⚠️ Fill all fields!";
-        return;
-      }
-      let bmr = g==='male'? (88.362+13.397*w+4.799*h-5.677*a):(447.593+9.247*w+3.098*h-4.33*a);
-      let tdee = bmr*act;
-      let surplus = (goal*7700)/7;
-      let target = tdee+surplus;
-      document.getElementById('calc_result').innerText =
-        `BMR: ${Math.round(bmr)} kcal/day | TDEE: ${Math.round(tdee)} kcal/day | Target: ${Math.round(target)} kcal/day`;
-    });
+    window.onload = () => {
+      currentDay = parseInt(localStorage.getItem("currentDay")) || 0;
+      loadTask();
+    };
   </script>
 </body>
 </html>
