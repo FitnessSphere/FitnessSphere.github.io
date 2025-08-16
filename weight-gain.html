@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Fitness Sphere — Weight Gain</title>
 
-  <!-- If you use a global styles.css across the site, this file intentionally keeps minimal local overrides
-       so you can drop it into the same folder as the rest of the site. -->
   <style>
     /* ---------- Theme variables & base (mint default like main site) ---------- */
     :root{
@@ -35,7 +33,7 @@
     }
     .container{ max-width:1100px; margin:0 auto; padding:0 16px; }
 
-    /* ---------- Header (centered container, logo left) ---------- */
+    /* ---------- Header (logo left, links right) ---------- */
     .nav{
       position: sticky;
       top: 0;
@@ -48,15 +46,13 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      padding:6px 12px;      /* compact padding */
+      gap:12px;
+      padding:4px 12px;         /* compact header */
       max-width:1100px;
       margin:0 auto;
-      min-height:48px;       /* keeps header from collapsing */
     }
-    .brand{ display:flex; align-items:center; gap:8px; text-decoration:none; }
-    .brand img{ height:44px; width:auto; display:block; } /* smaller, compact logo */
-
+    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .brand img{ height:68px; width:auto; display:block; } /* slightly bigger logo */
     .links{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-left:8px; }
     .link{ color:var(--text); text-decoration:none; padding:8px 12px; border-radius:10px; white-space:nowrap; opacity:.98; font-weight:600; }
     .link.active{ outline:2px solid rgba(255,255,255,0.04); }
@@ -64,7 +60,7 @@
     /* When a mode is active we add .grad-mode to .nav for a header tint */
     .nav.grad-mode{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
 
-    /* ---------- Hero / page sections (match weight-loss layout) ---------- */
+    /* ---------- Hero / page sections ---------- */
     .main-section{ padding:28px 0 36px; }
     .hero{ padding:44px 0 10px; background: radial-gradient(ellipse at 50% -80px, #162342 0%, transparent 60%); border-radius:12px; }
     .hero h1{ font-size:36px; margin:0 0 8px; color:var(--text); letter-spacing:-0.5px; }
@@ -73,10 +69,8 @@
     /* ---------- Buttons ---------- */
     .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; }
     .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:10px 14px; font-weight:700; }
-    /* mode-graded uses CSS vars for gradient so JS can change them without editing CSS */
     .btn.mode-graded{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: var(--shadow); min-width:160px; }
 
-    /* small helper spacing */
     .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
 
     /* ---------- Outlined sections when a mode is selected ---------- */
@@ -103,8 +97,8 @@
 
     /* responsive tweaks */
     @media (max-width:720px){
-      .nav-inner{ gap:8px; padding:8px 12px; }
-      .brand img{ height:52px; }
+      .nav-inner{ gap:8px; padding:4px 10px; }
+      .brand img{ height:60px; }
       .hero{ padding:28px 0 10px; }
       .hero h1{ font-size:28px; }
       .btn.mode-graded{ min-width:140px; padding:10px 14px; }
@@ -113,7 +107,7 @@
 </head>
 <body>
 
-  <!-- HEADER: logo top-left, links centered/right; NO Menu, NO duplicate Weight Gain -->
+  <!-- HEADER -->
   <nav class="nav" id="mainNav">
     <div class="nav-inner container">
       <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere logo" /></a>
@@ -186,7 +180,7 @@
       <div id="wg_result" class="tracker-card" style="margin-top:12px; display:none;"></div>
     </section>
 
-    <!-- TASKS: single task per day (alternates), mode-specific list -->
+    <!-- TASKS -->
     <section id="tasksSection" class="section" style="margin-top:12px;">
       <h2>Daily Task</h2>
       <div id="taskWrap" style="max-width:720px;"></div>
@@ -440,20 +434,27 @@
       taskWrap.appendChild(box);
 
       cb.addEventListener('change', (e) => {
-       if(!e.target.checked) return;
-       box.classList.add('completed');
-       const ts = nowISO();
-       localStorage.setItem(key, ts);
-       taskMotivate.textContent = (task.id === 'diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
-       taskMotivate.style.display = 'block';
-       taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
-       updateCountdown(ts);
-       const tmr = setInterval(()=> {
-        if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; }
+        if(!e.target.checked) return;
+        box.classList.add('completed');
+        const ts = nowISO();
+        localStorage.setItem(key, ts);
+        taskMotivate.textContent = (task.id === 'diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.'
+        taskMotivate.style.display = 'block';
+        taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
         updateCountdown(ts);
-       }, 1000);
-     });
-   }
- </script>
+        const tmr = setInterval(()=> {
+          if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; }
+          updateCountdown(ts);
+        }, 1000);
+      });
+    }
+  </script>
 </body>
 </html>
+
+          
+
+
+
+
+          
