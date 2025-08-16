@@ -48,13 +48,15 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      padding:10px 16px;
+      gap:10px;
+      padding:6px 12px;      /* compact padding */
       max-width:1100px;
       margin:0 auto;
+      min-height:48px;       /* keeps header from collapsing */
     }
-    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
-    .brand img{ height:64px; width:auto; display:block; } /* bigger logo */
+    .brand{ display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .brand img{ height:44px; width:auto; display:block; } /* smaller, compact logo */
+
     .links{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-left:8px; }
     .link{ color:var(--text); text-decoration:none; padding:8px 12px; border-radius:10px; white-space:nowrap; opacity:.98; font-weight:600; }
     .link.active{ outline:2px solid rgba(255,255,255,0.04); }
