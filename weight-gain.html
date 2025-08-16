@@ -1,82 +1,189 @@
      
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FitnessSphere - Weight Gain</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="data.js" defer></script>
-  <script src="ui.js" defer></script>
-  <script src="app.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weight Gain Journey</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Animated gradient background for header and buttons */
+    .header-gradient, .gradient-btn {
+      background: linear-gradient(270deg, #ff7e00, #ff1e1e, #ffd700);
+      background-size: 600% 600%;
+      animation: gradientAnimation 8s ease infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header {
+      background: linear-gradient(270deg, #ff7e00, #ff1e1e, #ffd700);
+      background-size: 600% 600%;
+      animation: gradientAnimation 8s ease infinite;
+      color: white;
+      padding: 20px;
+    }
+
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(270deg, #ff7e00, #ff1e1e, #ffd700);
+      background-size: 600% 600%;
+      animation: gradientAnimation 8s ease infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+      color: white;
+      background: linear-gradient(270deg, #ff7e00, #ff1e1e, #ffd700);
+      background-size: 600% 600%;
+      animation: gradientAnimation 8s ease infinite;
+      border-radius: 12px;
+    }
+
+    .gradient-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      background: linear-gradient(270deg, #ff7e00, #ff1e1e, #ffd700);
+      background-size: 600% 600%;
+      animation: gradientAnimation 8s ease infinite;
+    }
+
+    .task {
+      background: #fff3e0;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .motivational {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ff5722;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <header class="animated-header">
-    <div class="logo">FitnessSphere</div>
+  <header>
+    <div class="logo">GainPro</div>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="weight-loss.html">Weight Loss</a></li>
-        <li><a href="weight-gain.html" class="active">Weight Gain</a></li>
+        <li><a href="weight-gain.html">Weight Gain</a></li>
       </ul>
     </nav>
   </header>
 
-  <main>
-    <section class="hero weight-gain-hero">
-      <h1>Gain Weight Effectively</h1>
-      <p>Structured plans and tracking to support healthy weight gain.</p>
-    </section>
+  <section class="hero">
+    <h1>Weight Gain Journey</h1>
+    <p>Select your bulking mode and calculate your surplus calories</p>
+    <div>
+      <button class="gradient-btn">Fast Bulk</button>
+      <button class="gradient-btn">Healthy Bulk</button>
+    </div>
+  </section>
 
-    <section class="modes">
-      <h2>Choose Your Mode</h2>
-      <div class="mode-options">
-        <button class="mode-btn healthy-bulk">Healthy Bulk</button>
-        <button class="mode-btn fast-bulk">Fast Bulk</button>
-      </div>
-    </section>
+  <section class="calculator">
+    <h2>Calorie Surplus Calculator</h2>
+    <label>Current Weight (kg):</label>
+    <input type="number" id="weight"><br><br>
+    <label>Height (cm):</label>
+    <input type="number" id="height"><br><br>
+    <label>Age:</label>
+    <input type="number" id="age"><br><br>
+    <label>Activity Level:</label>
+    <select id="activity">
+      <option value="1.2">Sedentary</option>
+      <option value="1.375">Lightly Active</option>
+      <option value="1.55">Moderately Active</option>
+      <option value="1.725">Very Active</option>
+    </select><br><br>
+    <button class="gradient-btn" onclick="calculateSurplus()">Calculate</button>
+    <p id="result"></p>
+  </section>
 
-    <section class="calculator">
-      <h2>Calorie Surplus Calculator</h2>
-      <form id="surplus-form">
-        <label for="age">Age:</label>
-        <input type="number" id="age" required />
+  <section class="tasks">
+    <h2>Daily Tasks</h2>
+    <div id="task-container"></div>
+    <p class="motivational" id="motivational-message">Great job! Keep pushing forward 💪</p>
+  </section>
 
-        <label for="gender">Gender:</label>
-        <select id="gender" required>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
+  <script>
+    // Calorie Surplus Calculator
+    function calculateSurplus() {
+      const weight = parseFloat(document.getElementById("weight").value);
+      const height = parseFloat(document.getElementById("height").value);
+      const age = parseFloat(document.getElementById("age").value);
+      const activity = parseFloat(document.getElementById("activity").value);
 
-        <label for="weight">Weight (kg):</label>
-        <input type="number" id="weight" required />
+      if (isNaN(weight) || isNaN(height) || isNaN(age)) {
+        document.getElementById("result").innerText = "Please enter all values.";
+        return;
+      }
 
-        <label for="height">Height (cm):</label>
-        <input type="number" id="height" required />
+      let bmr = 10 * weight + 6.25 * height - 5 * age + 5; // Mifflin-St Jeor
+      let maintenance = bmr * activity;
+      let surplus = maintenance + 500; // add 500 calories for surplus
 
-        <label for="activity">Activity Level:</label>
-        <select id="activity" required>
-          <option value="1.2">Sedentary</option>
-          <option value="1.375">Lightly Active</option>
-          <option value="1.55">Moderately Active</option>
-          <option value="1.725">Very Active</option>
-          <option value="1.9">Extra Active</option>
-        </select>
+      document.getElementById("result").innerText = 
+        "To gain weight, aim for around " + Math.round(surplus) + " calories/day.";
+    }
 
-        <button type="submit" class="calc-btn">Calculate Surplus</button>
-      </form>
-      <div id="surplus-result"></div>
-    </section>
+    // Daily Tasks Rotation
+    const tasks = [
+      "Eat 5 high-protein meals today",
+      "Drink a protein shake after workout",
+      "Do 20 pushups",
+      "Sleep at least 8 hours",
+      "Track your calories today",
+      "Lift heavy weights for at least 30 mins",
+      "Stay hydrated with 3L water"
+    ];
 
-    <section class="tasks">
-      <h2>Daily Weight Gain Tasks</h2>
-      <div id="task-container"></div>
-      <div id="motivation" class="motivation"></div>
-    </section>
-  </main>
+    let today = new Date().getDay(); // gives 0–6
+    let currentTask = tasks[today % tasks.length];
 
-  <footer>
-    <p>&copy; 2025 FitnessSphere. All rights reserved.</p>
-  </footer>
+    let taskContainer = document.getElementById("task-container");
+    let motivational = document.getElementById("motivational-message");
+
+    let taskDiv = document.createElement("div");
+    taskDiv.className = "task";
+    taskDiv.innerText = currentTask;
+
+    taskDiv.onclick = function() {
+      taskDiv.style.display = "none";
+      motivational.style.display = "block";
+    };
+
+    taskContainer.appendChild(taskDiv);
+  </script>
 </body>
-</html>
+         </html>
+     
