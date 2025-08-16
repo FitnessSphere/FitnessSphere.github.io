@@ -1,166 +1,440 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weight Gain</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fitness Sphere — Weight Gain</title>
+  <!-- use existing main stylesheet so the page matches weight-loss layout -->
+  <link rel="stylesheet" href="styles.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f4f9;
-      color: #333;
+    /* Theme variables (will be changed by JS when a mode is selected) */
+    :root{
+      --theme-color: #2196f3; /* default blue (weight-loss look) */
+      --theme-gradient-start: #2196f3;
+      --theme-gradient-end: #60a5fa;
+      --outline: rgba(33,150,243,0.14);
+      --btn-text: #071022;
     }
-    header {
-      background: linear-gradient(90deg, #ff7e5f, #feb47b);
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: white;
+
+    /* Keep page dark like main / weight-loss by default */
+    body { background: var(--bg); color: var(--text); transition: background .25s ease, color .25s ease; }
+
+    /* Header override so logo + nav align exactly as weight-loss */
+    .nav.grad-mode {
+      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      box-shadow: none;
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: bold;
-      background: linear-gradient(90deg, #ff7e5f, #feb47b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    nav a {
-      margin: 0 10px;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .mode-buttons button, .calculator button {
-      margin: 10px;
-      padding: 10px 20px;
+
+    /* Buttons that should change color with mode */
+    .btn.mode-graded {
+      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
+      color: var(--btn-text);
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      color: white;
-      background: linear-gradient(90deg, #ff7e5f, #feb47b);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
-    .active-section {
-      border: 2px solid #ff7e5f;
+
+    /* Outlined sections when a mode is selected */
+    .outlined {
+      border: 2px solid var(--theme-color);
       border-radius: 12px;
-      padding: 15px;
-      margin: 15px 0;
-      background: #fff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.04);
     }
+
+    /* Read more link color */
+    .read-more-theme { color: var(--theme-color); cursor: pointer; font-weight:600; }
+
+    /* Task box */
     .task-box {
-      display: flex;
-      align-items: center;
-      margin: 10px 0;
-      padding: 10px;
-      border: 2px solid #feb47b;
-      border-radius: 10px;
-      background: #fff;
+      display:flex; gap:12px; align-items:center;
+      padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02));
+      border: 2px solid rgba(255,255,255,0.04);
+      transition: opacity .45s ease, transform .35s ease, border-color .25s ease;
     }
-    .task-box input {
-      margin-right: 10px;
-    }
+    .task-box.outlined { border-color: var(--theme-color); }
+
+    .task-box.completed { opacity: 0; transform: scale(.99); pointer-events: none; }
+
     .motivation {
-      display: none;
-      color: green;
-      font-weight: bold;
+      margin-top:10px; font-weight:700; color: var(--theme-color); display:none;
     }
-    .tips {
-      margin-top: 20px;
-      padding: 15px;
-      border: 2px solid #ff7e5f;
-      border-radius: 12px;
-      background: #fff;
-    }
-    .read-more {
-      color: #ff7e5f;
-      cursor: pointer;
-      font-weight: bold;
+
+    /* small helper for disabled look */
+    .hint-muted { color: var(--muted); }
+
+    /* ensure calculate button stands out even if theme not selected yet */
+    #wg_calcBtn { min-width:140px; }
+
+    /* Make sure logo fits */
+    .brand img { height:36px; }
+
+    /* alignment for nav links */
+    .nav .links { gap:18px; align-items:center; }
+
+    /* Make section outlines visible */
+    .section.outlined { padding:14px; margin-bottom:22px; }
+
+    /* small responsive tweaks */
+    @media (max-width:600px){
+      .nav-inner { gap:10px; }
+      .brand img { height:32px; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>WeightGain+</h1>
-    <nav>
-      <a href="#">Calories</a>
-      <a href="#">Exercises</a>
-    </nav>
-  </header>
+  <!-- Nav (matches weight-loss structure and includes logo top-left) -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere logo" /></a>
+      <div class="links" data-menu>
+        <a class="link" href="index.html">Home</a>
+        <a class="link" href="calories.html">Calories</a>
+        <a class="link" href="exercises.html">Exercises</a>
+        <a class="link" href="weight-loss.html">Weight Loss</a>
+        <a class="link active" href="weight-gain.html">Weight Gain</a>
+        <a class="link" href="premium.html">Premium</a>
+      </div>
+      <button class="btn secondary" data-menu-btn>Menu</button>
+    </div>
+  </nav>
 
-  <main style="padding: 20px;">
-    <section class="mode-buttons">
-      <button onclick="selectMode('fast')">Fast Bulk</button>
-      <button onclick="selectMode('healthy')">Healthy Bulk</button>
+  <main class="container section" style="padding-top:18px;">
+    <!-- Hero: same layout as weight-loss but uses theme outline only after mode selected -->
+    <section class="hero section" id="hero">
+      <h1>Weight Gain Guide & Tracker</h1>
+      <p class="lead">Choose a bulking mode, track two daily tasks (diet & exercise), and follow a calorie surplus plan.</p>
+
+      <div style="margin-top:14px; display:flex; gap:12px; flex-wrap:wrap;">
+        <button id="btnHealthy" class="btn mode-graded" aria-pressed="false">Healthy Bulk</button>
+        <button id="btnFast" class="btn mode-graded" aria-pressed="false">Fast Bulk</button>
+        <div style="align-self:center; margin-left:auto;">
+          <span id="modeHint" class="hint-muted">No mode selected</span>
+        </div>
+      </div>
+
+      <p style="margin-top:10px;" class="muted">
+        <span id="readMore" class="read-more-theme">Read more</span>
+      </p>
+      <div id="descLong" class="muted" style="display:none; margin-top:10px;">
+        <p><strong>Healthy Bulk:</strong> Gentle surplus (~+300 kcal/day), steady strength training, protein-focused.</p>
+        <p><strong>Fast Bulk:</strong> Bigger surplus (~+600 kcal/day) for faster gains; expect some fat gain.</p>
+        <span id="readLess" class="read-more-theme" style="display:inline-block; margin-top:8px;">Show less</span>
+      </div>
     </section>
 
-    <section id="calculator" class="calculator active-section" style="display:none;">
+    <!-- Calorie Surplus Calculator -->
+    <section id="calculator" class="section" style="margin-top:6px;">
       <h2>Calorie Surplus Calculator</h2>
-      <label>Current Calories: <input type="number" id="current-cal"></label><br><br>
-      <label>Target Calories: <input type="number" id="target-cal"></label><br><br>
-      <button onclick="calculateSurplus()">Calculate</button>
-      <p id="result"></p>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; align-items:end;">
+        <label>Weight (kg)<input id="wg_weight" type="number" min="20" max="300" step="0.1" /></label>
+        <label>Height (cm)<input id="wg_height" type="number" min="120" max="230" /></label>
+        <label>Age<input id="wg_age" type="number" min="12" max="100" /></label>
+        <label>Gender
+          <select id="wg_gender"><option value="male">Male</option><option value="female">Female</option></select>
+        </label>
+        <label>Activity
+          <select id="wg_activity">
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Lightly active</option>
+            <option value="1.55">Moderately active</option>
+            <option value="1.725">Very active</option>
+            <option value="1.9">Athlete</option>
+          </select>
+        </label>
+        <label>Gain speed
+          <select id="wg_speed">
+            <option value="healthy">Healthy (+300 kcal/day)</option>
+            <option value="fast">Fast (+600 kcal/day)</option>
+          </select>
+        </label>
+      </div>
+
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="wg_calcBtn" class="btn mode-graded">Calculate</button>
+        <button id="wg_resetBtn" class="btn secondary">Reset</button>
+        <div style="align-self:center; margin-left:auto;">
+          <small class="muted">Calculated with Mifflin–St Jeor</small>
+        </div>
+      </div>
+
+      <div id="wg_result" class="tracker-card" style="margin-top:12px; display:none;"></div>
     </section>
 
-    <section id="tasks" class="active-section" style="display:none;">
-      <h2>Daily Tasks</h2>
-      <div class="task-box">
-        <input type="checkbox" onclick="completeTask(this, 'diet')">
-        <label>Follow today’s diet plan</label>
+    <!-- Tasks: only two tasks total (diet, exercise). Shows 1 per day (alternates) and enforces 24h real-world lock -->
+    <section id="tasksSection" class="section">
+      <h2>Daily Task</h2>
+      <div id="taskWrap" style="max-width:720px;">
+        <!-- Task block inserted by JS -->
       </div>
-      <div class="motivation" id="motivation-diet">Great job on sticking to your diet!</div>
-
-      <div class="task-box">
-        <input type="checkbox" onclick="completeTask(this, 'exercise')">
-        <label>Complete today’s workout routine</label>
-      </div>
-      <div class="motivation" id="motivation-exercise">Awesome! You crushed your workout!</div>
+      <div id="taskMotivate" class="motivation">Nice! Keep the streak — you’ll get the next task tomorrow.</div>
+      <div id="taskInfo" class="muted" style="margin-top:8px;"></div>
     </section>
 
-    <section id="tips" class="tips" style="display:none;">
-      <h2>Tips for Bulking</h2>
-      <p id="tips-text">Eat calorie-dense foods like nuts, whole grains, and avocados. Stay consistent with strength training to maximize gains.</p>
-      <span class="read-more" onclick="toggleTips()">Read more</span>
+    <!-- Tips -->
+    <section id="tipsSection" class="section">
+      <h3>Bulking Tips</h3>
+      <p class="muted">Simple, realistic tips for clean and effective weight gain.</p>
+      <ul>
+        <li>Focus on calorie-dense whole foods (nuts, paneer, oats, milk, rice).</li>
+        <li>Prioritize strength training 3–4x/week — progressive overload matters more than eating only.</li>
+        <li>Aim for 1.6–2.2 g protein per kg bodyweight to support muscle growth.</li>
+        <li>Sleep and recovery are crucial — don't skimp on rest.</li>
+        <li>Track progress, and adjust surplus every 2–4 weeks.</li>
+      </ul>
     </section>
   </main>
 
+  <!-- keep loading shared scripts used across the site (ui helpers) -->
+  <script src="app.js"></script>
+  <script src="ui.js"></script>
   <script>
-    function selectMode(mode) {
-      document.getElementById("calculator").style.display = "block";
-      document.getElementById("tasks").style.display = "block";
-      document.getElementById("tips").style.display = "block";
-    }
-
-    function calculateSurplus() {
-      const current = parseInt(document.getElementById("current-cal").value);
-      const target = parseInt(document.getElementById("target-cal").value);
-      const result = target - current;
-      document.getElementById("result").innerText = 
-        result > 0 ? `You need a surplus of ${result} calories.` : "Target must be greater than current.";
-    }
-
-    function completeTask(checkbox, type) {
-      if (checkbox.checked) {
-        checkbox.parentElement.style.display = "none";
-        document.getElementById("motivation-" + type).style.display = "block";
+    /* MODE colors (fixed — NOT animated) */
+    const MODES = {
+      healthy: {
+        name: 'Healthy Bulk',
+        color: '#ffb347',              // theme color (outline & small accents)
+        gradStart: '#ffcc33',         // gradient start
+        gradEnd: '#ffb347',           // gradient end
+        textOnBtn: '#071022'
+      },
+      fast: {
+        name: 'Fast Bulk',
+        color: '#ff6e40',
+        gradStart: '#ff6e40',
+        gradEnd: '#ff3b3b',
+        textOnBtn: '#071022'
       }
+    };
+
+    // Initialize UI elements
+    const btnHealthy = document.getElementById('btnHealthy');
+    const btnFast = document.getElementById('btnFast');
+    const modeHint = document.getElementById('modeHint');
+    const descLong = document.getElementById('descLong');
+    const readMore = document.getElementById('readMore');
+    const readLess = document.getElementById('readLess');
+    const wgCalcBtn = document.getElementById('wg_calcBtn');
+    const wgResetBtn = document.getElementById('wg_resetBtn');
+    const wgResult = document.getElementById('wg_result');
+    const taskWrap = document.getElementById('taskWrap');
+    const taskMotivate = document.getElementById('taskMotivate');
+    const taskInfo = document.getElementById('taskInfo');
+
+    // Two tasks only
+    const TASKS = [
+      { id: 'diet', title: 'Diet — Eat 3 calorie-dense meals + one snack', desc: 'Include added healthy fats (peanut butter, ghee) and whole calories.' },
+      { id: 'exercise', title: 'Exercise — Strength session (30–45 min)', desc: 'Focus on compound lifts: squats, rows, presses. Keep protein high.' }
+    ];
+
+    // Utility: set CSS vars for theme
+    function applyModeTheme(modeKey){
+      const mode = MODES[modeKey];
+      document.documentElement.style.setProperty('--theme-color', mode.color);
+      document.documentElement.style.setProperty('--theme-gradient-start', mode.gradStart);
+      document.documentElement.style.setProperty('--theme-gradient-end', mode.gradEnd);
+      document.documentElement.style.setProperty('--btn-text', mode.textOnBtn);
+      // add visual outlines to the sections to match weight-loss behavior
+      document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
+      // make nav show gradient bar like weight-loss (but fixed)
+      document.querySelector('.nav').classList.add('grad-mode');
+      // mark active state on buttons
+      btnHealthy.setAttribute('aria-pressed', modeKey === 'healthy');
+      btnFast.setAttribute('aria-pressed', modeKey === 'fast');
+      // hint text
+      modeHint.textContent = `${MODES[modeKey].name} selected`;
+      modeHint.style.color = mode.color;
+      // ensure calc button visible style (mode-graded already)
     }
 
-    function toggleTips() {
-      const tipsText = document.getElementById("tips-text");
-      const btn = document.querySelector(".read-more");
-      if (btn.innerText === "Read more") {
-        tipsText.innerText += " Drink protein shakes, sleep at least 8 hours, and avoid empty calories.";
-        btn.innerText = "Show less";
-      } else {
-        tipsText.innerText = "Eat calorie-dense foods like nuts, whole grains, and avocados. Stay consistent with strength training to maximize gains.";
-        btn.innerText = "Read more";
-      }
+    // Save & restore mode
+    function setMode(modeKey){
+      localStorage.setItem('wg_mode', modeKey);
+      applyModeTheme(modeKey);
+      // When selecting mode, rebuild tasks & calculator outlines
+      buildTaskUI();
+      // show calculator and tasks outlines (they exist on page already)
+      document.getElementById('calculator').classList.add('outlined');
+      document.getElementById('tasksSection').classList.add('outlined');
+      document.getElementById('tipsSection').classList.add('outlined');
     }
+
+    const savedMode = localStorage.getItem('wg_mode');
+    if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
+
+    btnHealthy.addEventListener('click', ()=> setMode('healthy'));
+    btnFast.addEventListener('click', ()=> setMode('fast'));
+
+    // Read more / show less
+    readMore.addEventListener('click', ()=> { descLong.style.display = 'block'; readMore.style.display='none'; });
+    readLess.addEventListener('click', ()=> { descLong.style.display = 'none'; readMore.style.display='inline'; });
+
+    // Calculator logic (Mifflin-St Jeor + TDEE + surplus based on mode)
+    function calcSurplus(){
+      const w = parseFloat(document.getElementById('wg_weight').value||0);
+      const h = parseFloat(document.getElementById('wg_height').value||0);
+      const a = parseFloat(document.getElementById('wg_age').value||0);
+      const g = document.getElementById('wg_gender').value;
+      const act = parseFloat(document.getElementById('wg_activity').value);
+      if(!w || !h || !a){ 
+        if (typeof showToast === 'function') showToast('Fill weight, height, and age.', 'error');
+        else alert('Fill weight, height, and age.');
+        return;
+      }
+      let bmr = g === 'male' ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a -161);
+      const tdee = Math.round(bmr * act);
+      const modeKey = localStorage.getItem('wg_mode') || document.getElementById('wg_speed').value;
+      const surplus = (modeKey === 'fast' || document.getElementById('wg_speed').value === 'fast') ? 600 : 300;
+      const target = tdee + surplus;
+
+      wgResult.style.display = 'block';
+      wgResult.innerHTML = `<strong>Estimated TDEE:</strong> ${tdee} kcal/day<br>
+        <strong>Suggested surplus:</strong> +${surplus} kcal/day<br>
+        <strong>Target intake:</strong> <span style="font-size:1.15em">${target} kcal/day</span>`;
+
+      localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,mode:modeKey || document.getElementById('wg_speed').value}));
+    }
+
+    wgCalcBtn.addEventListener('click', calcSurplus);
+    wgResetBtn.addEventListener('click', ()=>{
+      ['wg_weight','wg_height','wg_age'].forEach(id => document.getElementById(id).value='');
+      wgResult.style.display='none';
+      localStorage.removeItem('wg_calc');
+    });
+
+    // Tasks logic: only two tasks. Show one per day (alternates) using real-world day number.
+    // Enforce 24-hour lock per task using stored timestamp.
+    function nowISO(){ return new Date().toISOString(); }
+    function msSince(ts){ return Date.now() - (new Date(ts)).getTime(); }
+
+    function buildTaskUI(){
+      taskWrap.innerHTML = '';
+      taskMotivate.style.display = 'none';
+      taskInfo.textContent = '';
+
+      // Determine which index to show today: alternate by day (real-world day count)
+      const days = Math.floor(Date.now() / 86400000); // UTC day count
+      const idx = days % TASKS.length; // 0 or 1
+      const task = TASKS[idx];
+
+      // check last completion time for this task
+      const key = 'wg_task_done_' + task.id;
+      const doneTS = localStorage.getItem(key);
+      const done = doneTS ? (msSince(doneTS) < 24*60*60*1000) : false;
+
+      // if completed within 24h -> show motivation and next availability
+      if(done){
+        // Show motivational message and time until next task
+        taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
+        taskMotivate.textContent = (task.id === 'diet') ? 'Great job on your diet — keep it up!' : 'Awesome workout — recovery matters!';
+        taskMotivate.style.display = 'block';
+
+        // show countdown until 24h passes
+        updateCountdown(doneTS);
+        const timer = setInterval(()=> {
+          if(!document.getElementById('timeRemain')) { clearInterval(timer); return; }
+          updateCountdown(doneTS);
+        }, 1000);
+        return;
+      }
+
+      // if not done, render the task box with checkbox
+      const box = document.createElement('div');
+      box.className = 'task-box';
+      box.id = 'task-' + task.id;
+      // outline if mode selected
+      if(localStorage.getItem('wg_mode')) box.classList.add('outlined');
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.id = 'cb-' + task.id;
+      cb.style.width='18px'; cb.style.height='18px';
+
+      const content = document.createElement('div');
+      content.style.flex='1';
+      const ttitle = document.createElement('div');
+      ttitle.style.fontWeight='700';
+      ttitle.textContent = `Day task — ${task.title}`;
+      const tdesc = document.createElement('div');
+      tdesc.className = 'muted';
+      tdesc.style.marginTop='6px';
+      tdesc.textContent = task.desc;
+
+      content.appendChild(ttitle);
+      content.appendChild(tdesc);
+
+      box.appendChild(cb);
+      box.appendChild(content);
+
+      taskWrap.appendChild(box);
+
+      // When checkbox toggled -> fade, save timestamp, show motivation
+      cb.addEventListener('change', (e) => {
+        if(!e.target.checked) return;
+        // visual fade
+        box.classList.add('completed');
+        // save ts
+        const ts = nowISO();
+        localStorage.setItem(key, ts);
+        // show motivation
+        taskMotivate.textContent = (task.id === 'diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
+        taskMotivate.style.display = 'block';
+        // update taskInfo to explain next availability
+        taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
+        // start countdown to 24h
+        updateCountdown(ts);
+        const tmr = setInterval(()=> {
+          if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; }
+          updateCountdown(ts);
+        }, 1000);
+      });
+    }
+
+    function updateCountdown(doneTS){
+      const remainMs = 24*60*60*1000 - msSince(doneTS);
+      const el = document.getElementById('timeRemain');
+      if(!el) return;
+      if(remainMs <= 0){
+        el.textContent = 'now (refresh page)';
+        // clear stored done to allow next show
+        // (we keep the localStorage key but letting buildTaskUI re-run on next load will show next task)
+        // To allow immediate change we can remove key:
+        //localStorage.removeItem('wg_task_done_diet'); // not auto remove here to avoid surprising deletion
+        return;
+      }
+      const hrs = Math.floor(remainMs / (1000*60*60));
+      const mins = Math.floor((remainMs % (1000*60*60)) / (1000*60));
+      const secs = Math.floor((remainMs % (1000*60)) / 1000);
+      el.textContent = `${hrs}h ${mins}m ${secs}s`;
+    }
+
+    // Build UI once on load
+    document.addEventListener('DOMContentLoaded', () => {
+      // restore calc inputs if saved
+      const savedCalc = localStorage.getItem('wg_calc');
+      if(savedCalc){
+        try{
+          const d = JSON.parse(savedCalc);
+          document.getElementById('wg_weight').value = d.w || '';
+          document.getElementById('wg_height').value = d.h || '';
+          document.getElementById('wg_age').value = d.a || '';
+          document.getElementById('wg_gender').value = d.g || 'male';
+          document.getElementById('wg_activity').value = d.act || '1.2';
+          if(d.mode && MODES[d.mode]) applyModeTheme(d.mode);
+        }catch(e){}
+      }
+      // initial task build
+      buildTaskUI();
+
+      // ensure correct outline if mode already set
+      if(localStorage.getItem('wg_mode')){
+        document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
+        document.querySelector('.nav').classList.add('grad-mode');
+      }
+    });
+
+    // If user changes speed dropdown but no explicit mode selected, allow calc to still work using dropdown
+    // (calcSurplus already checks wg_speed value)
   </script>
 </body>
 </html>
