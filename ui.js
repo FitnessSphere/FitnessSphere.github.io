@@ -1,122 +1,99 @@
-// --- Fade-in Animation ---
-function triggerFadeIn() {
-  document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
-}
 
-// --- Toast Messages ---
-function showToast(message, type='info') {
-  // Simple toast using alert as fallback
-  alert(message);
-}
+// ---------------- UI.JS ----------------
 
-// --- Modal ---
-function showModal(title, htmlContent) {
-  let overlay = document.getElementById('modalOverlay');
-  if(!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'modalOverlay';
-    overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:999;";
-    const box = document.createElement('div');
-    box.id = 'modalBox';
-    box.style.cssText = "background:#fff;padding:20px;border-radius:8px;max-width:400px;width:90%;";
-    const content = document.createElement('div');
-    content.id = 'modalContent';
-    box.appendChild(content);
-    const btn = document.createElement('button');
-    btn.textContent = "Close";
-    btn.onclick = ()=>overlay.style.display='none';
-    box.appendChild(btn);
-    overlay.appendChild(box);
-    document.body.appendChild(overlay);
-  }
-  document.getElementById('modalContent').innerHTML = `<h3>${title}</h3>${htmlContent}`;
-  overlay.style.display = 'flex';
-}
+// ---------- TOAST ----------
+function showToast(message, type = 'info', duration = 3000) {
+  let toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
 
-// --- Toggle Tips / Read More ---
-function toggleTips(contentId, btnElement, cautionBoxId=null) {
-  const content = document.getElementById(contentId);
-  const btn = btnElement;
-  const cautionBox = cautionBoxId ? document.getElementById(cautionBoxId) : null;
-  if(content.style.display === 'block') {
-    content.style.display = 'none';
-    btn.textContent = 'Read More';
-    if(cautionBox) cautionBox.style.display='none';
-    localStorage.removeItem(contentId+'_readmore');
-  } else {
-    content.style.display = 'block';
-    btn.textContent = 'Read Less';
-    if(cautionBox && document.documentElement.style.getPropertyValue('--theme-color') === '#ff5722') cautionBox.style.display='block';
-    localStorage.setItem(contentId+'_readmore','open');
-  }
-}
-
-// --- Tracker Renderer ---
-function renderTracker(containerId, plan) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  plan.forEach((item, idx) => {
-    const card = document.createElement('div');
-    card.className = 'tracker-card fade-in';
-    card.innerHTML = `<h3>${item.day}</h3>
-                      <p>Exercise: ${item.exercise}</p>
-                      <p>Diet: ${item.diet}</p>
-                      <button class="btn" onclick="completeTask('${item.day}')">Mark Complete</button>`;
-    container.appendChild(card);
+  Object.assign(toast.style, {
+    position: 'fixed',
+    bottom: '20px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    backgroundColor: type==='success' ? '#4caf50' : type==='error' ? '#f44336' : '#333',
+    color: '#fff',
+    padding: '10px 18px',
+    borderRadius: '6px',
+    zIndex: 9999,
+    fontSize: '0.95rem',
+    opacity: 0,
+    transition: 'opacity 0.3s ease, transform 0.3s ease'
   });
+
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{ toast.style.opacity = 1; toast.style.transform = 'translateX(-50%) translateY(-10px)'; });
+
+  setTimeout(() => {
+    toast.style.opacity = 0;
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(()=> toast.remove(), 300);
+  }, duration);
+}
+
+// ---------- MODAL ----------
+function createModal({title='Modal', content='', buttons=[{text:'OK', class:'primary', callback:null}]}){
+  // Overlay
+  let overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  Object.assign(overlay.style, {
+    position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.5)',
+    display:'flex', justifyContent:'center', alignItems:'center', zIndex:9998
+  });
+
+  // Modal box
+  let modal = document.createElement('div');
+  modal.className = 'modal-box';
+  Object.assign(modal.style, {
+    background:'#fff', padding:'20px', borderRadius:'10px', maxWidth:'500px', width:'90%', boxShadow:'0 4px 15px rgba(0,0,0,0.2)'
+  });
+
+  modal.innerHTML = `<h3 style="margin-top:0">${title}</h3><div>${content}</div>`;
+  
+  // Buttons
+  let btnContainer = document.createElement('div');
+  Object.assign(btnContainer.style, {marginTop:'15px', display:'flex', gap:'10px', justifyContent:'flex-end'});
+  buttons.forEach(b=>{
+    let btn = document.createElement('button');
+    btn.textContent = b.text;
+    btn.className = `btn ${b.class||''}`;
+    btn.onclick = ()=>{
+      if(b.callback) b.callback();
+      overlay.remove();
+    };
+    btnContainer.appendChild(btn);
+  });
+  modal.appendChild(btnContainer);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+}
+
+// ---------- FADE-IN / SCROLL REVEAL ----------
+function triggerFadeIn() {
+  document.querySelectorAll('.fade-in').forEach(el=>{
+    if(!el.classList.contains('visible')){
+      const rect = el.getBoundingClientRect();
+      if(rect.top < window.innerHeight - 50){
+        el.classList.add('visible');
+      }
+    }
+  });
+}
+
+function initScrollReveal() {
   triggerFadeIn();
+  window.addEventListener('scroll', triggerFadeIn);
 }
 
-// --- Tracker Task Complete ---
-function completeTask(dayName) {
-  showToast(`Great job! ${dayName} task completed.`, 'success');
+// ---------- SAVE/RESTORE INPUTS ----------
+function saveInput(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+function loadInput(key, fallback=null){ 
+  const val = localStorage.getItem(key);
+  return val ? JSON.parse(val) : fallback;
 }
 
-// --- Weight Gain Calculator ---
-function calculateSurplus(weightId, heightId, ageId, genderId, activityId, goalId) {
-  const w = parseFloat(document.getElementById(weightId).value);
-  const h = parseFloat(document.getElementById(heightId).value);
-  const a = parseInt(document.getElementById(ageId).value);
-  const g = document.getElementById(genderId).value;
-  const act = parseFloat(document.getElementById(activityId).value);
-  const goal = parseFloat(document.getElementById(goalId).value);
-
-  if(!w || !h || !a) { showToast("Please fill all fields", 'error'); return; }
-
-  let bmr = g==='male' 
-    ? 88.362 + (13.397*w) + (4.799*h) - (5.677*a)
-    : 447.593 + (9.247*w) + (3.098*h) - (4.330*a);
-
-  let tdee = bmr * act;
-  let surplus = goal * 7700 / 7; // kcal/day per kg/week
-  let targetCalories = tdee + surplus;
-
-  showModal("Calorie Surplus Result",
-    `<p><strong>BMR:</strong> ${Math.round(bmr)} kcal/day</p>
-     <p><strong>TDEE:</strong> ${Math.round(tdee)} kcal/day</p>
-     <p><strong>Required Calories for Goal:</strong> ${Math.round(targetCalories)} kcal/day</p>
-     <p class="note">A calorie surplus means eating more calories than your body burns. This fuels muscle growth and weight gain. Choose a gain rate that matches your comfort and training intensity.</p>`
-  );
-
-  // Save in localStorage
-  localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,goal}));
-}
-
-// --- Restore Calculator Values ---
-function restoreCalcValues(weightId, heightId, ageId, genderId, activityId, goalId) {
-  const saved = localStorage.getItem('wg_calc');
-  if(saved) {
-    const d = JSON.parse(saved);
-    document.getElementById(weightId).value = d.w;
-    document.getElementById(heightId).value = d.h;
-    document.getElementById(ageId).value = d.a;
-    document.getElementById(genderId).value = d.g;
-    document.getElementById(activityId).value = d.act;
-    document.getElementById(goalId).value = d.goal;
-  }
-}
-
-// --- Initialize ---
-window.onload = () => {
-  triggerFadeIn();
-};
+// ---------- DOCUMENT READY ----------
+document.addEventListener('DOMContentLoaded', ()=>{ 
+  if(typeof initScrollReveal === 'function') initScrollReveal();
+});
