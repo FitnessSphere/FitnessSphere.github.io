@@ -6,27 +6,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Fitness Sphere — Weight Gain</title>
 
-  <!-- Use the consolidated site stylesheet you provided -->
+  <!-- main theme (ensure this path exists in your project) -->
   <link rel="stylesheet" href="css/styles.css"/>
 
   <style>
-    /* Small page-specific tweaks */
+    /* small page-specific adjustments on top of styles.css */
     :root { --theme-color: #ff9800; }
-    main.container { padding-top: 26px; padding-bottom: 40px; }
     .muted { color: var(--muted); }
-    .pair img { width: 60px; height: 60px; object-fit: contain; border-radius:8px; }
-    .tracker-card { border:2px solid var(--accent); background: linear-gradient(180deg,#141827,#111425); }
-    .mode-toggle button.active { box-shadow: 0 6px 18px rgba(255,152,0,0.12); }
-    .calc-card { background: linear-gradient(180deg,#0f1724,#0b0f1b); }
+    .pair { display:flex; gap:12px; align-items:center; }
+    .pair img { width:56px; height:56px; object-fit:cover; border-radius:8px; background:#0f1530; border:1px solid #22305e; }
+    .calc-card { max-width:720px; }
+    .checkbox-label { display:inline-flex; gap:8px; align-items:center; color:var(--muted); }
+    /* ensure tracker checkboxes are visible on dark bg */
+    input[type="checkbox"] { width:18px; height:18px; }
+    /* mobile tweaks */
+    @media (max-width:640px){
+      .mode-toggle button { padding:14px 10px; font-size:16px; }
+      .pair img { width:48px; height:48px; }
+    }
   </style>
 </head>
 <body>
+  <!-- NAV: logo has a robust fallback if image fails -->
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html">
-        <!-- try assets/logo.png then fallback to logo.png -->
-        <img src="assets/logo.png" alt="logo" width="120"
-             onerror="this.onerror=null; this.src='logo.png'">
+      <a class="brand" href="index.html" aria-label="Home">
+        <img id="siteLogo" src="assets/logo.png" alt="logo" width="120"
+          onerror="this.style.display='none';document.getElementById('brandText').style.display='inline-block'">
+        <span id="brandText" style="display:none;color:var(--brand);font-weight:800;">Fitness Sphere</span>
       </a>
 
       <div class="links" data-menu>
@@ -36,6 +43,7 @@
         <a class="link" href="exercises.html">Exercises</a>
         <a class="link" href="premium.html">Premium</a>
       </div>
+
       <button class="btn secondary" data-menu-btn>Menu</button>
     </div>
   </nav>
@@ -44,297 +52,337 @@
     <h1 class="fade-in">Weight Gain Guide & Tracker</h1>
 
     <section class="fade-in">
-      <p class="muted">Welcome to the Weight Gain section. Use the plans and calculator below to gain healthy weight with minimal fat.</p>
+      <p class="muted">Welcome to the Weight Gain section. Use the tracker, pick Clean or Fast Bulk, and estimate your surplus with the calculator below.</p>
     </section>
 
     <section class="fade-in">
-      <div class="mode-toggle" role="tablist" aria-label="Bulk modes">
-        <button id="cleanBulkBtn" class="active" aria-pressed="true">Clean Bulk</button>
-        <button id="fastBulkBtn" aria-pressed="false">Fast Bulk</button>
+      <div class="mode-toggle">
+        <button id="cleanBulkBtn" class="active">Clean Bulk</button>
+        <button id="fastBulkBtn">Fast Bulk</button>
       </div>
 
-      <p id="bulkDescShort" class="muted small">
-        <strong>Clean Bulk:</strong> Balanced approach to gaining muscle with minimal fat.
+      <p id="bulkDescShort" class="muted">
+        <strong>Clean Bulk:</strong> A balanced, steady approach to gaining muscle with minimal fat.
         <span id="readMoreToggle" class="read-more">Read more</span>
       </p>
 
-      <div id="bulkDescFull" class="muted" style="display:none">
-        <p><strong>Clean Bulk:</strong> Focus on nutrient-dense foods, lean protein, and steady calorie increases to build muscle while keeping fat gain low.</p>
-        <p><strong>Fast Bulk:</strong> Rapid weight gain by consuming larger calorie surpluses; often less strict with food quality.</p>
-        <p id="fastBulkCaution" class="notice warn" style="display:none"><strong>Caution:</strong> Fast bulking may cause excess fat gain — monitor and adjust.</p>
+      <div id="bulkDescFull" class="muted" style="display:none; margin-top:10px;">
+        <p><strong>Clean Bulk:</strong> Focus on nutrient-dense foods, lean protein and gradual calorie increases.</p>
+        <p><strong>Fast Bulk:</strong> Larger surpluses to gain weight quickly — keep an eye on fat gain and digestion.</p>
+        <p id="fastBulkCaution" class="notice warn" style="display:none; margin-top:8px;">
+          <strong>Caution:</strong> Fast bulking can cause excess fat gain. Monitor weight and adjust training accordingly.
+        </p>
       </div>
     </section>
 
-    <!-- Tracker: renders a full-week list with persistent completions -->
-    <section id="trackerContainer" class="fade-in" aria-live="polite"></section>
+    <!-- Tracker: renders ALL 7 days as cards with persistent checkboxes -->
+    <section id="trackerContainer" class="fade-in">
+      <!-- injected by JS -->
+    </section>
 
     <section class="fade-in">
       <h2>Calorie Surplus Calculator</h2>
-      <p class="muted">Estimate calories above maintenance required to reach your weekly gain target.</p>
+      <p class="muted">Estimate how many calories above maintenance you'll need for your chosen gain rate.</p>
 
-      <div class="calc-card">
-        <input id="wg_weight" type="number" placeholder="Weight (kg)" />
-        <input id="wg_height" type="number" placeholder="Height (cm)" />
-        <input id="wg_age" type="number" placeholder="Age (years)" />
+      <div class="card calc-card">
+        <label>Weight (kg)</label>
+        <input id="wg_weight" type="number" placeholder="Weight (kg)">
+
+        <label>Height (cm)</label>
+        <input id="wg_height" type="number" placeholder="Height (cm)">
+
+        <label>Age (years)</label>
+        <input id="wg_age" type="number" placeholder="Age">
+
+        <label>Gender</label>
         <select id="wg_gender">
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
+
+        <label>Activity level</label>
         <select id="wg_activity">
-          <option value="1.2">Sedentary</option>
+          <option value="1.2">Sedentary (little exercise)</option>
           <option value="1.375">Lightly active</option>
           <option value="1.55">Moderately active</option>
           <option value="1.725">Very active</option>
           <option value="1.9">Extra active</option>
         </select>
+
+        <label>Goal (kg/week)</label>
         <select id="wg_goal">
           <option value="0.25">+0.25 kg/week (slow)</option>
           <option value="0.5">+0.5 kg/week (moderate)</option>
           <option value="1">+1 kg/week (fast)</option>
         </select>
-        <div style="display:flex;gap:10px;">
+
+        <div style="display:flex;gap:12px;align-items:center;margin-top:6px;">
           <button class="btn" id="wg_calcBtn">Calculate</button>
-          <button class="btn secondary" id="wg_resetBtn">Reset Values</button>
+          <button class="btn secondary" id="wg_resetBtn">Reset</button>
         </div>
+        <div id="wg_result" class="mt-3"></div>
       </div>
     </section>
 
     <section class="fade-in">
-      <h3>Extra Tips</h3>
+      <h2>Extra Tips</h2>
       <ul class="muted">
-        <li>Choose energy-dense whole foods (nuts, avocados, whole milk, rice).</li>
-        <li>Eat extra snacks and smoothies if you struggle to meet targets.</li>
-        <li>Focus on progressive overload and get 7–9 hours sleep.</li>
+        <li>Prefer calorie-dense, nutritious foods (nuts, whole milk, oats, rice, avocado).</li>
+        <li>Include progressive strength training to turn surplus into muscle.</li>
+        <li>Ensure adequate sleep and recovery.</li>
       </ul>
     </section>
   </main>
 
-  <!-- ui.js (utilities) -->
+  <!-- UI helpers (must exist at js/ui.js) -->
   <script src="js/ui.js"></script>
 
   <script>
-  (function(){
-    // --- safe fallbacks if ui.js didn't load ---
-    if (typeof showToast !== 'function') {
-      window.showToast = function(msg, type='info'){ alert(msg); };
+    // Safe wrappers so missing ui.js won't break the page
+    function safeShowToast(msg, type){
+      if(typeof showToast === 'function') showToast(msg, type === 'danger' ? 'error' : (type || 'info'));
+      else if(typeof alert === 'function') alert(msg);
     }
-    if (typeof showModal !== 'function') {
-      window.showModal = function(title, html){ 
-        // basic fallback modal
-        var s = '<strong>' + title + '</strong>\n\n' + (html.replace(/<[^>]+>/g,''));
-        alert(s);
-      };
+    function safeShowModal(title, html){
+      if(typeof showModal === 'function') showModal(title, html);
+      else {
+        // simple fallback
+        const win = window.open("", "_blank", "noopener");
+        if(win){ win.document.write(`<h2>${title}</h2><div>${html}</div>`); win.document.close(); }
+        else alert(title + "\n\n" + (html.replace(/<[^>]*>/g,'')));
+      }
     }
-    if (typeof triggerFadeIn !== 'function') {
-      window.triggerFadeIn = function(){ document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible')); };
-    }
 
-    // ---------- Plans ----------
-    const cleanBulkPlan = [
-      { day: "Day 1", exercise: "Full-body workout", diet: "High-protein breakfast", icon: "icons/dumbbell.png" },
-      { day: "Day 2", exercise: "Rest & stretch", diet: "Oats & milk", icon: "icons/stretch.png" },
-      { day: "Day 3", exercise: "Upper body strength", diet: "Chicken & rice", icon: "icons/biceps.png" },
-      { day: "Day 4", exercise: "Cardio 20 min", diet: "Protein shake", icon: "icons/cardio.png" },
-      { day: "Day 5", exercise: "Lower body strength", diet: "Sweet potatoes", icon: "icons/squat.png" },
-      { day: "Day 6", exercise: "Yoga & mobility", diet: "Eggs & toast", icon: "icons/yoga.png" },
-      { day: "Day 7", exercise: "Rest", diet: "Balanced meals", icon: "icons/plate.png" }
-    ];
-    const fastBulkPlan = [
-      { day: "Day 1", exercise: "Push workout", diet: "Pasta with cheese", icon: "icons/push.png" },
-      { day: "Day 2", exercise: "Rest", diet: "Smoothies", icon: "icons/smoothie.png" },
-      { day: "Day 3", exercise: "Pull workout", diet: "Burgers & fries", icon: "icons/burger.png" },
-      { day: "Day 4", exercise: "Leg day", diet: "Milkshakes", icon: "icons/milkshake.png" },
-      { day: "Day 5", exercise: "Core training", diet: "Rice & curry", icon: "icons/abs.png" },
-      { day: "Day 6", exercise: "Rest", diet: "Pizza", icon: "icons/pizza.png" },
-      { day: "Day 7", exercise: "Active rest", diet: "Ice cream", icon: "icons/icecream.png" }
-    ];
+    document.addEventListener('DOMContentLoaded', () => {
+      // ---------- Plans ----------
+      const cleanBulkPlan = [
+        { day: "Day 1", exercise: "Full-body workout", diet: "High-protein breakfast", icon: "icons/dumbbell.png" },
+        { day: "Day 2", exercise: "Rest & stretch", diet: "Oats & milk", icon: "icons/stretch.png" },
+        { day: "Day 3", exercise: "Upper body strength", diet: "Chicken & rice", icon: "icons/biceps.png" },
+        { day: "Day 4", exercise: "Cardio 20 min", diet: "Protein shake", icon: "icons/cardio.png" },
+        { day: "Day 5", exercise: "Lower body strength", diet: "Sweet potatoes", icon: "icons/squat.png" },
+        { day: "Day 6", exercise: "Yoga & mobility", diet: "Eggs & toast", icon: "icons/yoga.png" },
+        { day: "Day 7", exercise: "Rest", diet: "Balanced meals", icon: "icons/plate.png" }
+      ];
+      const fastBulkPlan = [
+        { day: "Day 1", exercise: "Push workout", diet: "Pasta with cheese", icon: "icons/push.png" },
+        { day: "Day 2", exercise: "Rest", diet: "Smoothies", icon: "icons/smoothie.png" },
+        { day: "Day 3", exercise: "Pull workout", diet: "Burgers & fries", icon: "icons/burger.png" },
+        { day: "Day 4", exercise: "Leg day", diet: "Milkshakes", icon: "icons/milkshake.png" },
+        { day: "Day 5", exercise: "Core training", diet: "Rice & curry", icon: "icons/abs.png" },
+        { day: "Day 6", exercise: "Rest", diet: "Pizza", icon: "icons/pizza.png" },
+        { day: "Day 7", exercise: "Active rest", diet: "Ice cream", icon: "icons/icecream.png" }
+      ];
 
-    // ---------- DOM Elements ----------
-    const trackerContainer = document.getElementById('trackerContainer');
-    const cleanBtn = document.getElementById('cleanBulkBtn');
-    const fastBtn = document.getElementById('fastBulkBtn');
-    const readMore = document.getElementById('readMoreToggle');
-    const fullDesc = document.getElementById('bulkDescFull');
-    const cautionBox = document.getElementById('fastBulkCaution');
+      // ---------- Elements ----------
+      const trackerContainer = document.getElementById('trackerContainer');
+      const cleanBtn = document.getElementById('cleanBulkBtn');
+      const fastBtn = document.getElementById('fastBulkBtn');
+      const readMoreToggle = document.getElementById('readMoreToggle');
+      const bulkDescFull = document.getElementById('bulkDescFull');
+      const fastBulkCaution = document.getElementById('fastBulkCaution');
 
-    // ---------- Storage helpers ----------
-    const todayKey = () => new Date().toISOString().slice(0,10);
-    const doneKey = (mode, date, idx, type) => `wg_${mode}_${date}_${idx}_${type}`;
+      // keys for localStorage
+      const MODE_KEY = 'wg_mode';
+      const READ_KEY = 'wg_readmore';
+      // use a date-specific suffix so daily tasks persist by date
+      const TODAY = new Date().toISOString().slice(0,10);
+      const DONE_KEY = (mode, idx, type) => `wg_${mode}_${TODAY}_${type}_${idx}`;
 
-    // render the full week's tracker and wire checkboxes with per-date persistence
-    function renderTracker(plan, mode) {
-      trackerContainer.innerHTML = '';
-      const date = todayKey();
+      // ---------- Tracker render (ALL days) ----------
+      function renderTracker(plan, mode){
+        trackerContainer.innerHTML = '';
+        plan.forEach((item, idx) => {
+          const card = document.createElement('div');
+          card.className = 'tracker-card fade-in';
+          // robust img onerror: hide broken images gracefully
+          const exIconHtml = `<img src="${item.icon}" alt="" onerror="this.style.display='none'">`;
+          card.innerHTML = `
+            <h3 style="margin:0 0 8px">${item.day}</h3>
 
-      plan.forEach((item, idx) => {
-        const card = document.createElement('div');
-        card.className = 'tracker-card fade-in';
-        // unique ids for checkboxes
-        const exId = `wg_ex_${mode}_${date}_${idx}`;
-        const dietId = `wg_diet_${mode}_${date}_${idx}`;
-
-        card.innerHTML = `
-          <h3>${item.day} — Exercise</h3>
-          <div class="pair" style="gap:12px;align-items:center">
-            <img src="${item.icon}" alt="${item.exercise}" onerror="this.onerror=null;this.src='icons/placeholder.png'"/>
-            <div style="flex:1">
-              <p style="margin:0 0 6px">${item.exercise}</p>
-              <label style="color:var(--muted)"><input type="checkbox" id="${exId}"> Completed</label>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;">
+              <div>
+                <div class="pair">
+                  ${exIconHtml}
+                  <div>
+                    <div style="font-weight:700">Exercise</div>
+                    <div class="muted">${item.exercise}</div>
+                  </div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <label class="checkbox-label"><input type="checkbox" data-idx="${idx}" data-type="ex"> Completed</label>
+              </div>
             </div>
-          </div>
 
-          <h3 style="margin-top:12px">${item.day} — Diet</h3>
-          <div class="pair" style="gap:12px;align-items:center">
-            <img src="${item.icon}" alt="${item.diet}" onerror="this.onerror=null;this.src='icons/placeholder.png'"/>
-            <div style="flex:1">
-              <p style="margin:0 0 6px">${item.diet}</p>
-              <label style="color:var(--muted)"><input type="checkbox" id="${dietId}"> Completed</label>
+            <hr style="border:none;height:10px;">
+
+            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;">
+              <div>
+                <div class="pair">
+                  <img src="${item.icon}" alt="" onerror="this.style.display='none'">
+                  <div>
+                    <div style="font-weight:700">Diet</div>
+                    <div class="muted">${item.diet}</div>
+                  </div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <label class="checkbox-label"><input type="checkbox" data-idx="${idx}" data-type="diet"> Completed</label>
+              </div>
             </div>
-          </div>
-        `;
-
-        trackerContainer.appendChild(card);
-
-        // restore saved states
-        const exChk = document.getElementById(exId);
-        const dietChk = document.getElementById(dietId);
-        try {
-          exChk.checked = localStorage.getItem(doneKey(mode, date, idx, 'ex')) === 'true';
-          dietChk.checked = localStorage.getItem(doneKey(mode, date, idx, 'diet')) === 'true';
-        } catch (e) { /* localStorage may be blocked */ }
-
-        // bind change events
-        exChk.addEventListener('change', () => {
-          try {
-            localStorage.setItem(doneKey(mode, date, idx, 'ex'), exChk.checked);
-          } catch(e){}
-          if (exChk.checked && dietChk.checked) {
-            showToast('Nice! Both exercise and diet done today.', 'success');
-          }
+          `;
+          trackerContainer.appendChild(card);
         });
-        dietChk.addEventListener('change', () => {
-          try {
-            localStorage.setItem(doneKey(mode, date, idx, 'diet'), dietChk.checked);
-          } catch(e){}
-          if (exChk.checked && dietChk.checked) {
-            showToast('Nice! Both exercise and diet done today.', 'success');
-          }
+
+        // restore states and attach listeners after elements exist
+        trackerContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          const idx = cb.getAttribute('data-idx');
+          const type = cb.getAttribute('data-type');
+          const key = DONE_KEY(mode, idx, type);
+          cb.checked = localStorage.getItem(key) === 'true';
+          cb.addEventListener('change', () => {
+            localStorage.setItem(key, cb.checked ? 'true' : 'false');
+            if(cb.checked){
+              safeShowToast('Great job — saved!', 'success');
+            }
+          });
         });
+
+        // reveal
+        if(typeof triggerFadeIn === 'function') triggerFadeIn();
+        else document.querySelectorAll('.fade-in').forEach(el=>el.classList.add('visible'));
+      }
+
+      // ---------- Mode handling ----------
+      function setMode(mode){
+        // update theme color
+        document.documentElement.style.setProperty('--theme-color', mode === 'fast' ? '#ff5722' : '#ff9800');
+        localStorage.setItem(MODE_KEY, mode);
+
+        // active classes
+        cleanBtn.classList.toggle('active', mode === 'clean');
+        fastBtn.classList.toggle('active', mode === 'fast');
+
+        // show/hide caution if readmore open
+        const readOpen = localStorage.getItem(READ_KEY) === 'open';
+        if(mode === 'fast' && readOpen) fastBulkCaution.style.display = 'block';
+        else fastBulkCaution.style.display = 'none';
+
+        // render proper plan
+        renderTracker(mode === 'fast' ? fastBulkPlan : cleanBulkPlan, mode);
+      }
+
+      cleanBtn.addEventListener('click', ()=> setMode('clean'));
+      fastBtn.addEventListener('click', ()=> setMode('fast'));
+
+      // read more toggle
+      readMoreToggle.addEventListener('click', ()=>{
+        const isHidden = bulkDescFull.style.display === 'none';
+        bulkDescFull.style.display = isHidden ? 'block' : 'none';
+        readMoreToggle.textContent = isHidden ? 'Read less' : 'Read more';
+        if(isHidden) localStorage.setItem(READ_KEY, 'open'); else localStorage.removeItem(READ_KEY);
+
+        // show caution only when fast mode is active
+        const mode = localStorage.getItem(MODE_KEY) || 'clean';
+        if(mode === 'fast') fastBulkCaution.style.display = isHidden ? 'block' : 'none';
       });
 
-      // reveal
-      triggerFadeIn();
-    }
+      // ---------- Calculator ----------
+      const inputWeight = document.getElementById('wg_weight');
+      const inputHeight = document.getElementById('wg_height');
+      const inputAge = document.getElementById('wg_age');
+      const selectGender = document.getElementById('wg_gender');
+      const selectActivity = document.getElementById('wg_activity');
+      const selectGoal = document.getElementById('wg_goal');
+      const calcBtn = document.getElementById('wg_calcBtn');
+      const resetBtn = document.getElementById('wg_resetBtn');
+      const resultBox = document.getElementById('wg_result');
 
-    // set mode and re-render plan
-    function setMode(mode){
-      document.documentElement.style.setProperty('--theme-color', mode === 'fast' ? '#ff5722' : '#ff9800');
-      cleanBtn.classList.toggle('active', mode === 'clean');
-      fastBtn.classList.toggle('active', mode === 'fast');
-
-      const plan = mode === 'fast' ? fastBulkPlan : cleanBulkPlan;
-      renderTracker(plan, mode);
-      try { localStorage.setItem('wg_mode', mode); } catch(e){}
-      // show caution if appropriate
-      if (mode === 'fast' && localStorage.getItem('wg_readmore') === 'open') {
-        if (cautionBox) cautionBox.style.display = 'block';
-      } else if (cautionBox) {
-        cautionBox.style.display = 'none';
-      }
-    }
-
-    // read more toggle
-    readMore.addEventListener('click', ()=>{
-      const hidden = fullDesc.style.display === 'none';
-      fullDesc.style.display = hidden ? 'block' : 'none';
-      readMore.textContent = hidden ? 'Read less' : 'Read more';
-      try {
-        if (hidden) localStorage.setItem('wg_readmore','open'); else localStorage.removeItem('wg_readmore');
-      } catch(e){}
-      if (hidden && localStorage.getItem('wg_mode') === 'fast') {
-        if (cautionBox) cautionBox.style.display = 'block';
-      } else if (cautionBox) cautionBox.style.display = 'none';
-    });
-
-    cleanBtn.addEventListener('click', ()=> setMode('clean'));
-    fastBtn.addEventListener('click', ()=> setMode('fast'));
-
-    // --- Calculator ---
-    const calcBtn = document.getElementById('wg_calcBtn');
-    const resetBtn = document.getElementById('wg_resetBtn');
-
-    calcBtn.addEventListener('click', ()=>{
-      const w = parseFloat(document.getElementById('wg_weight').value);
-      const h = parseFloat(document.getElementById('wg_height').value);
-      const a = parseInt(document.getElementById('wg_age').value, 10);
-      const g = document.getElementById('wg_gender').value;
-      const act = parseFloat(document.getElementById('wg_activity').value);
-      const goal = parseFloat(document.getElementById('wg_goal').value);
-
-      if (!w || !h || !a) {
-        showToast('Please fill weight, height and age.', 'error');
-        return;
+      function saveCalc(){
+        const data = {
+          w: inputWeight.value || '',
+          h: inputHeight.value || '',
+          a: inputAge.value || '',
+          g: selectGender.value,
+          act: selectActivity.value,
+          goal: selectGoal.value
+        };
+        localStorage.setItem('wg_calc', JSON.stringify(data));
       }
 
-      const bmr = g === 'male'
-        ? 88.362 + 13.397*w + 4.799*h - 5.677*a
-        : 447.593 + 9.247*w + 3.098*h - 4.330*a;
-      const tdee = Math.round(bmr * act);
-      const surplus = (goal * 7700) / 7;
-      const target = Math.round(tdee + surplus);
-
-      // Save inputs
-      try {
-        localStorage.setItem('wg_calc', JSON.stringify({ w,h,a,g,act,goal }));
-      } catch(e){}
-
-      // show reply modal
-      const html = `
-        <p><strong>BMR:</strong> ${Math.round(bmr)} kcal/day</p>
-        <p><strong>TDEE:</strong> ${tdee} kcal/day</p>
-        <p><strong>Required calories to reach goal:</strong> ${target} kcal/day</p>
-        <p class="muted small">Tip: Recalculate when your weight or activity changes.</p>
-      `;
-      showModal('Calorie Surplus Result', html);
-    });
-
-    resetBtn.addEventListener('click', ()=>{
-      document.getElementById('wg_weight').value = '';
-      document.getElementById('wg_height').value = '';
-      document.getElementById('wg_age').value = '';
-      document.getElementById('wg_gender').selectedIndex = 0;
-      document.getElementById('wg_activity').selectedIndex = 0;
-      document.getElementById('wg_goal').selectedIndex = 0;
-      try { localStorage.removeItem('wg_calc'); showToast('Calculator inputs reset','info'); } catch(e){}
-    });
-
-    // restore saved calculator values & UI state
-    window.addEventListener('load', ()=>{
-      try {
-        const calc = JSON.parse(localStorage.getItem('wg_calc') || '{}');
-        if (calc.w) document.getElementById('wg_weight').value = calc.w;
-        if (calc.h) document.getElementById('wg_height').value = calc.h;
-        if (calc.a) document.getElementById('wg_age').value = calc.a;
-        if (calc.g) document.getElementById('wg_gender').value = calc.g;
-        if (calc.act) document.getElementById('wg_activity').value = calc.act;
-        if (calc.goal) document.getElementById('wg_goal').value = calc.goal;
-      } catch(e){}
-
-      const savedMode = localStorage.getItem('wg_mode') || 'clean';
-      setMode(savedMode);
-
-      // keep readmore open if stored
-      if (localStorage.getItem('wg_readmore') === 'open') {
-        fullDesc.style.display = 'block';
-        readMore.textContent = 'Read less';
-        if (savedMode === 'fast' && cautionBox) cautionBox.style.display = 'block';
+      // restore saved
+      const saved = localStorage.getItem('wg_calc');
+      if(saved){
+        try{
+          const d = JSON.parse(saved);
+          if(d.w) inputWeight.value = d.w;
+          if(d.h) inputHeight.value = d.h;
+          if(d.a) inputAge.value = d.a;
+          if(d.g) selectGender.value = d.g;
+          if(d.act) selectActivity.value = d.act;
+          if(d.goal) selectGoal.value = d.goal;
+        }catch(e){ /* ignore parse errors */ }
       }
 
-      // initial fade-ins
-      triggerFadeIn();
-    });
+      calcBtn.addEventListener('click', ()=> {
+        const w = parseFloat(inputWeight.value);
+        const h = parseFloat(inputHeight.value);
+        const a = parseInt(inputAge.value, 10);
+        const g = selectGender.value;
+        const act = parseFloat(selectActivity.value);
+        const goal = parseFloat(selectGoal.value);
 
-  })();
+        if(!w || !h || !a){ safeShowToast('Please fill weight, height and age', 'danger'); return; }
+
+        // Mifflin-St Jeor
+        let bmr = 0;
+        if(g === 'male') bmr = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a);
+        else bmr = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
+
+        const tdee = bmr * act;
+        const surplus = goal * 7700 / 7; // kcal/day for kg/week
+        const targetCalories = Math.round(tdee + surplus);
+
+        saveCalc();
+
+        const html = `
+          <p><strong>BMR:</strong> ${Math.round(bmr)} kcal/day</p>
+          <p><strong>TDEE:</strong> ${Math.round(tdee)} kcal/day</p>
+          <p><strong>Required calories for goal:</strong> ${targetCalories} kcal/day</p>
+          <p class="muted small">Tip: Recalculate when your weight changes or activity shifts.</p>
+        `;
+
+        // try to show a modal, fallback to inline
+        if(typeof showModal === 'function'){
+          showModal('Calorie Surplus Result', html);
+        } else {
+          resultBox.innerHTML = html;
+        }
+      });
+
+      resetBtn.addEventListener('click', ()=>{
+        inputWeight.value = inputHeight.value = inputAge.value = '';
+        selectGender.value = 'male';
+        selectActivity.value = '1.2';
+        selectGoal.value = '0.25';
+        localStorage.removeItem('wg_calc');
+        resultBox.innerHTML = '';
+        safeShowToast('Calculator reset', 'info');
+      });
+
+      // ---------- Initialise page state ----------
+      (function init(){
+        const savedMode = localStorage.getItem(MODE_KEY) || 'clean';
+        const readOpen = localStorage.getItem(READ_KEY) === 'open';
+        setMode(savedMode);
+        if(readOpen){
+          bulkDescFull.style.display = 'block';
+          readMoreToggle.textContent = 'Read less';
+          if(savedMode === 'fast') fastBulkCaution.style.display = 'block';
+        }
+      })();
+    });
   </script>
 </body>
 </html>
