@@ -1,138 +1,357 @@
 
-        <!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Fitness Sphere — Calorie Tracker</title>
-  <link rel="stylesheet" href="styles.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calories & Nutrition Hub</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f4f8;
+    }
+    header {
+        background: linear-gradient(90deg, #28a745, #20c997);
+        color: white;
+        padding: 20px 10px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        background-color: #fff;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    nav a {
+        text-decoration: none;
+        color: #28a745;
+        font-weight: bold;
+    }
+    nav a:hover {
+        color: #20c997;
+    }
+    .container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+    .card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    h2 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 22px;
+    }
+    label {
+        display: block;
+        margin: 10px 0 5px;
+    }
+    input, select, button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+    button {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #20c997;
+    }
+    .result {
+        background-color: #e9f7ef;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 10px;
+        font-weight: bold;
+        color: #155724;
+    }
+    .toggle-content {
+        display: none;
+        margin-top: 10px;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    .toggle-btn {
+        background: none;
+        border: none;
+        color: #007bff;
+        cursor: pointer;
+        padding: 0;
+        margin: 5px 0;
+        font-size: 14px;
+    }
+    .tips ul {
+        padding-left: 20px;
+    }
+</style>
 </head>
 <body>
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="logo.png" alt="logo" width="120"/></a>
-      <div class="links" data-menu>
-        <a class="link" href="calories.html">Calories</a>
-        <a class="link" href="weight-loss.html">Weight Loss</a>
-        <a class="link" href="weight-gain.html">Weight Gain</a>
-        <a class="link" href="exercises.html">Exercises</a>
-        <a class="link" href="premium.html">Premium</a>
-      </div>
-      <button class="btn secondary" data-menu-btn>Menu</button>
-    </div>
-  </nav>
 
-  <main class="container section">
-    <h1>Manual Calorie Tracker</h1>
-    <p class="lead">Add foods with grams to get calories & macros. Save the day and see your last 7 days chart.</p>
+<header>Calories & Nutrition Hub</header>
 
-    <!-- Improved Add Food Section -->
-    <div class="grid" style="grid-template-columns: 1.5fr 1fr;">
-      <div class="card">
-        <div class="grid" style="grid-template-columns: 1fr 140px 140px;">
-          <input id="foodInput" placeholder="Search or type food (e.g. Paneer, Rice)"/>
-          <input id="gramsInput" type="number" placeholder="Grams (e.g. 100)"/>
-          <button id="addItem" class="btn">Add</button>
-        </div>
-        <div id="suggestions" class="mt-2"></div>
-        <div id="preview" class="notice mt-2 hidden"></div>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="weightgain.html">Weight Gain</a>
+    <a href="weightloss.html">Weight Loss</a>
+</nav>
 
-        <table class="table mt-3">
-          <thead>
-            <tr>
-              <th>Food</th><th>Unit</th><th>Grams</th><th>Kcal</th><th>P</th><th>C</th><th>F</th><th></th>
-            </tr>
-          </thead>
-          <tbody id="items"></tbody>
-        </table>
-        <div class="kpi">
-          <div>Totals (today)</div>
-          <div class="num">
-            <span id="totalKcal">0</span> kcal • P <span id="totalP">0</span> • C <span id="totalC">0</span> • F <span id="totalF">0</span>
-          </div>
-        </div>
-        <div class="cta">
-          <button class="btn" id="saveLog">Save Day</button>
-          <button class="btn secondary" id="clearItems">Clear</button>
-        </div>
-      </div>
+<div class="container">
 
-      <!-- Photo → Calories with Camera Support -->
-      <div class="card">
-        <h3>Photo → Calories</h3>
-        <p>Take a photo or upload food image to estimate calories.</p>
-        <input id="photoInput" type="file" accept="image/*" capture="environment" class="mt-2"/>
-        <button id="photoEstimate" class="btn mt-2">Estimate</button>
-        <div id="photoResult" class="mt-2"></div>
-        <p class="mt-3">Note: This is a demo. AI model integration will replace it in Premium later.</p>
-      </div>
+    <!-- BMR & TDEE Calculator -->
+    <div class="card">
+        <h2>💪 BMR & TDEE Calculator</h2>
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" placeholder="Enter your weight">
+        <label for="height">Height (cm):</label>
+        <input type="number" id="height" placeholder="Enter your height">
+        <label for="age">Age (years):</label>
+        <input type="number" id="age" placeholder="Enter your age">
+        <label for="gender">Gender:</label>
+        <select id="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <label for="activity">Activity Level:</label>
+        <select id="activity">
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Lightly active</option>
+            <option value="1.55">Moderately active</option>
+            <option value="1.725">Very active</option>
+            <option value="1.9">Extra active</option>
+        </select>
+        <button onclick="calculateCalories()">Calculate</button>
+        <div class="result" id="result"></div>
     </div>
 
-    <!-- Last 7 Days -->
-    <div class="card mt-4">
-      <h3>Last 7 Days</h3>
-      <canvas id="kcalChart" height="100"></canvas>
-      <table class="table mt-3">
-        <thead>
-          <tr><th>Date</th><th>Total kcal</th></tr>
-        </thead>
-        <tbody id="logBody"></tbody>
-      </table>
+    <!-- Macronutrient Breakdown -->
+    <div class="card">
+        <h2>🍽️ Macronutrient Breakdown</h2>
+        <p>Based on your calculated calories, get your recommended grams of protein, carbs, and fats.</p>
+        <button onclick="calculateMacros()">Show Macronutrients</button>
+        <div class="result" id="macrosResult"></div>
     </div>
 
-    <div class="notice mt-3">All data is saved only on this device (localStorage). Clearing browser storage will remove it.</div>
-  </main>
+    <!-- BMI Calculator -->
+    <div class="card">
+        <h2>⚖️ BMI Calculator</h2>
+        <label for="bmiWeight">Weight (kg):</label>
+        <input type="number" id="bmiWeight" placeholder="Enter your weight">
+        <label for="bmiHeight">Height (cm):</label>
+        <input type="number" id="bmiHeight" placeholder="Enter your height">
+        <button onclick="calculateBMI()">Calculate BMI</button>
+        <div class="result" id="bmiResult"></div>
+    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="data.js"></script>
-  <script src="app.js"></script>
-  <script src="calories.js"></script>
-  <script>
-    // Live food suggestions
-    const foodInput = document.getElementById('foodInput');
-    const gramsInput = document.getElementById('gramsInput');
-    const suggestions = document.getElementById('suggestions');
-    const preview = document.getElementById('preview');
+    <!-- Water Intake Calculator -->
+    <div class="card">
+        <h2>💧 Daily Water Intake</h2>
+        <label for="waterWeight">Weight (kg):</label>
+        <input type="number" id="waterWeight" placeholder="Enter your weight">
+        <button onclick="calculateWater()">Calculate Water Intake</button>
+        <div class="result" id="waterResult"></div>
+    </div>
 
-    const foodList = [
-      {name: 'Paneer', unit: '100g', kcal: 265, p: 18, c: 6, f: 20},
-      {name: 'Rice', unit: '100g', kcal: 130, p: 2.7, c: 28, f: 0.3},
-      {name: 'Dal', unit: '100g', kcal: 116, p: 9, c: 20, f: 0.4},
-      {name: 'Roti', unit: '1 pc', kcal: 80, p: 3, c: 15, f: 1}
-    ];
+    <!-- Meal Plan Generator -->
+    <div class="card">
+        <h2>🥗 Daily Meal Plan Generator</h2>
+        <p>Select your preference and generate a sample meal plan based on your maintenance calories.</p>
 
-    foodInput.addEventListener('input', () => {
-      const val = foodInput.value.toLowerCase();
-      suggestions.innerHTML = '';
-      preview.classList.add('hidden');
-      if (val.length > 0) {
-        const matches = foodList.filter(f => f.name.toLowerCase().includes(val));
-        matches.forEach(m => {
-          const div = document.createElement('div');
-          div.className = 'suggestion';
-          div.textContent = `${m.name} (${m.unit})`;
-          div.onclick = () => {
-            foodInput.value = m.name;
-            gramsInput.value = parseInt(m.unit) || 100;
-            preview.textContent = `${m.name} — ${m.kcal} kcal, P ${m.p}, C ${m.c}, F ${m.f}`;
-            preview.classList.remove('hidden');
-            suggestions.innerHTML = '';
-          };
-          suggestions.appendChild(div);
-        });
-      }
+        <label for="dietType">Diet Preference:</label>
+        <select id="dietType">
+            <option value="veg">Vegetarian</option>
+            <option value="nonveg">Non-Vegetarian</option>
+        </select>
+
+        <button onclick="generateMealPlan()">Generate Meal Plan</button>
+        <div class="result" id="mealPlanResult"></div>
+        <button id="copyMealBtn" style="display:none; margin-top:10px;" onclick="copyMealPlan()">Copy Meal Plan</button>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="card tips">
+        <h2>📌 Nutrition & Calorie Tips</h2>
+        <button class="toggle-btn" onclick="toggleTips()">Read more</button>
+        <div class="toggle-content" id="tipsContent">
+            <ul>
+                <li>Eat balanced meals with protein, carbs, and healthy fats.</li>
+                <li>Track your daily calories to ensure you meet your goals.</li>
+                <li>Stay hydrated; drink at least 2–3 liters of water daily.</li>
+                <li>Adjust calories gradually for sustainable weight loss or gain.</li>
+                <li>Include fiber-rich foods for better digestion and satiety.</li>
+                <li>Include lean protein sources such as eggs, fish, chicken, paneer, or legumes.</li>
+                <li>Distribute meals evenly throughout the day for better energy management.</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function calculateCalories() {
+    let weight = parseFloat(document.getElementById('weight').value);
+    let height = parseFloat(document.getElementById('height').value);
+    let age = parseFloat(document.getElementById('age').value);
+    let gender = document.getElementById('gender').value;
+    let activity = parseFloat(document.getElementById('activity').value);
+
+    if(!weight || !height || !age) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    let bmr = (gender === "male") ? (10*weight + 6.25*height - 5*age + 5) : (10*weight + 6.25*height - 5*age - 161);
+    let tdee = Math.round(bmr * activity);
+    let deficit = tdee - 500;
+    let surplus = tdee + 500;
+
+    document.getElementById('result').innerHTML = `
+        Maintenance Calories: <b>${tdee} kcal</b><br>
+        Calories for Weight Loss: <b>${deficit} kcal</b><br>
+        Calories for Weight Gain: <b>${surplus} kcal</b>
+    `;
+    window.latestCalories = tdee;
+}
+
+function calculateMacros() {
+    if(!window.latestCalories) {
+        alert("Please calculate calories first!");
+        return;
+    }
+    let protein = Math.round(window.latestCalories * 0.3 / 4);
+    let carbs = Math.round(window.latestCalories * 0.45 / 4);
+    let fats = Math.round(window.latestCalories * 0.25 / 9);
+    document.getElementById('macrosResult').innerHTML = `
+        Protein: <b>${protein} g</b><br>
+        Carbs: <b>${carbs} g</b><br>
+        Fats: <b>${fats} g</b>
+    `;
+}
+
+function calculateBMI() {
+    let weight = parseFloat(document.getElementById('bmiWeight').value);
+    let height = parseFloat(document.getElementById('bmiHeight').value) / 100;
+    if(!weight || !height) {
+        alert("Please fill all fields!");
+        return;
+    }
+    let bmi = (weight / (height * height)).toFixed(1);
+    let category = '';
+    if(bmi < 18.5) category = 'Underweight';
+    else if(bmi < 24.9) category = 'Normal weight';
+    else if(bmi < 29.9) category = 'Overweight';
+    else category = 'Obese';
+    document.getElementById('bmiResult').innerHTML = `BMI: <b>${bmi}</b> (${category})`;
+}
+
+function calculateWater() {
+    let weight = parseFloat(document.getElementById('waterWeight').value);
+    if(!weight) {
+        alert("Please enter weight!");
+        return;
+    }
+    let water = (weight * 35 / 1000).toFixed(1);
+    document.getElementById('waterResult').innerHTML = `Recommended Water Intake: <b>${water} L/day</b>`;
+}
+
+function generateMealPlan() {
+    if(!window.latestCalories) {
+        alert("Please calculate calories first!");
+        return;
+    }
+    let calories = window.latestCalories;
+    let diet = document.getElementById('dietType').value;
+
+    let breakfastCalories = Math.round(calories * 0.25);
+    let lunchCalories = Math.round(calories * 0.35);
+    let dinnerCalories = Math.round(calories * 0.3);
+    let snacksCalories = Math.round(calories * 0.1);
+
+    let mealPlan = "";
+
+    if(diet === "veg") {
+        mealPlan = `
+Breakfast (~${breakfastCalories} kcal):
+- Oats with milk, banana, and nuts
+- 1 glass of fresh orange juice
+
+Lunch (~${lunchCalories} kcal):
+- 2-3 chapatis with mixed vegetable curry
+- 1 cup dal/lentils
+- Salad of cucumber, tomato, carrot
+
+Dinner (~${dinnerCalories} kcal):
+- Vegetable pulao or rice with paneer curry
+- 1 bowl of curd or raita
+
+Snacks (~${snacksCalories} kcal):
+- Handful of nuts or roasted chickpeas
+- 1 fruit like apple or papaya
+        `;
+    } else {
+        mealPlan = `
+Breakfast (~${breakfastCalories} kcal):
+- Eggs (2-3) with toast
+- 1 glass of milk
+
+Lunch (~${lunchCalories} kcal):
+- Grilled chicken or fish with rice/chapati
+- 1 cup dal/lentils (optional)
+- Salad of cucumber, tomato, carrot
+
+Dinner (~${dinnerCalories} kcal):
+- Chicken curry or fish curry with rice or chapati
+- 1 bowl of curd or raita
+
+Snacks (~${snacksCalories} kcal):
+- Handful of nuts or roasted chickpeas
+- 1 fruit like apple or banana
+        `;
+    }
+
+    document.getElementById('mealPlanResult').innerHTML = mealPlan.replace(/\n/g, "<br>");
+    document.getElementById('copyMealBtn').style.display = "block";
+}
+
+function copyMealPlan() {
+    let mealText = document.getElementById('mealPlanResult').innerText;
+    navigator.clipboard.writeText(mealText).then(() => {
+        alert("Meal plan copied to clipboard!");
+    }).catch(() => {
+        alert("Failed to copy. Please try again.");
     });
+}
 
-    // Photo → Calories demo
-    document.getElementById('photoEstimate').addEventListener('click', () => {
-      const file = document.getElementById('photoInput').files[0];
-      if (!file) return customAlert('Please select or take a photo.');
-      const resultDiv = document.getElementById('photoResult');
-      resultDiv.innerHTML = '<em>Estimating...</em>';
-      setTimeout(() => {
-        resultDiv.innerHTML = `Estimated: <strong>${Math.floor(Math.random()*300)+100} kcal</strong>`;
-      }, 1500);
-    });
-  </script>
+function toggleTips() {
+    let content = document.getElementById("tipsContent");
+    let btn = document.querySelector(".toggle-btn");
+    if(content.style.display === "block") {
+        content.style.display = "none";
+        btn.textContent = "Read more";
+    } else {
+        content.style.display = "block";
+        btn.textContent = "Show less";
+    }
+}
+</script>
+
 </body>
 </html>
