@@ -1,121 +1,157 @@
 
-   <!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Fitness Sphere — Weight Gain</title>
 
-  <!-- Keep main stylesheet for consistent look with weight-loss -->
-  <link rel="stylesheet" href="styles.css" />
-
+  <!-- If you use a global styles.css across the site, this file intentionally keeps minimal local overrides
+       so you can drop it into the same folder as the rest of the site. -->
   <style>
-    /* Local overrides and fixes (header sizing, button styles, task boxes) */
+    /* ---------- Theme variables & base (mint default like main site) ---------- */
     :root{
-      --theme-color: #34d399;        /* default mint theme */
+      --theme-color: #34d399;        /* mint default */
       --theme-gradient-start: #34d399;
       --theme-gradient-end: #60a5fa;
       --btn-text: #071022;
       --bg: #0b1020;
+      --card-bg: #0f1724;
       --text: #e6f1ff;
       --muted: #9fb2cc;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
+    /* ---------- Page base ---------- */
     html,body{ height:100%; }
-    body { background: var(--bg); color: var(--text); margin:0; font-family: Inter, system-ui, Arial, sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; transition: background .25s ease, color .25s ease; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+    .container{ max-width:1100px; margin:0 auto; padding:0 16px; }
 
-    /* Container / nav sizing exactly like the main site */
-    .container { max-width:1100px; margin:0 auto; padding:0 16px; }
-    .nav { position:sticky; top:0; background:rgba(11,16,32,.7); backdrop-filter: blur(6px); z-index:50; border-bottom:1px solid #1f2a4d; }
-    .nav-inner { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; gap:12px; max-width:1100px; margin:0 auto; }
-    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
-    .brand img { height:36px; display:block; width:auto; }
-    .links { display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-left:8px; }
-    .link { color:var(--text); text-decoration:none; padding:8px 10px; border-radius:10px; white-space:nowrap; display:inline-block; opacity:.95; }
-    .link.active { outline:2px solid rgba(255,255,255,.04); }
+    /* ---------- Header (centered container, logo left) ---------- */
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: rgba(11,16,32,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      backdrop-filter: blur(6px);
+    }
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 16px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .brand img{ height:64px; width:auto; display:block; } /* bigger logo */
+    .links{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-left:8px; }
+    .link{ color:var(--text); text-decoration:none; padding:8px 12px; border-radius:10px; white-space:nowrap; opacity:.98; font-weight:600; }
+    .link.active{ outline:2px solid rgba(255,255,255,0.04); }
 
-    /* Nav gradient when a mode is selected (applies when .grad-mode is added) */
-    .nav.grad-mode { background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
+    /* When a mode is active we add .grad-mode to .nav for a header tint */
+    .nav.grad-mode{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
 
-    /* hero and text */
-    .hero { position:relative; padding:64px 0 28px; background:radial-gradient(ellipse at 50% -80px, #203069 0%, transparent 60%); overflow:hidden; border-radius:10px; }
-    .hero h1 { font-size:32px; line-height:1.05; margin:0 0 8px; color:var(--text); }
-    .lead { color:var(--muted); margin:0 0 6px; }
+    /* ---------- Hero / page sections (match weight-loss layout) ---------- */
+    .main-section{ padding:28px 0 36px; }
+    .hero{ padding:44px 0 10px; background: radial-gradient(ellipse at 50% -80px, #162342 0%, transparent 60%); border-radius:12px; }
+    .hero h1{ font-size:36px; margin:0 0 8px; color:var(--text); letter-spacing:-0.5px; }
+    .lead{ color:var(--muted); margin:0 0 18px; font-size:18px; }
 
-    /* Buttons */
-    .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:none; cursor:pointer; font-weight:700; transition: transform .12s ease, box-shadow .12s ease; user-select:none; }
-    .btn.secondary { background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); }
-    .btn.mode-graded { background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+    /* ---------- Buttons ---------- */
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; }
+    .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:10px 14px; font-weight:700; }
+    /* mode-graded uses CSS vars for gradient so JS can change them without editing CSS */
+    .btn.mode-graded{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: var(--shadow); min-width:160px; }
 
-    /* Outlined sections when a mode selected */
+    /* small helper spacing */
+    .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+
+    /* ---------- Outlined sections when a mode is selected ---------- */
+    .section { margin-bottom:22px; }
     .outlined { border:2px solid var(--theme-color); border-radius:12px; padding:14px; background: rgba(255,255,255,0.01); }
 
-    /* Read more link color */
-    .read-more-theme { color:var(--theme-color); cursor:pointer; font-weight:600; }
+    /* ---------- Calculator & form ---------- */
+    .grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); align-items:end; }
+    label{ display:block; font-weight:600; color:var(--muted); }
+    input[type="number"], select{ width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text); }
 
-    /* Task box */
-    .task-box { display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:2px solid rgba(255,255,255,0.04); transition: opacity .45s ease, transform .35s ease, border-color .25s ease; }
-    .task-box .title { font-weight:700; color:var(--text); }
-    .task-box .desc { color:var(--muted); margin-top:6px; font-size:14px; }
-    .task-box.outlined { border-color: var(--theme-color); }
-    .task-box.completed { opacity: 0; transform: scale(.995); pointer-events: none; }
+    /* ---------- Task UI ---------- */
+    .task-box{ display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:2px solid rgba(255,255,255,0.04); transition: opacity .45s ease, transform .35s ease, border-color .25s ease; }
+    .task-box .title{ font-weight:800; color:var(--text); }
+    .task-box .desc{ color:var(--muted); margin-top:6px; font-size:14px; }
+    .task-box.outlined{ border-color: var(--theme-color); }
+    .task-box.completed{ opacity:0; transform: scale(.995); pointer-events:none; }
 
-    .motivation { margin-top:10px; font-weight:700; color: var(--theme-color); display:none; }
+    .motivation{ margin-top:10px; font-weight:800; color:var(--theme-color); display:none; }
 
-    .tracker-card { border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border:2px solid rgba(255,255,255,0.02); color:var(--text); }
+    .tracker-card{ border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border:2px solid rgba(255,255,255,0.02); color:var(--text); }
 
-    .muted { color:var(--muted); }
-    .grid { display:grid; gap:12px; }
+    .read-more-theme{ color:var(--theme-color); cursor:pointer; font-weight:700; }
 
+    /* responsive tweaks */
     @media (max-width:720px){
-      .nav-inner { gap:8px; padding:8px 12px; }
-      .brand img{ height:32px; }
-      .hero { padding:40px 0 18px; }
+      .nav-inner{ gap:8px; padding:8px 12px; }
+      .brand img{ height:52px; }
+      .hero{ padding:28px 0 10px; }
+      .hero h1{ font-size:28px; }
+      .btn.mode-graded{ min-width:140px; padding:10px 14px; }
     }
   </style>
 </head>
 <body>
-  <!-- Header: logo top-left; links: Home, Calories, Exercises, Weight Loss, Premium (NO Menu, NO duplicate Weight Gain) -->
+
+  <!-- HEADER: logo top-left, links centered/right; NO Menu, NO duplicate Weight Gain -->
   <nav class="nav" id="mainNav">
     <div class="nav-inner container">
       <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere logo" /></a>
 
       <div class="links" data-menu>
         <a class="link" href="index.html">Home</a>
+        <a class="link" href="weight-loss.html">Weight Loss</a>
         <a class="link" href="calories.html">Calories</a>
         <a class="link" href="exercises.html">Exercises</a>
-        <a class="link" href="weight-loss.html">Weight Loss</a>
         <a class="link" href="premium.html">Premium</a>
       </div>
     </div>
   </nav>
 
-  <main class="container section" style="padding-top:18px;">
+  <!-- MAIN -->
+  <main class="container main-section">
     <section class="hero section" id="hero">
       <h1>Weight Gain Guide & Tracker</h1>
       <p class="lead">Choose a bulking mode, track diet & exercise tasks, and follow a calorie surplus plan.</p>
 
-      <div style="margin-top:14px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+      <div class="row" style="margin-top:14px;">
         <button id="btnHealthy" class="btn mode-graded" aria-pressed="false">Healthy Bulk</button>
         <button id="btnFast" class="btn mode-graded" aria-pressed="false">Fast Bulk</button>
-        <div style="align-self:center; margin-left:auto;">
-          <span id="modeHint" class="muted">No mode selected</span>
-        </div>
+        <div style="margin-left:auto;"><span id="modeHint" class="muted">No mode selected</span></div>
       </div>
 
       <p style="margin-top:10px;" class="muted">
         <span id="readMore" class="read-more-theme">Read more</span>
       </p>
       <div id="descLong" class="muted" style="display:none; margin-top:10px;">
-        <p><strong>Healthy Bulk:</strong> Gentle surplus (~+300 kcal/day), steady strength training, protein-focused.</p>
-        <p><strong>Fast Bulk:</strong> Bigger surplus (~+600 kcal/day) for faster gains; expect some fat gain.</p>
+        <p><strong>Healthy Bulk:</strong> Gentle surplus (+~300 kcal/day), steady strength training, protein-focused for cleaner gains.</p>
+        <p><strong>Fast Bulk:</strong> Larger surplus (+~600 kcal/day) for faster weight gain; expect some fat gain — short phases recommended.</p>
         <span id="readLess" class="read-more-theme" style="display:inline-block; margin-top:8px;">Show less</span>
       </div>
     </section>
 
-    <section id="calculator" class="section" style="margin-top:10px;">
+    <!-- CALCULATOR -->
+    <section id="calculator" class="section" style="margin-top:12px;">
       <h2>Calorie Surplus Calculator</h2>
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); align-items:end;">
+      <div class="grid" style="margin-top:10px;">
         <label>Weight (kg)<input id="wg_weight" type="number" min="20" max="300" step="0.1" /></label>
         <label>Height (cm)<input id="wg_height" type="number" min="120" max="230" /></label>
         <label>Age<input id="wg_age" type="number" min="12" max="100" /></label>
@@ -139,7 +175,7 @@
         </label>
       </div>
 
-      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
         <button id="wg_calcBtn" class="btn mode-graded">Calculate</button>
         <button id="wg_resetBtn" class="btn secondary">Reset</button>
         <div style="margin-left:auto;" class="muted"><small>Calculated with Mifflin–St Jeor</small></div>
@@ -148,32 +184,31 @@
       <div id="wg_result" class="tracker-card" style="margin-top:12px; display:none;"></div>
     </section>
 
-    <section id="tasksSection" class="section" style="margin-top:10px;">
+    <!-- TASKS: single task per day (alternates), mode-specific list -->
+    <section id="tasksSection" class="section" style="margin-top:12px;">
       <h2>Daily Task</h2>
       <div id="taskWrap" style="max-width:720px;"></div>
       <div id="taskMotivate" class="motivation">Nice! Keep the streak — you’ll get the next task tomorrow.</div>
       <div id="taskInfo" class="muted" style="margin-top:8px;"></div>
     </section>
 
-    <section id="tipsSection" class="section" style="margin-top:8px;">
+    <!-- TIPS -->
+    <section id="tipsSection" class="section" style="margin-top:12px;">
       <h3>Bulking Tips</h3>
       <p class="muted">Simple, realistic tips for clean and effective weight gain.</p>
       <ul>
         <li>Focus on calorie-dense whole foods (nuts, paneer, oats, milk, rice).</li>
-        <li>Prioritize strength training 3–4x/week — progressive overload matters more than eating only.</li>
-        <li>Aim for 1.6–2.2 g protein per kg bodyweight to support muscle growth.</li>
+        <li>Prioritize progressive strength training 3–4x/week.</li>
+        <li>Aim for 1.6–2.2 g protein per kg bodyweight.</li>
         <li>Sleep and recovery are crucial — don't skimp on rest.</li>
-        <li>Track progress, and adjust surplus every 2–4 weeks.</li>
+        <li>Track progress and adjust surplus every 2–4 weeks.</li>
       </ul>
     </section>
   </main>
 
-  <!-- Keep site scripts (ui helpers) if used -->
-  <script src="app.js"></script>
-  <script src="ui.js"></script>
-
+  <!-- Page scripts -->
   <script>
-    /* MODE colors (fixed). Default UI starts mint theme; saved mode persists across refresh and can be deselected by clicking again. */
+    /* ---------------- MODE definitions ---------------- */
     const MODES = {
       healthy: {
         name: 'Healthy Bulk',
@@ -206,13 +241,23 @@
     const taskInfo = document.getElementById('taskInfo');
     const navEl = document.getElementById('mainNav');
 
-    // Two tasks only
-    const TASKS = [
-      { id: 'diet', title: 'Diet — Eat 3 calorie-dense meals + one snack', desc: 'Include healthy fats (peanut butter, ghee) and whole calories.' },
-      { id: 'exercise', title: 'Exercise — Strength session (30–45 min)', desc: 'Compound lifts: squats, rows, presses. Keep protein high.' }
+    /* ---------------- Mode-specific tasks ---------------- */
+    const TASKS_HEALTHY = [
+      { id: 'diet', title: 'Diet — Add 1 extra calorie-dense snack (nuts / peanut butter)', desc: 'Small, frequent meals with healthy fats to slowly increase calories.' },
+      { id: 'exercise', title: 'Exercise — Light strength session (compound lifts)', desc: 'Focus on form and moderate reps (3×8–10). Prioritize recovery.' }
     ];
 
-    // Apply theme variables for a mode
+    const TASKS_FAST = [
+      { id: 'diet', title: 'Diet — Add a high-calorie shake (milk + oats + peanut butter)', desc: 'Calorie-forward choices to bump daily intake quickly.' },
+      { id: 'exercise', title: 'Exercise — Heavy strength session (progressive overload)', desc: 'Lift heavier with lower reps (4×5–6) to maximise gain.' }
+    ];
+
+    const TASKS_DEFAULT = [
+      { id: 'diet', title: 'Diet — Eat 3 calorie-dense meals today', desc: 'Include whole-food calorie boosts like ghee, paneer, nuts.' },
+      { id: 'exercise', title: 'Exercise — Short bodyweight strength work (20–30 min)', desc: 'Keep active with squats, push variations, rows.' }
+    ];
+
+    /* ---------------- Theme application ---------------- */
     function applyModeTheme(modeKey){
       const mode = MODES[modeKey];
       document.documentElement.style.setProperty('--theme-color', mode.color);
@@ -220,17 +265,19 @@
       document.documentElement.style.setProperty('--theme-gradient-end', mode.gradEnd);
       document.documentElement.style.setProperty('--btn-text', mode.textOnBtn);
 
+      // outlined sections & nav tint
       document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
       navEl.classList.add('grad-mode');
 
       btnHealthy.setAttribute('aria-pressed', modeKey === 'healthy');
       btnFast.setAttribute('aria-pressed', modeKey === 'fast');
+
       modeHint.textContent = `${MODES[modeKey].name} selected`;
       modeHint.style.color = mode.color;
     }
 
-    // Revert to default mint theme
     function revertToDefaultTheme(){
+      // Reset to mint defaults
       document.documentElement.style.setProperty('--theme-color', '#34d399');
       document.documentElement.style.setProperty('--theme-gradient-start', '#34d399');
       document.documentElement.style.setProperty('--theme-gradient-end', '#60a5fa');
@@ -241,11 +288,12 @@
 
       btnHealthy.setAttribute('aria-pressed', 'false');
       btnFast.setAttribute('aria-pressed', 'false');
+
       modeHint.textContent = 'No mode selected';
       modeHint.style.color = '';
     }
 
-    // Toggle/set mode. Passing null deselects.
+    // Toggle/set mode; pass null to deselect
     function setMode(modeKey){
       const currently = localStorage.getItem('wg_mode');
       if(modeKey === null){
@@ -255,6 +303,7 @@
         return;
       }
       if(currently === modeKey){
+        // deselect on second click
         setMode(null);
         return;
       }
@@ -266,7 +315,7 @@
     btnHealthy.addEventListener('click', ()=> setMode('healthy'));
     btnFast.addEventListener('click', ()=> setMode('fast'));
 
-    // On load: restore saved calculator values, auto-apply saved mode (persist), and build tasks
+    // Restore saved mode on load (persist selection). If none, default mint remains.
     document.addEventListener('DOMContentLoaded', () => {
       const savedCalc = localStorage.getItem('wg_calc');
       if(savedCalc){
@@ -281,20 +330,17 @@
       }
 
       const savedMode = localStorage.getItem('wg_mode');
-      if(savedMode && MODES[savedMode]){
-        applyModeTheme(savedMode); // re-apply the user's chosen mode automatically
-      } else {
-        revertToDefaultTheme(); // ensure default mint if none chosen
-      }
+      if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
+      else revertToDefaultTheme();
 
       buildTaskUI();
     });
 
-    // Read more toggle
+    /* ---------------- Read more toggle ---------------- */
     readMore.addEventListener('click', ()=> { descLong.style.display = 'block'; readMore.style.display='none'; });
     if(readLess) readLess.addEventListener('click', ()=> { descLong.style.display = 'none'; readMore.style.display='inline'; });
 
-    // Calculator (Mifflin-St Jeor + activity + surplus)
+    /* ---------------- Calculator (Mifflin-St Jeor) ---------------- */
     function calcSurplus(){
       const w = parseFloat(document.getElementById('wg_weight').value||0);
       const h = parseFloat(document.getElementById('wg_height').value||0);
@@ -302,8 +348,7 @@
       const g = document.getElementById('wg_gender').value;
       const act = parseFloat(document.getElementById('wg_activity').value);
       if(!w || !h || !a){
-        if (typeof showToast === 'function') showToast('Fill weight, height, and age.', 'error');
-        else alert('Fill weight, height, and age.');
+        alert('Please fill weight, height, and age.');
         return;
       }
       let bmr = g === 'male' ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a -161);
@@ -315,7 +360,7 @@
       wgResult.style.display = 'block';
       wgResult.innerHTML = `<strong>Estimated TDEE:</strong> ${tdee} kcal/day<br>
         <strong>Suggested surplus:</strong> +${surplus} kcal/day<br>
-        <strong>Target intake:</strong> <span style="font-size:1.15em">${target} kcal/day</span>`;
+        <strong>Target intake:</strong> <span style="font-size:1.05em">${target} kcal/day</span>`;
 
       localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,mode:modeKey}));
     }
@@ -327,18 +372,36 @@
       localStorage.removeItem('wg_calc');
     });
 
-    // Tasks: alternate daily (0 or 1), enforce 24h lock, checkbox fades box and reveals motivation
+    /* ---------------- Tasks UI: alternate daily, mode-specific, 24h lock ---------------- */
     function nowISO(){ return new Date().toISOString(); }
     function msSince(ts){ return Date.now() - (new Date(ts)).getTime(); }
+
+    function updateCountdown(doneTS){
+      const remainMs = 24*60*60*1000 - msSince(doneTS);
+      const el = document.getElementById('timeRemain');
+      if(!el) return;
+      if(remainMs <= 0){ el.textContent = 'now (refresh page)'; return; }
+      const hrs = Math.floor(remainMs / (1000*60*60));
+      const mins = Math.floor((remainMs % (1000*60*60)) / (1000*60));
+      const secs = Math.floor((remainMs % (1000*60)) / 1000);
+      el.textContent = `${hrs}h ${mins}m ${secs}s`;
+    }
 
     function buildTaskUI(){
       taskWrap.innerHTML = '';
       taskMotivate.style.display = 'none';
       taskInfo.textContent = '';
 
+      const modeKey = localStorage.getItem('wg_mode'); // 'healthy' | 'fast' | null
+      let list;
+      if(modeKey === 'healthy') list = TASKS_HEALTHY;
+      else if(modeKey === 'fast') list = TASKS_FAST;
+      else list = TASKS_DEFAULT;
+
+      // which index to show today (alternating 0/1)
       const days = Math.floor(Date.now() / 86400000);
-      const idx = days % TASKS.length;
-      const task = TASKS[idx];
+      const idx = days % list.length;
+      const task = list[idx];
 
       const key = 'wg_task_done_' + task.id;
       const doneTS = localStorage.getItem(key);
@@ -375,35 +438,20 @@
       taskWrap.appendChild(box);
 
       cb.addEventListener('change', (e) => {
-        if(!e.target.checked) return;
-        box.classList.add('completed');
-        const ts = nowISO();
-        localStorage.setItem(key, ts);
-        taskMotivate.textContent = (task.id === 'diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
-        taskMotivate.style.display = 'block';
-        taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
+       if(!e.target.checked) return;
+       box.classList.add('completed');
+       const ts = nowISO();
+       localStorage.setItem(key, ts);
+       taskMotivate.textContent = (task.id === 'diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
+       taskMotivate.style.display = 'block';
+       taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
+       updateCountdown(ts);
+       const tmr = setInterval(()=> {
+        if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; }
         updateCountdown(ts);
-        const tmr = setInterval(()=> {
-          if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; }
-          updateCountdown(ts);
-        }, 1000);
-      });
-    }
-
-    function updateCountdown(doneTS){
-      const remainMs = 24*60*60*1000 - msSince(doneTS);
-      const el = document.getElementById('timeRemain');
-      if(!el) return;
-      if(remainMs <= 0){
-        el.textContent = 'now (refresh page)';
-        return;
-      }
-      const hrs = Math.floor(remainMs / (1000*60*60));
-      const mins = Math.floor((remainMs % (1000*60*60)) / (1000*60));
-      const secs = Math.floor((remainMs % (1000*60)) / 1000);
-      el.textContent = `${hrs}h ${mins}m ${secs}s`;
-    }
-  </script>
+       }, 1000);
+     });
+   }
+ </script>
 </body>
-    </html>
-  
+</html>
