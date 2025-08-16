@@ -1,18 +1,20 @@
 
-<!doctype html>
+                                  <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Fitness Sphere — Weight Gain</title>
+
+  <!-- Link to main stylesheet (keeps everything consistent with weight-loss/main) -->
   <link rel="stylesheet" href="styles.css" />
+
   <style>
-    /* Default theme = mint/emerald (matches main/weight-loss base look) */
+    /* ---------- Small layout fixes & local overrides ---------- */
     :root{
-      --theme-color: #34d399;        /* mint/emerald */
+      --theme-color: #34d399;        /* mint/emerald default */
       --theme-gradient-start: #34d399;
-      --theme-gradient-end: #60a5fa; /* subtle secondary */
-      --outline: rgba(52,211,153,0.14);
+      --theme-gradient-end: #60a5fa;
       --btn-text: #071022;
       --bg: #0b1020;
       --bg-soft: #111834;
@@ -22,29 +24,28 @@
       --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
 
-    /* Keep page dark like main / weight-loss by default */
     html,body{ height:100%; }
     body { background: var(--bg); color: var(--text); margin:0; font-family: Inter, system-ui, Arial, sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; transition: background .25s ease, color .25s ease; }
 
-    /* Basic container/nav layout (match weight-loss) */
+    /* ---------- Header layout fixes (keeps nav centered & logo visible) ---------- */
     .container { max-width:1100px; margin:0 auto; padding:0 16px; }
     .nav { position:sticky; top:0; background:rgba(11,16,32,.7); backdrop-filter: blur(6px); z-index:50; border-bottom:1px solid #1f2a4d; }
-    .nav-inner { display:flex; align-items:center; justify-content:space-between; padding:10px 0; gap:12px; }
-    .brand { display:flex; align-items:center; gap:10px; }
-    .brand img { height:36px; display:block; }
-    .links { display:flex; gap:18px; align-items:center; flex-wrap:wrap; }
-    .link { color:var(--text); text-decoration:none; padding:8px 10px; border-radius:10px; opacity:.95; }
+    .nav-inner { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; gap:12px; max-width:1100px; margin:0 auto; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .brand img { height:36px; display:block; width:auto; }
+    .links { display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-left:8px; }
+    .link { color:var(--text); text-decoration:none; padding:8px 10px; border-radius:10px; white-space:nowrap; display:inline-block; opacity:.95; }
     .link.active { outline:2px solid rgba(255,255,255,.04); }
 
-    /* When a mode is selected we add .grad-mode to .nav; this style is only present when active */
+    /* nav gradient when a mode is selected */
     .nav.grad-mode { background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
 
-    /* Hero and sections (follow weight-loss look) */
+    /* Hero and layout (same look as weight-loss) */
     .hero { position:relative; padding:64px 0 28px; background:radial-gradient(ellipse at 50% -80px, #203069 0%, transparent 60%); overflow:hidden; border-radius:10px; }
     .hero h1 { font-size:32px; line-height:1.05; margin:0 0 8px; color:var(--text); }
     .lead { color:var(--muted); margin:0 0 6px; }
 
-    /* Buttons that change color with mode (fixed colors) */
+    /* Buttons */
     .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:none; cursor:pointer; font-weight:700; transition: transform .12s ease, box-shadow .12s ease; }
     .btn.secondary { background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); }
     .btn.mode-graded { background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
@@ -60,7 +61,6 @@
     .task-box .title { font-weight:700; color:var(--text); }
     .task-box .desc { color:var(--muted); margin-top:6px; font-size:14px; }
     .task-box.outlined { border-color: var(--theme-color); }
-
     .task-box.completed { opacity: 0; transform: scale(.995); pointer-events: none; }
 
     .motivation { margin-top:10px; font-weight:700; color: var(--theme-color); display:none; }
@@ -68,21 +68,20 @@
     /* result card */
     .tracker-card { border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border:2px solid rgba(255,255,255,0.02); color:var(--text); }
 
-    /* small helpers */
     .muted { color:var(--muted); }
     .grid { display:grid; gap:12px; }
 
     @media (max-width:720px){
-      .nav-inner { gap:8px; }
+      .nav-inner { gap:8px; padding:8px 12px; }
       .brand img{ height:32px; }
       .hero { padding:40px 0 18px; }
     }
   </style>
 </head>
 <body>
+  <!-- Nav (centered container, logo top-left) -->
   <nav class="nav" id="mainNav">
-    <div class="container nav-inner">
-      <!-- logo top-left -->
+    <div class="nav-inner container">
       <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere logo" /></a>
 
       <div class="links" data-menu>
@@ -176,10 +175,12 @@
     </section>
   </main>
 
+  <!-- keep site-wide helper scripts if you use them -->
   <script src="app.js"></script>
   <script src="ui.js"></script>
+
   <script>
-    /* MODE colors (fixed — NOT animated). Default UI starts mint theme and NO mode selected. */
+    /* MODE colors (fixed). Default UI starts mint theme and NO mode selected unless previously chosen. */
     const MODES = {
       healthy: {
         name: 'Healthy Bulk',
@@ -239,6 +240,9 @@
       // update hint
       modeHint.textContent = `${MODES[modeKey].name} selected`;
       modeHint.style.color = mode.color;
+
+      // Ensure mode-graded buttons show the correct static gradient via vars (CSS uses --theme-gradient-start/end)
+      // (No animation; colors are fixed.)
     }
 
     // Revert to default mint theme (deselect)
@@ -284,8 +288,7 @@
     btnHealthy.addEventListener('click', ()=> setMode('healthy'));
     btnFast.addEventListener('click', ()=> setMode('fast'));
 
-    // Prevent auto-applying a saved mode on load — start in mint default
-    // However keep saved values for calculator inputs (but do not auto-apply theme)
+    // On load: restore calculator inputs and auto-apply saved mode (so selection persists)
     document.addEventListener('DOMContentLoaded', () => {
       const savedCalc = localStorage.getItem('wg_calc');
       if(savedCalc){
@@ -296,9 +299,19 @@
           document.getElementById('wg_age').value = d.a || '';
           document.getElementById('wg_gender').value = d.g || 'male';
           document.getElementById('wg_activity').value = d.act || '1.2';
-          // DO NOT auto-apply theme on load — user wanted default mint at start
         }catch(e){}
       }
+
+      // Auto-apply saved mode so the user's chosen mode persists across refreshes.
+      const savedMode = localStorage.getItem('wg_mode');
+      if(savedMode && MODES[savedMode]){
+        applyModeTheme(savedMode);
+      } else {
+        // ensure default mint look if no saved mode
+        revertToDefaultTheme();
+      }
+
+      // Build tasks UI once
       buildTaskUI();
     });
 
@@ -313,7 +326,7 @@
       const a = parseFloat(document.getElementById('wg_age').value||0);
       const g = document.getElementById('wg_gender').value;
       const act = parseFloat(document.getElementById('wg_activity').value);
-      if(!w || !h || !a){ 
+      if(!w || !h || !a){
         if (typeof showToast === 'function') showToast('Fill weight, height, and age.', 'error');
         else alert('Fill weight, height, and age.');
         return;
@@ -322,7 +335,7 @@
       const tdee = Math.round(bmr * act);
       // use selected mode if there is one, otherwise use dropdown
       const modeKey = localStorage.getItem('wg_mode') || document.getElementById('wg_speed').value;
-      const surplus = (modeKey === 'fast' || document.getElementById('wg_speed').value === 'fast') ? 600 : 300;
+      const surplus = (modeKey === 'fast') ? 600 : 300;
       const target = tdee + surplus;
 
       wgResult.style.display = 'block';
@@ -330,7 +343,7 @@
         <strong>Suggested surplus:</strong> +${surplus} kcal/day<br>
         <strong>Target intake:</strong> <span style="font-size:1.15em">${target} kcal/day</span>`;
 
-      localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,mode:modeKey || document.getElementById('wg_speed').value}));
+      localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,mode:modeKey}));
     }
 
     wgCalcBtn.addEventListener('click', calcSurplus);
@@ -414,10 +427,4 @@
       }
       const hrs = Math.floor(remainMs / (1000*60*60));
       const mins = Math.floor((remainMs % (1000*60*60)) / (1000*60));
-      const secs = Math.floor((remainMs % (1000*60)) / 1000);
-      el.textContent = `${hrs}h ${mins}m ${secs}s`;
-    }
-  </script>
-</body>
-  </html>
-          
+      const secs = Math.floor
