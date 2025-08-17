@@ -6,9 +6,9 @@
   <title>Fitness Sphere — Weight Gain</title>
 
   <style>
-    /* ---------- Theme variables & base (mint default like main site) ---------- */
+    /* ---------- Theme variables & base ---------- */
     :root{
-      --theme-color: #34d399;        
+      --theme-color: #34d399;
       --theme-gradient-start: #34d399;
       --theme-gradient-end: #60a5fa;
       --btn-text: #071022;
@@ -20,82 +20,114 @@
     }
 
     /* ---------- Page base ---------- */
+    *{ box-sizing: border-box; }
     html,body{ height:100%; margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: var(--bg); color: var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; line-height:1.45; }
     .container{ max-width:1100px; margin:0 auto; padding:0 16px; }
 
-    /* ---------- Header (logo left, links right) ---------- */
+    /* ---------- Header: compact, premium, and click-safe ---------- */
     .nav{
       position: sticky;
       top: 0;
       z-index: 60;
-      background: rgba(11,16,32,0.9);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      background: rgba(11,16,32,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
     }
     .nav-inner{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      padding:6px 16px;         
+      gap:12px;
+      padding:8px 16px;
       max-width:1100px;
       margin:0 auto;
+      min-height:72px; /* ensure stable height so content isn't overlapped */
     }
-    .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; }
-    .brand img{ 
-      height:80px; /* bigger logo */
-      width:auto; 
-      display:block; 
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
-    } 
-    .links{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-left:8px; }
-    .link{ color:var(--text); text-decoration:none; padding:10px 14px; border-radius:12px; white-space:nowrap; font-weight:600; transition: background .3s, color .3s; }
-    .link:hover{ background: rgba(255,255,255,0.08); }
-    .link.active{ outline:2px solid rgba(255,255,255,0.04); }
+
+    /* Left brand: fixed size container so it cannot expand and cover nav */
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      flex: 0 0 auto; /* prevents growing/shrinking */
+      z-index: 70;
+      padding:2px 0;
+    }
+    .brand img{
+      height:72px;            /* visible, premium size */
+      max-height:72px;        /* prevents overflow */
+      width:auto;
+      display:block;
+      border-radius:10px;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45));
+    }
+
+    /* Links area uses remaining space and is right-aligned */
+    .links{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      flex: 1 1 auto;
+      justify-content:flex-end;
+      z-index: 80;
+    }
+    .link{
+      color:var(--text);
+      text-decoration:none;
+      padding:8px 12px;
+      border-radius:10px;
+      white-space:nowrap;
+      font-weight:600;
+      transition: background .18s, color .18s;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    .link:active,.link:hover{ background: rgba(255,255,255,0.04); }
+    .link.active{ outline:2px solid rgba(255,255,255,0.03); }
 
     .nav.grad-mode{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
 
     /* ---------- Hero / page sections ---------- */
-    .main-section{ padding:20px 0 24px; }
-    .hero{ padding:30px 0 8px; background: radial-gradient(ellipse at 50% -80px, #162342 0%, transparent 60%); border-radius:16px; box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
-    .hero h1{ font-size:36px; margin:0 0 8px; color:var(--text); letter-spacing:-0.5px; }
-    .lead{ color:var(--muted); margin:0 0 18px; font-size:18px; }
+    .main-section{ padding:18px 0 22px; }
+    .hero{
+      padding:28px 0 8px;
+      background: radial-gradient(ellipse at 50% -80px, #162342 0%, transparent 60%);
+      border-radius:14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+    .hero h1{ font-size:34px; margin:0 0 8px; color:var(--text); letter-spacing:-0.5px; }
+    .lead{ color:var(--muted); margin:0 0 16px; font-size:16px; }
 
     /* ---------- Buttons ---------- */
-    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; transition: transform .2s ease, background .3s ease; }
-    .btn:hover{ transform: translateY(-2px); }
-    .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:10px 14px; font-weight:700; }
-    .btn.mode-graded{ 
-      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); 
-      color:var(--btn-text); 
-      box-shadow: 0 6px 15px rgba(0,0,0,0.35); 
-      min-width:160px; 
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:10px 16px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; transition: transform .16s ease, background .25s ease, box-shadow .25s ease; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+    .btn:active{ transform: translateY(0); }
+    .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:8px 12px; font-weight:700; }
+    .btn.mode-graded{
+      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
+      color:var(--btn-text);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.36);
+      min-width:150px;
       border-radius:16px;
-      transition: transform .2s ease, background .3s ease, box-shadow .3s ease;
-    }
-    .btn.mode-graded:hover{ 
-      transform: translateY(-2px); 
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
 
     .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
 
     /* ---------- Outlined sections when a mode is selected ---------- */
-    .section { margin-bottom:18px; }
-    .outlined { border:2px solid var(--theme-color); border-radius:12px; padding:14px; background: rgba(255,255,255,0.01); }
+    .section { margin-bottom:16px; }
+    .outlined { border:2px solid var(--theme-color); border-radius:12px; padding:12px; background: rgba(255,255,255,0.01); }
 
     /* ---------- Calculator & form ---------- */
-    .grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); align-items:end; }
-    label{ display:block; font-weight:600; color:var(--muted); }
-    input[type="number"], select{ width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text); }
+    .grid{ display:grid; gap:10px; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); align-items:end; }
+    label{ display:block; font-weight:600; color:var(--muted); font-size:14px; }
+    input[type="number"], select{ width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text); font-size:14px; }
 
     /* ---------- Task UI ---------- */
     .task-box{ display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:2px solid rgba(255,255,255,0.04); transition: opacity .45s ease, transform .35s ease, border-color .25s ease; }
     .task-box .title{ font-weight:800; color:var(--text); }
     .task-box .desc{ color:var(--muted); margin-top:6px; font-size:14px; }
     .task-box.outlined{ border-color: var(--theme-color); }
-    .task-box.completed{ opacity:0; transform: scale(.995); pointer-events:none; }
+    .task-box.completed{ opacity:0.0; transform: scale(.995); pointer-events:none; }
 
     .motivation{ margin-top:10px; font-weight:800; color:var(--theme-color); display:none; }
 
@@ -105,20 +137,21 @@
 
     /* responsive tweaks */
     @media (max-width:720px){
-      .nav-inner{ gap:8px; padding:4px 10px; }
-      .brand img{ height:70px; }
-      .hero{ padding:28px 0 8px; }
-      .hero h1{ font-size:28px; }
-      .btn.mode-graded{ min-width:140px; padding:10px 14px; }
+      .nav-inner{ gap:8px; padding:6px 12px; min-height:64px; }
+      .brand img{ height:60px; max-height:60px; }
+      .hero{ padding:20px 0 8px; }
+      .hero h1{ font-size:26px; }
+      .btn.mode-graded{ min-width:130px; padding:9px 12px; }
+      .links{ gap:12px; }
     }
   </style>
 </head>
 <body>
 
   <!-- HEADER -->
-  <nav class="nav" id="mainNav">
+  <nav class="nav" id="mainNav" role="navigation" aria-label="Main Navigation">
     <div class="nav-inner container">
-      <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere logo" /></a>
+      <a class="brand" href="index.html" aria-label="Fitness Sphere home"><img src="logo.png" alt="Fitness Sphere logo" id="brandLogo" /></a>
       <div class="links" data-menu>
         <a class="link" href="index.html">Home</a>
         <a class="link" href="weight-loss.html">Weight Loss</a>
@@ -130,12 +163,12 @@
   </nav>
 
   <!-- MAIN -->
-  <main class="container main-section">
+  <main class="container main-section" id="mainContent">
     <section class="hero section" id="hero">
       <h1>Weight Gain Guide & Tracker</h1>
       <p class="lead">Choose a bulking mode, track diet & exercise tasks, and follow a calorie surplus plan.</p>
 
-      <div class="row" style="margin-top:14px;">
+      <div class="row" style="margin-top:12px;">
         <button id="btnHealthy" class="btn mode-graded" aria-pressed="false">Healthy Bulk</button>
         <button id="btnFast" class="btn mode-graded" aria-pressed="false">Fast Bulk</button>
         <div style="margin-left:auto;"><span id="modeHint" class="muted">No mode selected</span></div>
@@ -211,6 +244,7 @@
 
   <!-- Page scripts -->
   <script>
+    /* ---------- Data & DOM refs ---------- */
     const MODES = {
       healthy: { name: 'Healthy Bulk', color: '#ffb347', gradStart: '#ffcc33', gradEnd: '#ffb347', textOnBtn: '#071022' },
       fast: { name: 'Fast Bulk', color: '#ff6e40', gradStart: '#ff6e40', gradEnd: '#ff3b3b', textOnBtn: '#071022' }
@@ -243,7 +277,9 @@
       { id: 'exercise', title: 'Exercise — Short bodyweight strength work', desc: 'Keep active with squats, push variations, rows.' }
     ];
 
+    /* ---------- Theme & mode (persisted) ---------- */
     function applyModeTheme(modeKey){
+      if(!MODES[modeKey]) return;
       const mode = MODES[modeKey];
       document.documentElement.style.setProperty('--theme-color', mode.color);
       document.documentElement.style.setProperty('--theme-gradient-start', mode.gradStart);
@@ -278,31 +314,43 @@
     btnHealthy.addEventListener('click',()=>setMode('healthy'));
     btnFast.addEventListener('click',()=>setMode('fast'));
 
+    /* ---------- Save keys consistency:
+         wg_calc stores: {weight,height,age,gender,activity,speed}
+       ---------- */
+
     document.addEventListener('DOMContentLoaded',()=>{
+      // restore saved calc if present
       const savedCalc = localStorage.getItem('wg_calc');
       if(savedCalc){
-                try{ const d=JSON.parse(savedCalc); 
-          document.getElementById('wg_weight').value=d.weight;
-          document.getElementById('wg_height').value=d.height;
-          document.getElementById('wg_age').value=d.age;
-          document.getElementById('wg_gender').value=d.gender;
-          document.getElementById('wg_activity').value=d.activity;
-          document.getElementById('wg_speed').value=d.speed;
+        try{
+          const d = JSON.parse(savedCalc);
+          if(d.weight !== undefined) document.getElementById('wg_weight').value = d.weight;
+          if(d.height !== undefined) document.getElementById('wg_height').value = d.height;
+          if(d.age !== undefined) document.getElementById('wg_age').value = d.age;
+          if(d.gender !== undefined) document.getElementById('wg_gender').value = d.gender;
+          if(d.activity !== undefined) document.getElementById('wg_activity').value = d.activity;
+          if(d.speed !== undefined) document.getElementById('wg_speed').value = d.speed;
+          // recalc so UI shows values
           calculateSurplus();
-        } catch(e){ console.error('Saved calc parse error', e); }
+        }catch(e){
+          console.error('Saved calc parse error', e);
+        }
+      }
 
       const savedMode = localStorage.getItem('wg_mode');
-      if(savedMode) applyModeTheme(savedMode);
+      if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
+      else revertToDefaultTheme();
 
       buildTaskUI();
     });
 
-    // Read more toggle
+    /* ---------- Read more toggle ---------- */
     readMore.addEventListener('click',()=>{ descLong.style.display='block'; readMore.style.display='none'; });
     readLess.addEventListener('click',()=>{ descLong.style.display='none'; readMore.style.display='inline'; });
 
-    wgCalcBtn.addEventListener('click',calculateSurplus);
-    wgResetBtn.addEventListener('click',()=>{
+    /* ---------- Calculator ---------- */
+    wgCalcBtn.addEventListener('click', calculateSurplus);
+    wgResetBtn.addEventListener('click', ()=>{
       document.getElementById('wg_weight').value='';
       document.getElementById('wg_height').value='';
       document.getElementById('wg_age').value='';
@@ -321,48 +369,126 @@
       const activity = parseFloat(document.getElementById('wg_activity').value);
       const speed = document.getElementById('wg_speed').value;
 
-      if(!weight||!height||!age) return alert('Please fill all fields');
+      if(isNaN(weight) || isNaN(height) || isNaN(age)){
+        alert('Fill all fields');
+        return;
+      }
 
       let bmr;
       if(gender==='male') bmr = 10*weight + 6.25*height - 5*age + 5;
       else bmr = 10*weight + 6.25*height - 5*age -161;
 
-      const tdee = Math.round(bmr*activity);
-      const surplus = speed==='healthy'? 300 : 600;
-      const totalCal = tdee + surplus;
+      const tdee = Math.round(bmr * activity);
+      const surplus = (speed==='healthy') ? 300 : 600;
+      const total = tdee + surplus;
 
       wgResult.innerHTML = `<strong>BMR:</strong> ${Math.round(bmr)} kcal/day<br>
                             <strong>TDEE:</strong> ${tdee} kcal/day<br>
-                            <strong>Calories for weight gain:</strong> ${totalCal} kcal/day (+${surplus} kcal)`;
+                            <strong>Calories for weight gain:</strong> ${total} kcal/day (+${surplus} kcal)`;
       wgResult.style.display='block';
 
-      localStorage.setItem('wg_calc', JSON.stringify({weight,height,age,gender,activity,speed}));
+      localStorage.setItem('wg_calc', JSON.stringify({
+        weight: weight, height: height, age: age, gender: gender, activity: activity, speed: speed
+      }));
     }
 
-    // TASK UI
+    /* ---------- TASKS with checkbox + 24h cooldown (persisted by timestamp) ---------- */
+    const nowISO = ()=>new Date().toISOString();
+    const msSince = (iso)=>new Date() - new Date(iso);
     function buildTaskUI(){
-      const mode = localStorage.getItem('wg_mode');
-      let tasks = TASKS_DEFAULT;
-      if(mode==='healthy') tasks = TASKS_HEALTHY;
-      else if(mode==='fast') tasks = TASKS_FAST;
-
       taskWrap.innerHTML='';
+      const modeKey = localStorage.getItem('wg_mode');
+      const tasks = (modeKey==='healthy') ? TASKS_HEALTHY : (modeKey==='fast') ? TASKS_FAST : TASKS_DEFAULT;
+
       tasks.forEach(task=>{
-        const div=document.createElement('div');
-        div.className='task-box';
-        div.id='task_'+task.id;
-        div.innerHTML=`<div><strong class="title">${task.title}</strong><p class="desc">${task.desc}</p></div>`;
-        div.addEventListener('click',()=>completeTask(div));
-        taskWrap.appendChild(div);
+        const key='wg_task_'+task.id;
+        const doneTS = localStorage.getItem(key);
+        const done = doneTS ? (msSince(doneTS) < 24*60*60*1000) : false;
+
+        if(done){
+          // show completed card + countdown
+          const box = document.createElement('div');
+          box.className='task-box outlined';
+          box.innerHTML = `<div style="flex:1">
+            <div class="title">${task.title} — Completed</div>
+            <div class="desc">${task.desc}</div>
+          </div>`;
+          taskWrap.appendChild(box);
+
+          taskMotivate.textContent = (task.id==='diet') ? 'Great job on your diet — keep it up!' : 'Awesome workout — recovery matters!';
+          taskMotivate.style.display='block';
+          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
+
+          updateCountdown(doneTS);
+          const timer = setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(timer); return; } updateCountdown(doneTS); },1000);
+          return;
+        }
+
+        // show actionable task with checkbox
+        const box = document.createElement('div');
+        box.className='task-box' + (modeKey ? ' outlined' : '');
+        const cb = document.createElement('input');
+        cb.type='checkbox';
+        cb.id='cb-'+task.id;
+        cb.style.width='18px';
+        cb.style.height='18px';
+        cb.style.flex='0 0 auto';
+
+        const content = document.createElement('div');
+        content.style.flex='1';
+        const ttitle = document.createElement('div'); ttitle.className='title'; ttitle.textContent=`Day task — ${task.title}`;
+        const tdesc = document.createElement('div'); tdesc.className='desc'; tdesc.textContent=task.desc;
+        content.appendChild(ttitle); content.appendChild(tdesc);
+
+        box.appendChild(cb); box.appendChild(content);
+        taskWrap.appendChild(box);
+
+        cb.addEventListener('change',(e)=>{
+          if(!e.target.checked) return;
+          // mark done
+          const ts = nowISO();
+          localStorage.setItem(key, ts);
+          box.classList.add('completed');
+          // show motivation and countdown
+          taskMotivate.textContent = (task.id==='diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
+          taskMotivate.style.display='block';
+          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
+          updateCountdown(ts);
+          const tmr=setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; } updateCountdown(ts); },1000);
+          setTimeout(()=>{ box.style.display='none'; buildTaskUI(); },400);
+        });
       });
-      taskMotivate.style.display='none';
     }
 
-    function completeTask(el){
-      el.classList.add('completed');
-      setTimeout(()=>{ el.style.display='none'; taskMotivate.style.display='block'; },350);
+    function updateCountdown(iso){
+      const el=document.getElementById('timeRemain');
+      if(!el) return;
+      const diff = Math.max(0, 24*60*60*1000 - msSince(iso));
+      const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+      el.textContent = `${h}h ${m}m ${s}s`;
     }
 
+    /* ---------- Safety: ensure logo never blocks clicks by resizing if image too large ---------- */
+    // If user supplies a huge logo, normalize it on load to avoid overlap problems.
+    const brandLogo = document.getElementById('brandLogo');
+    brandLogo.addEventListener('error', ()=>{ /* ignore */ });
+    brandLogo.addEventListener('load', ()=>{
+      // constrain to max allowed height just in case
+      const maxH = window.matchMedia('(max-width:720px)').matches ? 60 : 72;
+      if(brandLogo.naturalHeight && brandLogo.naturalHeight > maxH*2){
+        brandLogo.style.height = maxH + 'px';
+        brandLogo.style.maxHeight = maxH + 'px';
+      }
+    });
+
+     /* ---------- End of script ---------- */
   </script>
 </body>
 </html>
+
+    
+        
+
+
+
+                    
