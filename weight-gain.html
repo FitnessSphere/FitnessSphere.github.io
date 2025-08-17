@@ -1,5 +1,5 @@
 
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -7,10 +7,9 @@
   <title>Fitness Sphere — Weight Gain</title>
 
   <style>
-    /* ---------- Box sizing & easy variables ---------- */
-    *, *::before, *::after { box-sizing: border-box; } /* prevents weird overflow */
+    /* ---------- Theme variables & base (mint default like main site) ---------- */
     :root{
-      --theme-color: #34d399;        /* mint default */
+      --theme-color: #34d399;        
       --theme-gradient-start: #34d399;
       --theme-gradient-end: #60a5fa;
       --btn-text: #071022;
@@ -19,93 +18,39 @@
       --text: #e6f1ff;
       --muted: #9fb2cc;
       --shadow: 0 10px 30px rgba(0,0,0,.45);
-
-      /* --- NEW header/logo variables requested --- */
-      --logo-size: 80px;               /* fixed logo height */
-      --header-padding-vertical: 4px;  /* header padding top/bottom */
-      --header-padding-horizontal: 12px;/* header padding left/right */
-      --gap: 6px;                      /* compact spacing/gaps */
     }
 
-    /* Prevent horizontal overflow (fixes left/grey blank area on small screens) */
-    html,body{ height:100%; overflow-x: hidden; }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: var(--bg);
-      color: var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.45;
-    }
-
-    /* container: centered with side padding, but always take full available width when small */
-    .container{ width:100%; max-width:1100px; margin:0 auto; padding:0 12px; }
+    /* ---------- Page base ---------- */
+    html,body{ height:100%; margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: var(--bg); color: var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; line-height:1.45; }
+    .container{ max-width:1100px; margin:0 auto; padding:0 16px; }
 
     /* ---------- Header (logo left, links right) ---------- */
     .nav{
       position: sticky;
       top: 0;
       z-index: 60;
-      background: rgba(11,16,32,0.75);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      backdrop-filter: blur(6px);
-      width:100%;
+      background: rgba(11,16,32,0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
-    /* Use the container for centering, but make nav-inner responsive & prevent overflow */
     .nav-inner{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:var(--gap);
-      padding:var(--header-padding-vertical) var(--header-padding-horizontal); /* compact header */
+      gap:12px;
+      padding:8px 16px;         
       max-width:1100px;
-      width:100%;
       margin:0 auto;
-      box-sizing:border-box;
     }
-
-    /* brand & logo */
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:var(--gap);
-      text-decoration:none;
-      flex: 0 0 auto; /* never shrink the brand */
-    }
-    .brand img{
-      height:var(--logo-size);
-      width:auto;
-      display:block;
-    }
-
-    /* links — allow shrinking and wrapping without breaking layout */
-    .links{
-      display:flex;
-      gap:var(--gap);
-      align-items:center;
-      flex-wrap:wrap;
-      margin-left:auto;   /* push links to the right reliably */
-      flex: 1 1 auto;     /* allow shrinking if needed */
-      min-width: 0;       /* important to allow children to shrink inside flex */
-      justify-content:flex-end;
-    }
-    .link{
-      color:var(--text);
-      text-decoration:none;
-      padding:8px 12px;
-      border-radius:10px;
-      white-space:nowrap;
-      opacity:.98;
-      font-weight:600;
-    }
+    .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+    .brand img{ height:68px; width:auto; display:block; } 
+    .links{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-left:8px; }
+    .link{ color:var(--text); text-decoration:none; padding:10px 14px; border-radius:12px; white-space:nowrap; font-weight:600; transition: background .3s, color .3s; }
+    .link:hover{ background: rgba(255,255,255,0.08); }
     .link.active{ outline:2px solid rgba(255,255,255,0.04); }
 
-    /* nav tint when a mode is active */
-    .nav.grad-mode{
-      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
-      border-bottom:1px solid rgba(255,255,255,0.06);
-    }
+    .nav.grad-mode{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
 
     /* ---------- Hero / page sections ---------- */
     .main-section{ padding:28px 0 36px; }
@@ -114,7 +59,8 @@
     .lead{ color:var(--muted); margin:0 0 18px; font-size:18px; }
 
     /* ---------- Buttons ---------- */
-    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; transition: transform .2s ease, background .3s ease; }
+    .btn:hover{ transform: translateY(-2px); }
     .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:10px 14px; font-weight:700; }
     .btn.mode-graded{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: var(--shadow); min-width:160px; }
 
@@ -142,21 +88,14 @@
 
     .read-more-theme{ color:var(--theme-color); cursor:pointer; font-weight:700; }
 
-    /* responsive tweaks — keep logo fixed at 80px as requested, but reduce non-critical paddings */
+    /* responsive tweaks */
     @media (max-width:720px){
-      .nav-inner{ gap:calc(var(--gap)); padding:var(--header-padding-vertical) 10px; }
-      /* keep logo at requested fixed size (80px). If you'd rather scale it down for very tiny screens, tell me. */
-      .brand img{ height:var(--logo-size); }
-
+      .nav-inner{ gap:8px; padding:4px 10px; }
+      .brand img{ height:60px; }
       .hero{ padding:28px 0 10px; }
       .hero h1{ font-size:28px; }
       .btn.mode-graded{ min-width:140px; padding:10px 14px; }
     }
-
-    /* Small nicety: ensure long nav items don't force horizontal scroll on tiny screens */
-    .links { overflow: hidden; }
-    .links > .link { text-overflow: ellipsis; overflow: hidden; max-width: 160px; display: inline-block; vertical-align: middle; }
-
   </style>
 </head>
 <body>
@@ -165,7 +104,6 @@
   <nav class="nav" id="mainNav">
     <div class="nav-inner container">
       <a class="brand" href="index.html"><img src="logo.png" alt="Fitness Sphere logo" /></a>
-
       <div class="links" data-menu>
         <a class="link" href="index.html">Home</a>
         <a class="link" href="weight-loss.html">Weight Loss</a>
@@ -256,27 +194,13 @@
     </section>
   </main>
 
-  <!-- Page scripts (unchanged) -->
+  <!-- Page scripts -->
   <script>
-    /* ---------------- MODE definitions ---------------- */
     const MODES = {
-      healthy: {
-        name: 'Healthy Bulk',
-        color: '#ffb347',
-        gradStart: '#ffcc33',
-        gradEnd: '#ffb347',
-        textOnBtn: '#071022'
-      },
-      fast: {
-        name: 'Fast Bulk',
-        color: '#ff6e40',
-        gradStart: '#ff6e40',
-        gradEnd: '#ff3b3b',
-        textOnBtn: '#071022'
-      }
+      healthy: { name: 'Healthy Bulk', color: '#ffb347', gradStart: '#ffcc33', gradEnd: '#ffb347', textOnBtn: '#071022' },
+      fast: { name: 'Fast Bulk', color: '#ff6e40', gradStart: '#ff6e40', gradEnd: '#ff3b3b', textOnBtn: '#071022' }
     };
 
-    // DOM elements
     const btnHealthy = document.getElementById('btnHealthy');
     const btnFast = document.getElementById('btnFast');
     const modeHint = document.getElementById('modeHint');
@@ -291,216 +215,142 @@
     const taskInfo = document.getElementById('taskInfo');
     const navEl = document.getElementById('mainNav');
 
-    /* ---------------- Mode-specific tasks ---------------- */
     const TASKS_HEALTHY = [
-      { id: 'diet', title: 'Diet — Add 1 extra calorie-dense snack (nuts / peanut butter)', desc: 'Small, frequent meals with healthy fats to slowly increase calories.' },
-      { id: 'exercise', title: 'Exercise — Light strength session (compound lifts)', desc: 'Focus on form and moderate reps (3×8–10). Prioritize recovery.' }
+      { id: 'diet', title: 'Diet — Add 1 extra calorie-dense snack', desc: 'Small, frequent meals with healthy fats to slowly increase calories.' },
+      { id: 'exercise', title: 'Exercise — Light strength session', desc: 'Focus on form and moderate reps. Prioritize recovery.' }
     ];
-
     const TASKS_FAST = [
-      { id: 'diet', title: 'Diet — Add a high-calorie shake (milk + oats + peanut butter)', desc: 'Calorie-forward choices to bump daily intake quickly.' },
-      { id: 'exercise', title: 'Exercise — Heavy strength session (progressive overload)', desc: 'Lift heavier with lower reps (4×5–6) to maximise gain.' }
+      { id: 'diet', title: 'Diet — Add a high-calorie shake', desc: 'Calorie-forward choices to bump daily intake quickly.' },
+      { id: 'exercise', title: 'Exercise — Heavy strength session', desc: 'Lift heavier with lower reps to maximise gain.' }
     ];
-
     const TASKS_DEFAULT = [
       { id: 'diet', title: 'Diet — Eat 3 calorie-dense meals today', desc: 'Include whole-food calorie boosts like ghee, paneer, nuts.' },
-      { id: 'exercise', title: 'Exercise — Short bodyweight strength work (20–30 min)', desc: 'Keep active with squats, push variations, rows.' }
+      { id: 'exercise', title: 'Exercise — Short bodyweight strength work', desc: 'Keep active with squats, push variations, rows.' }
     ];
 
-    /* ---------------- Theme application ---------------- */
     function applyModeTheme(modeKey){
       const mode = MODES[modeKey];
       document.documentElement.style.setProperty('--theme-color', mode.color);
       document.documentElement.style.setProperty('--theme-gradient-start', mode.gradStart);
       document.documentElement.style.setProperty('--theme-gradient-end', mode.gradEnd);
       document.documentElement.style.setProperty('--btn-text', mode.textOnBtn);
-
-      // outlined sections & nav tint
       document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
       navEl.classList.add('grad-mode');
-
-      btnHealthy.setAttribute('aria-pressed', modeKey === 'healthy');
-      btnFast.setAttribute('aria-pressed', modeKey === 'fast');
-
+      btnHealthy.setAttribute('aria-pressed', modeKey==='healthy');
+      btnFast.setAttribute('aria-pressed', modeKey==='fast');
       modeHint.textContent = `${MODES[modeKey].name} selected`;
       modeHint.style.color = mode.color;
     }
-
     function revertToDefaultTheme(){
-      // Reset to mint defaults
-      document.documentElement.style.setProperty('--theme-color', '#34d399');
-      document.documentElement.style.setProperty('--theme-gradient-start', '#34d399');
-      document.documentElement.style.setProperty('--theme-gradient-end', '#60a5fa');
-      document.documentElement.style.setProperty('--btn-text', '#071022');
-
+      document.documentElement.style.setProperty('--theme-color','#34d399');
+      document.documentElement.style.setProperty('--theme-gradient-start','#34d399');
+      document.documentElement.style.setProperty('--theme-gradient-end','#60a5fa');
+      document.documentElement.style.setProperty('--btn-text','#071022');
       document.querySelectorAll('.section').forEach(s => s.classList.remove('outlined'));
       navEl.classList.remove('grad-mode');
-
-      btnHealthy.setAttribute('aria-pressed', 'false');
-      btnFast.setAttribute('aria-pressed', 'false');
-
-      modeHint.textContent = 'No mode selected';
-      modeHint.style.color = '';
+      btnHealthy.setAttribute('aria-pressed','false');
+      btnFast.setAttribute('aria-pressed','false');
+      modeHint.textContent='No mode selected';
+      modeHint.style.color='';
     }
-
-    // Toggle/set mode; pass null to deselect
     function setMode(modeKey){
       const currently = localStorage.getItem('wg_mode');
-      if(modeKey === null){
-        localStorage.removeItem('wg_mode');
-        revertToDefaultTheme();
-        buildTaskUI();
-        return;
-      }
-      if(currently === modeKey){
-        // deselect on second click
-        setMode(null);
-        return;
-      }
-      localStorage.setItem('wg_mode', modeKey);
-      applyModeTheme(modeKey);
-      buildTaskUI();
+      if(modeKey===null){ localStorage.removeItem('wg_mode'); revertToDefaultTheme(); buildTaskUI(); return; }
+      if(currently===modeKey){ setMode(null); return; }
+      localStorage.setItem('wg_mode', modeKey); applyModeTheme(modeKey); buildTaskUI();
     }
 
-    btnHealthy.addEventListener('click', ()=> setMode('healthy'));
-    btnFast.addEventListener('click', ()=> setMode('fast'));
+    btnHealthy.addEventListener('click',()=>setMode('healthy'));
+    btnFast.addEventListener('click',()=>setMode('fast'));
 
-    // Restore saved mode on load (persist selection). If none, default mint remains.
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded',()=>{
       const savedCalc = localStorage.getItem('wg_calc');
       if(savedCalc){
-        try{
-          const d = JSON.parse(savedCalc);
-          document.getElementById('wg_weight').value = d.w || '';
-          document.getElementById('wg_height').value = d.h || '';
-          document.getElementById('wg_age').value = d.a || '';
-          document.getElementById('wg_gender').value = d.g || 'male';
-          document.getElementById('wg_activity').value = d.act || '1.2';
-        }catch(e){}
+        try{ const d=JSON.parse(savedCalc); document.getElementById('wg_weight').value=d.w||''; document.getElementById('wg_height').value=d.h||''; document.getElementById('wg_age').value=d.a||''; document.getElementById('wg_gender').value=d.g||'male'; document.getElementById('wg_activity').value=d.act||'1.2'; }catch(e){}
       }
-
       const savedMode = localStorage.getItem('wg_mode');
       if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
       else revertToDefaultTheme();
-
       buildTaskUI();
     });
 
-    /* ---------------- Read more toggle ---------------- */
-    readMore.addEventListener('click', ()=> { descLong.style.display = 'block'; readMore.style.display='none'; });
-    if(readLess) readLess.addEventListener('click', ()=> { descLong.style.display = 'none'; readMore.style.display='inline'; });
+    readMore.addEventListener('click',()=>{ descLong.style.display='block'; readMore.style.display='none'; });
+    readLess.addEventListener('click',()=>{ descLong.style.display='none'; readMore.style.display='inline'; });
 
-    /* ---------------- Calculator (Mifflin-St Jeor) ---------------- */
-    function calcSurplus(){
-      const w = parseFloat(document.getElementById('wg_weight').value||0);
-      const h = parseFloat(document.getElementById('wg_height').value||0);
-      const a = parseFloat(document.getElementById('wg_age').value||0);
+    wgCalcBtn.addEventListener('click',()=>{
+      const w = parseFloat(document.getElementById('wg_weight').value);
+      const h = parseFloat(document.getElementById('wg_height').value);
+      const a = parseInt(document.getElementById('wg_age').value);
       const g = document.getElementById('wg_gender').value;
       const act = parseFloat(document.getElementById('wg_activity').value);
-      if(!w || !h || !a){
-        alert('Please fill weight, height, and age.');
-        return;
-      }
-      let bmr = g === 'male' ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a -161);
-      const tdee = Math.round(bmr * act);
-      const modeKey = localStorage.getItem('wg_mode') || document.getElementById('wg_speed').value;
-      const surplus = (modeKey === 'fast') ? 600 : 300;
-      const target = tdee + surplus;
-
-      wgResult.style.display = 'block';
-      wgResult.innerHTML = `<strong>Estimated TDEE:</strong> ${tdee} kcal/day<br>
-        <strong>Suggested surplus:</strong> +${surplus} kcal/day<br>
-        <strong>Target intake:</strong> <span style="font-size:1.05em">${target} kcal/day</span>`;
-
-      localStorage.setItem('wg_calc', JSON.stringify({w,h,a,g,act,mode:modeKey}));
-    }
-
-    wgCalcBtn.addEventListener('click', calcSurplus);
-    wgResetBtn.addEventListener('click', ()=>{
-      ['wg_weight','wg_height','wg_age'].forEach(id => document.getElementById(id).value='');
+      const spd = document.getElementById('wg_speed').value;
+      if(isNaN(w)||isNaN(h)||isNaN(a)) { wgResult.style.display='none'; alert('Fill all fields'); return; }
+      const bmr = (g==='male') ? 10*w + 6.25*h - 5*a +5 : 10*w + 6.25*h - 5*a -161;
+      const tdee = bmr*act;
+      const surplus = (spd==='healthy')?300:600;
+      wgResult.innerHTML=`Daily Calories to gain: <strong>${Math.round(tdee+surplus)}</strong> kcal`;
+      wgResult.style.display='block';
+      localStorage.setItem('wg_calc',JSON.stringify({w,h,a,g,act}));
+    });
+    wgResetBtn.addEventListener('click',()=>{
+      document.getElementById('wg_weight').value='';
+      document.getElementById('wg_height').value='';
+      document.getElementById('wg_age').value='';
+      document.getElementById('wg_gender').value='male';
+      document.getElementById('wg_activity').value='1.2';
       wgResult.style.display='none';
       localStorage.removeItem('wg_calc');
     });
 
-    /* ---------------- Tasks UI: alternate daily, mode-specific, 24h lock ---------------- */
-    function nowISO(){ return new Date().toISOString(); }
-    function msSince(ts){ return Date.now() - (new Date(ts)).getTime(); }
+    // ---------------- TASK BUILD ----------------
+    const nowISO = ()=>new Date().toISOString();
+    const msSince = (iso)=>new Date()-new Date(iso);
+    function buildTaskUI(){
+      taskWrap.innerHTML='';
+      const modeKey = localStorage.getItem('wg_mode');
+      const tasks = (modeKey==='healthy') ? TASKS_HEALTHY : (modeKey==='fast') ? TASKS_FAST : TASKS_DEFAULT;
+      tasks.forEach(task=>{
+        const key='wg_task_'+task.id;
+        const doneTS = localStorage.getItem(key);
+        const done = doneTS ? (msSince(doneTS)<24*60*60*1000) : false;
 
-    function updateCountdown(doneTS){
-      const remainMs = 24*60*60*1000 - msSince(doneTS);
-      const el = document.getElementById('timeRemain');
-      if(!el) return;
-      if(remainMs <= 0){ el.textContent = 'now (refresh page)'; return; }
-      const hrs = Math.floor(remainMs / (1000*60*60));
-      const mins = Math.floor((remainMs % (1000*60*60)) / (1000*60));
-      const secs = Math.floor((remainMs % (1000*60)) / 1000);
-      el.textContent = `${hrs}h ${mins}m ${secs}s`;
+        if(done){
+          taskMotivate.textContent = (task.id==='diet')?'Great job on your diet — keep it up!':'Awesome workout — recovery matters!';
+          taskMotivate.style.display='block';
+          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
+          updateCountdown(doneTS);
+          const timer = setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(timer); return; } updateCountdown(doneTS); },1000);
+          return;
+        }
+
+        const box = document.createElement('div'); box.className='task-box'; if(modeKey) box.classList.add('outlined');
+        const cb = document.createElement('input'); cb.type='checkbox'; cb.id='cb-'+task.id; cb.style.width='18px'; cb.style.height='18px';
+        const content=document.createElement('div'); content.style.flex='1';
+        const ttitle=document.createElement('div'); ttitle.className='title'; ttitle.textContent=`Day task — ${task.title}`;
+        const tdesc=document.createElement('div'); tdesc.className='desc'; tdesc.textContent=task.desc;
+        content.appendChild(ttitle); content.appendChild(tdesc); box.appendChild(cb); box.appendChild(content); taskWrap.appendChild(box);
+
+        cb.addEventListener('change',(e)=>{
+          if(!e.target.checked) return;
+          box.classList.add('completed');
+          const ts=nowISO(); localStorage.setItem(key,ts);
+          taskMotivate.textContent = (task.id==='diet')?'Nice! Your meals matter — keep the consistency.':'Nice! You completed your workout — recovery now.';
+          taskMotivate.style.display='block';
+          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
+          updateCountdown(ts);
+          const tmr=setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; } updateCountdown(ts); },1000);
+        });
+      });
     }
 
-    function buildTaskUI(){
-      taskWrap.innerHTML = '';
-      taskMotivate.style.display = 'none';
-      taskInfo.textContent = '';
-
-      const modeKey = localStorage.getItem('wg_mode'); // 'healthy' | 'fast' | null
-      let list;
-      if(modeKey === 'healthy') list = TASKS_HEALTHY;
-      else if(modeKey === 'fast') list = TASKS_FAST;
-      else list = TASKS_DEFAULT;
-
-      // which index to show today (alternating 0/1)
-      const days = Math.floor(Date.now() / 86400000);
-      const idx = days % list.length;
-      const task = list[idx];
-
-      const key = 'wg_task_done_' + task.id;
-      const doneTS = localStorage.getItem(key);
-const done = doneTS ? (msSince(doneTS) < 24*60*60*1000) : false;
-
-if(done){
-  taskMotivate.textContent = (task.id === 'diet') ? 'Great job on your diet — keep it up!' : 'Awesome workout — recovery matters!';
-  taskMotivate.style.display = 'block';
-  taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
-  updateCountdown(doneTS);
-  const timer = setInterval(()=> {
-    if(!document.getElementById('timeRemain')) { clearInterval(timer); return; }
-    updateCountdown(doneTS);
-  }, 1000);
-  return;
-}
-
-const box = document.createElement('div');
-box.className = 'task-box';
-if(localStorage.getItem('wg_mode')) box.classList.add('outlined');
-
-const cb = document.createElement('input');
-cb.type = 'checkbox';
-cb.id = 'cb-' + task.id;
-cb.style.width='18px'; cb.style.height='18px';
-
-const content = document.createElement('div');
-content.style.flex='1';
-const ttitle = document.createElement('div'); ttitle.className='title'; ttitle.textContent = `Day task — ${task.title}`;
-const tdesc = document.createElement('div'); tdesc.className='desc'; tdesc.textContent = task.desc;
-
-content.appendChild(ttitle); content.appendChild(tdesc);
-box.appendChild(cb); box.appendChild(content);
-taskWrap.appendChild(box);
-
-cb.addEventListener('change', (e) => {
-  if(!e.target.checked) return;
-  box.classList.add('completed');
-  const ts = nowISO();
-  localStorage.setItem(key, ts);
-  taskMotivate.textContent = (task.id === 'diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
-  taskMotivate.style.display = 'block';
-  taskInfo.innerHTML = `<strong>Completed:</strong> ${task.title} — next task available in <span id="timeRemain"></span>`;
-  updateCountdown(ts);
-  const tmr = setInterval(()=> {
-    if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; }
-    updateCountdown(ts);
-  }, 1000);
-});
-</script>
+    function updateCountdown(iso){
+      const el=document.getElementById('timeRemain');
+      if(!el) return;
+      const diff=Math.max(0,24*60*60*1000 - msSince(iso));
+      const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+      el.textContent=`${h}h ${m}m ${s}s`;
+    }
+  </script>
 </body>
-</html>    
+</html>
+       
