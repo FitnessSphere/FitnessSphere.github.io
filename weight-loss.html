@@ -122,7 +122,6 @@
   margin:0 auto;
   padding:0 16px;
 }
- }
 
     /* ---------- Header: compact, premium, and click-safe ---------- */
     .nav{
@@ -288,7 +287,7 @@
   <!-- popup panel (hidden by default) -->
   <div id="menuPanel" class="menu-panel" role="menu" aria-hidden="true" hidden>
     <a class="menu-link" role="menuitem" href="index.html">Home</a>
-    <!-- changed: Weight Loss menu entry replaced with a link to weight-gain -->
+    <!-- changed: show weight-gain link instead of weight-loss -->
     <a class="menu-link" role="menuitem" href="weight-gain.html">Weight Gain</a>
     <a class="menu-link" role="menuitem" href="calories.html">Calories</a>
     <a class="menu-link" role="menuitem" href="exercises.html">Exercises</a>
@@ -383,90 +382,280 @@
 
   <!-- Page scripts -->
   <script>
-    /* ---------- Data & DOM refs ---------- */
-    const MODES = {
-      healthy: { name: 'Healthy Loss', color: '#60a5fa', gradStart: '#60a5fa', gradEnd: '#3b82f6', textOnBtn: '#071022' },
-      fast: { name: 'Fast Loss', color: '#a78bfa', gradStart: '#a78bfa', gradEnd: '#7c3aed', textOnBtn: '#071022' }
-    };
+    // wrap everything to ensure DOM is ready before we query elements
+    document.addEventListener('DOMContentLoaded', () => {
 
-    const btnHealthy = document.getElementById('btnHealthy');
-    const btnFast = document.getElementById('btnFast');
-    const modeHint = document.getElementById('modeHint');
-    const descLong = document.getElementById('descLong');
-    const readMore = document.getElementById('readMore');
-    const readLess = document.getElementById('readLess');
-    const wgCalcBtn = document.getElementById('wg_calcBtn');
-    const wgResetBtn = document.getElementById('wg_resetBtn');
-    const wgResult = document.getElementById('wg_result');
-    const taskWrap = document.getElementById('taskWrap');
-    const taskMotivate = document.getElementById('taskMotivate');
-    const taskInfo = document.getElementById('taskInfo');
-    const navEl = document.getElementById('mainNav');
+      /* ---------- Data & DOM refs ---------- */
+      const MODES = {
+        healthy: { name: 'Healthy Loss', color: '#60a5fa', gradStart: '#60a5fa', gradEnd: '#3b82f6', textOnBtn: '#071022' },
+        fast: { name: 'Fast Loss', color: '#a78bfa', gradStart: '#a78bfa', gradEnd: '#7c3aed', textOnBtn: '#071022' }
+      };
 
-    /* ---------- Weight-loss tasks (different from weight gain) ---------- */
-    const TASKS_HEALTHY = [
-      { id: 'diet', title: 'Diet — Reduce portion sizes & increase protein', desc: 'Focus on lean proteins, vegetables, and fibre to stay full on fewer calories.' },
-      { id: 'exercise', title: 'Exercise — Strength training + moderate cardio', desc: 'Preserve muscle with 2–3 strength sessions and add 20–30 min of cardio.' }
-    ];
-    const TASKS_FAST = [
-      { id: 'diet', title: 'Diet — Strict calorie control (short phase)', desc: 'Smaller meals, avoid liquid calories, prioritize high-protein choices.' },
-      { id: 'exercise', title: 'Exercise — HIIT + resistance training', desc: 'High intensity interval training plus strength work to boost calorie burn.' }
-    ];
-    const TASKS_DEFAULT = [
-      { id: 'diet', title: 'Diet — Track calories today', desc: 'Log everything and aim for a moderate deficit; small adjustments add up.' },
-      { id: 'exercise', title: 'Exercise — Active day: walk or cycling', desc: 'Add 30–45 minutes of low to moderate activity to increase daily burn.' }
-    ];
+      const btnHealthy = document.getElementById('btnHealthy');
+      const btnFast = document.getElementById('btnFast');
+      const modeHint = document.getElementById('modeHint');
+      const descLong = document.getElementById('descLong');
+      const readMore = document.getElementById('readMore');
+      const readLess = document.getElementById('readLess');
+      const wgCalcBtn = document.getElementById('wg_calcBtn');
+      const wgResetBtn = document.getElementById('wg_resetBtn');
+      const wgResult = document.getElementById('wg_result');
+      const taskWrap = document.getElementById('taskWrap');
+      const taskMotivate = document.getElementById('taskMotivate');
+      const taskInfo = document.getElementById('taskInfo');
+      const navEl = document.getElementById('mainNav');
 
-    /* ---------- Theme & mode (persisted) ---------- */
-    function applyModeTheme(modeKey){
-      if(!MODES[modeKey]) return;
-      const mode = MODES[modeKey];
-      document.documentElement.style.setProperty('--theme-color', mode.color);
-      document.documentElement.style.setProperty('--theme-gradient-start', mode.gradStart);
-      document.documentElement.style.setProperty('--theme-gradient-end', mode.gradEnd);
-      document.documentElement.style.setProperty('--btn-text', mode.textOnBtn);
-      document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
-      navEl.classList.add('grad-mode');
-      btnHealthy.setAttribute('aria-pressed', modeKey==='healthy');
-      btnFast.setAttribute('aria-pressed', modeKey==='fast');
-      modeHint.textContent = `${MODES[modeKey].name} selected`;
-      modeHint.style.color = mode.color;
-    }
-    function revertToDefaultTheme(){
-      document.documentElement.style.setProperty('--theme-color','#34d399');
-      document.documentElement.style.setProperty('--theme-gradient-start','#34d399');
-      document.documentElement.style.setProperty('--theme-gradient-end','#60a5fa');
-      document.documentElement.style.setProperty('--btn-text','#071022');
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('outlined'));
-      navEl.classList.remove('grad-mode');
-      btnHealthy.setAttribute('aria-pressed','false');
-      btnFast.setAttribute('aria-pressed','false');
-      modeHint.textContent='No mode selected';
-      modeHint.style.color='';
-    }
+      /* ---------- Weight-loss tasks (different from weight gain) ---------- */
+      const TASKS_HEALTHY = [
+        { id: 'diet', title: 'Diet — Reduce portion sizes & increase protein', desc: 'Focus on lean proteins, vegetables, and fibre to stay full on fewer calories.' },
+        { id: 'exercise', title: 'Exercise — Strength training + moderate cardio', desc: 'Preserve muscle with 2–3 strength sessions and add 20–30 min of cardio.' }
+      ];
+      const TASKS_FAST = [
+        { id: 'diet', title: 'Diet — Strict calorie control (short phase)', desc: 'Smaller meals, avoid liquid calories, prioritize high-protein choices.' },
+        { id: 'exercise', title: 'Exercise — HIIT + resistance training', desc: 'High intensity interval training plus strength work to boost calorie burn.' }
+      ];
+      const TASKS_DEFAULT = [
+        { id: 'diet', title: 'Diet — Track calories today', desc: 'Log everything and aim for a moderate deficit; small adjustments add up.' },
+        { id: 'exercise', title: 'Exercise — Active day: walk or cycling', desc: 'Add 30–45 minutes of low to moderate activity to increase daily burn.' }
+      ];
 
-    function setMode(modeKey){
-      const currently = localStorage.getItem('wg_mode');
-      if(modeKey===null){ localStorage.removeItem('wg_mode'); revertToDefaultTheme(); buildTaskUI(); return; }
-      if(currently===modeKey){ setMode(null); return; }
-      localStorage.setItem('wg_mode', modeKey); applyModeTheme(modeKey); buildTaskUI();
-    }
+      /* ---------- Theme & mode (persisted) ---------- */
+      function applyModeTheme(modeKey){
+        if(!MODES[modeKey]) return;
+        const mode = MODES[modeKey];
+        document.documentElement.style.setProperty('--theme-color', mode.color);
+        document.documentElement.style.setProperty('--theme-gradient-start', mode.gradStart);
+        document.documentElement.style.setProperty('--theme-gradient-end', mode.gradEnd);
+        document.documentElement.style.setProperty('--btn-text', mode.textOnBtn);
+        document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
+        navEl.classList.add('grad-mode');
+        btnHealthy.setAttribute('aria-pressed', modeKey==='healthy');
+        btnFast.setAttribute('aria-pressed', modeKey==='fast');
+        modeHint.textContent = `${MODES[modeKey].name} selected`;
+        modeHint.style.color = mode.color;
+      }
+      function revertToDefaultTheme(){
+        document.documentElement.style.setProperty('--theme-color','#34d399');
+        document.documentElement.style.setProperty('--theme-gradient-start','#34d399');
+        document.documentElement.style.setProperty('--theme-gradient-end','#60a5fa');
+        document.documentElement.style.setProperty('--btn-text','#071022');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('outlined'));
+        navEl.classList.remove('grad-mode');
+        btnHealthy.setAttribute('aria-pressed','false');
+        btnFast.setAttribute('aria-pressed','false');
+        modeHint.textContent='No mode selected';
+        modeHint.style.color='';
+      }
 
-    btnHealthy.addEventListener('click',()=>setMode('healthy'));
-    btnFast.addEventListener('click',()=>setMode('fast'));
+      // safe setMode — same behavior as original weight-gain file, plus a non-blocking visual trigger
+      function setMode(modeKey){
+        const currently = localStorage.getItem('wg_mode');
+        if(modeKey===null){
+          localStorage.removeItem('wg_mode');
+          revertToDefaultTheme();
+          buildTaskUI();
+          triggerModeAnimation();
+          return;
+        }
+        if(currently===modeKey){ setMode(null); return; }
+        localStorage.setItem('wg_mode', modeKey);
+        applyModeTheme(modeKey);
+        buildTaskUI();
+        triggerModeAnimation();
+      }
 
-    /* ---------- Save keys consistency:
-         wg_calc stores: {weight,height,age,gender,activity,speed}
-       ---------- */
+      btnHealthy.addEventListener('click',()=>setMode('healthy'));
+      btnFast.addEventListener('click',()=>setMode('fast'));
 
-    document.addEventListener('DOMContentLoaded',()=>{
-      // restore saved calc if present
-      const savedCalc = localStorage.getItem('wg_calc');
-      if(savedCalc){
-        try{
-          const d = JSON.parse(savedCalc);
-          if(d.weight !== undefined) document.getElementById('wg_weight').value = d.weight;
-          if(d.height !== undefined) document.getElementById('wg_height').value = d.height;
-          if(d.age !== undefined) document.getElementById('wg_age').value = d.age;
-          if(d.gender !== undefined) document.getElementById('wg_gender').value = d.gender;
-          if(d.activity !== undefined) document.getElementById('wg_activity').valu
+      /* ---------- Save keys consistency:
+           wg_calc stores: {weight,height,age,gender,activity,speed}
+         ---------- */
+
+      // restore state and wire menu + initial UI
+      (function init(){
+        // restore saved calc if present
+        const savedCalc = localStorage.getItem('wg_calc');
+        if(savedCalc){
+          try{
+            const d = JSON.parse(savedCalc);
+            if(d.weight !== undefined) document.getElementById('wg_weight').value = d.weight;
+            if(d.height !== undefined) document.getElementById('wg_height').value = d.height;
+            if(d.age !== undefined) document.getElementById('wg_age').value = d.age;
+            if(d.gender !== undefined) document.getElementById('wg_gender').value = d.gender;
+            if(d.activity !== undefined) document.getElementById('wg_activity').value = d.activity;
+            if(d.speed !== undefined) document.getElementById('wg_speed').value = d.speed;
+            // recalc so UI shows values
+            calculateDeficit();
+          }catch(e){
+            console.error('Saved calc parse error', e);
+          }
+        }
+
+        const savedMode = localStorage.getItem('wg_mode');
+        if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
+        else revertToDefaultTheme();
+
+        buildTaskUI();
+
+        // menu button wiring (simple)
+        const menuBtn = document.getElementById('menuBtn');
+        const menuPanel = document.getElementById('menuPanel');
+        if(menuBtn && menuPanel){
+          menuBtn.addEventListener('click', () => {
+            const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+            menuBtn.setAttribute('aria-expanded', String(!expanded));
+            if(expanded){
+              menuPanel.hidden = true;
+              menuPanel.setAttribute('aria-hidden', 'true');
+            } else {
+              menuPanel.hidden = false;
+              menuPanel.setAttribute('aria-hidden', 'false');
+            }
+          });
+          // close menu when clicking outside
+          document.addEventListener('click', (e) => {
+            if(!menuPanel || !menuBtn) return;
+            if(menuPanel.hidden) return;
+            if(menuPanel.contains(e.target) || menuBtn.contains(e.target)) return;
+            menuPanel.hidden = true;
+            menuPanel.setAttribute('aria-hidden','true');
+            menuBtn.setAttribute('aria-expanded','false');
+          });
+        }
+      })();
+
+      /* ---------- Read more toggle ---------- */
+      if(readMore && descLong && readLess){
+        readMore.addEventListener('click',()=>{ descLong.style.display='block'; readMore.style.display='none'; });
+        readLess.addEventListener('click',()=>{ descLong.style.display='none'; readMore.style.display='inline'; });
+      }  
+
+     /* ---------- Calculator (deficit) ---------- */
+      if(wgCalcBtn) wgCalcBtn.addEventListener('click', calculateDeficit);
+      if(wgResetBtn) wgResetBtn.addEventListener('click', ()=>{
+        document.getElementById('wg_weight').value='';
+        document.getElementById('wg_height').value='';
+        document.getElementById('wg_age').value='';
+        document.getElementById('wg_gender').value='male';
+        document.getElementById('wg_activity').value='1.2';
+        document.getElementById('wg_speed').value='healthy';
+        wgResult.style.display='none';
+        localStorage.removeItem('wg_calc');
+      });            
+
+      function calculateDeficit(){
+        const weight = parseFloat(document.getElementById('wg_weight').value);
+        const height = parseFloat(document.getElementById('wg_height').value);
+        const age = parseFloat(document.getElementById('wg_age').value);
+        const gender = document.getElementById('wg_gender').value;
+        const activity = parseFloat(document.getElementById('wg_activity').value);
+        const speed = document.getElementById('wg_speed').value;
+
+        if(isNaN(weight) || isNaN(height) || isNaN(age)){
+          alert('Fill all fields');
+          return;
+        } 
+
+        let bmr;
+        if(gender==='male') bmr = 10*weight + 6.25*height - 5*age + 5;
+        else bmr = 10*weight + 6.25*height - 5*age -161;
+
+        const tdee = Math.round(bmr * activity);
+        const deficit = (speed==='healthy') ? 300 : 600;
+        const total = tdee - deficit;
+
+        wgResult.innerHTML = `<strong>BMR:</strong> ${Math.round(bmr)} kcal/day<br>
+                              <strong>TDEE:</strong> ${tdee} kcal/day<br>
+                              <strong>Calories for weight loss:</strong> ${total} kcal/day (−${deficit} kcal)`;
+        wgResult.style.display='block';
+
+        localStorage.setItem('wg_calc', JSON.stringify({
+          weight: weight, height: height, age: age, gender: gender, activity: activity, speed: speed
+        }));
+      }
+
+      /* ---------- Simple task UI builder (keeps behavior similar to weight gain) ---------- */
+      function buildTaskUI(){
+        const modeKey = localStorage.getItem('wg_mode');
+        let tasks;
+        if(modeKey === 'healthy') tasks = TASKS_HEALTHY;
+        else if(modeKey === 'fast') tasks = TASKS_FAST;
+        else tasks = TASKS_DEFAULT;
+
+        // load completed state per mode (object keyed by modeKey)
+        const stored = localStorage.getItem('wg_tasks');
+        let completedState = {};
+        if(stored){
+          try{ completedState = JSON.parse(stored) || {}; }catch(e){ completedState = {}; }
+        }
+        const modeCompleted = completedState[modeKey || 'default'] || {};
+
+        taskWrap.innerHTML = ''; // clear
+        tasks.forEach(t => {
+          const box = document.createElement('div');
+          box.className = 'task-box';
+          if(modeKey) box.classList.add('outlined');
+
+          if(modeCompleted[t.id]) box.classList.add('completed');
+
+          const inner = document.createElement('div');
+          inner.style.flex = '1 1 auto';
+
+          const title = document.createElement('div');
+          title.className = 'title';
+          title.textContent = t.title;
+
+          const desc = document.createElement('div');
+          desc.className = 'desc';
+          desc.textContent = t.desc;
+
+          inner.appendChild(title);
+          inner.appendChild(desc);
+
+          const btn = document.createElement('button');
+          btn.className = 'btn secondary';
+          btn.textContent = modeCompleted[t.id] ? 'Done' : 'Mark done';
+          btn.style.marginLeft = '6px';
+          btn.addEventListener('click', () => {
+            // toggle completed
+            modeCompleted[t.id] = !modeCompleted[t.id];
+            if(modeCompleted[t.id]){
+              box.classList.add('completed');
+              btn.textContent = 'Done';
+            } else {
+              box.classList.remove('completed');
+              btn.textContent = 'Mark done';
+            }
+            // save back
+            completedState[modeKey || 'default'] = modeCompleted;
+            localStorage.setItem('wg_tasks', JSON.stringify(completedState));
+
+            // show motivate if all done
+            const allDone = tasks.every(tt => modeCompleted[tt.id]);
+            taskMotivate.style.display = allDone ? 'block' : 'none';
+          });
+
+          box.appendChild(inner);
+          box.appendChild(btn);
+          taskWrap.appendChild(box);
+        });
+
+        // Update taskInfo and motivate
+        taskInfo.textContent = modeKey ? `${MODES[modeKey].name} tasks` : 'General tasks';
+        const allDoneNow = tasks.every(tt => modeCompleted[tt.id]);
+        taskMotivate.style.display = allDoneNow ? 'block' : 'none';
+      }
+
+      /* ---------- small visual animation helper (safe) ---------- */
+      function triggerModeAnimation(){
+        const content = document.getElementById('taskWrap');
+        if(!content) return;
+        content.classList.add('mode-change');
+        setTimeout(() => content.classList.remove('mode-change'), 300);
+      }
+
+      // end DOMContentLoaded wrapper
+    }); // DOMContentLoaded
+  </script>
+</body>
+</html>                       
