@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fitness Sphere — Weight Gain</title>
+
+  <style>
+    /* ---------- Theme variables & base ---------- */
+    /* ---------- compact center title + menu dropdown ---------- */
+.nav-center{ display:flex; align-items:center; gap:12px; flex:1 1 auto; justify-content:flex-end; position:relative; }
+
+/* center title sits in the middle area */
+.nav-title{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:800;
+  letter-spacing:1px;
+  font-size:18px;
+  color:var(--text);
+  pointer-events:none; /* ensures clicks pass through to menu button */
+}
+
+/* menu button on the right */
+.menu-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  padding:6px;
+  border-radius:10px;
+  border:none;
+  background:rgba(255,255,255,0.02);
+  color:var(--text);
+  cursor:pointer;
+  font-size:20px;
+  box-shadow:none;
+  transition: background .18s, transform .12s;
+  z-index:120;
+}
+.menu-btn:active{ transform:translateY(1px); }
+.menu-btn[aria-expanded="true"]{ background: rgba(255,255,255,0.04); }
+
+/* menu panel: hidden by default when [hidden] is present, with fade animation */
+.menu-panel{
+  position:absolute;
+  right:8px;
+  top:calc(100% + 8px);
+  min-width:190px;
+  max-width:260px;
+  background: linear-gradient(180deg, rgba(11,16,32,0.98), rgba(14,20,36,0.98));
+  border:1px solid rgba(255,255,255,0.04);
+  border-radius:12px;
+  padding:8px;
+  box-shadow: 0 12px 30px rgba(2,6,23,0.65);
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  z-index:110;
+
+  /* animation helpers */
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* IMPORTANT: force-hide when [hidden] is present (overrides other rules) */
+.menu-panel[hidden]{
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(-6px) !important;
+}
+
+
+/* hide by default — script toggles [hidden] */
+.menu-link{
+  color:var(--text);
+  text-decoration:none;
+  padding:10px 12px;
+  display:inline-block;
+  border-radius:8px;
+  font-weight:700;
+}
+.menu-link:hover{ background: rgba(255,255,255,0.03); }
+
+.menu-sep{ border:0; height:1px; margin:6px 0; background: rgba(255,255,255,0.03); }
+
+/* small screens: slightly bigger hit area */
+@media (max-width:720px){
+  .nav-title{ font-size:16px; }
+  .menu-panel{ right:6px; left:auto; min-width:160px; }
+}
+
+/* accessibility / safe fallback: if JS fails, show links inline (optional) */
+@media (min-width:0){
+  /* hide any .links fallback if present */
+  .links{ display:none !important; }
+  }
+  
+    :root{
+      --theme-color: #34d399;
+      --theme-gradient-start: #34d399;
+      --theme-gradient-end: #60a5fa;
+      --btn-text: #071022;
+      --bg: #0b1020;
+      --card-bg: #0f1724;
+      --text: #e6f1ff;
+      --muted: #9fb2cc;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+
+    /* ---------- Page base ---------- */
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: var(--bg); color: var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; line-height:1.45; }
+    .container{
+  max-width:1100px;
+  width:100%;            /* ensure container always fills available width on small screens */
+  box-sizing:border-box; /* include padding in width calculations so borders don't overflow */
+  margin:0 auto;
+  padding:0 16px;
+}
+ }
+
+    /* ---------- Header: compact, premium, and click-safe ---------- */
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: rgba(11,16,32,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:8px 16px;
+      max-width:1100px;
+      margin:0 auto;
+      min-height:72px; /* ensure stable height so content isn't overlapped */
+    }
+
+    /* Left brand: fixed size container so it cannot expand and cover nav */
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      flex: 0 0 auto; /* prevents growing/shrinking */
+      z-index: 70;
+      padding:2px 0;
+    }
+    .brand img{
+      height:72px;            /* visible, premium size */
+      max-height:72px;        /* prevents overflow */
+      width:auto;
+      display:block;
+      border-radius:10px;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45));
+    }
+
+    /* Links area uses remaining space and is right-aligned */
+    .links{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      flex: 1 1 auto;
+      justify-content:flex-end;
+      z-index: 80;
+    }
+    .link{
+      color:var(--text);
+      text-decoration:none;
+      padding:8px 12px;
+      border-radius:10px;
+      white-space:nowrap;
+      font-weight:600;
+      transition: background .18s, color .18s;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    .link:active,.link:hover{ background: rgba(255,255,255,0.04); }
+    .link.active{ outline:2px solid rgba(255,255,255,0.03); }
+
+    .nav.grad-mode{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
+
+    /* ---------- Hero / page sections ---------- */
+    .main-section{ padding:18px 0 22px; }
+    .hero{
+      padding:28px 0 8px;
+      background: radial-gradient(ellipse at 50% -80px, #162342 0%, transparent 60%);
+      border-radius:14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+    .hero h1{ font-size:34px; margin:0 0 8px; color:var(--text); letter-spacing:-0.5px; }
+    .lead{ color:var(--muted); margin:0 0 16px; font-size:16px; }
+
+    /* ---------- Buttons ---------- */
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:10px 16px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; transition: transform .16s ease, background .25s ease, box-shadow .25s ease; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+    .btn:active{ transform: translateY(0); }
+    .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:8px 12px; font-weight:700; }
+    .btn.mode-graded{
+      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
+      color:var(--btn-text);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.36);
+      min-width:150px;
+      border-radius:16px;
+    }
+
+    .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+
+    /* ---------- Outlined sections when a mode is selected ---------- */
+    .section{
+  margin-bottom:16px;
+  width:100%;
+  box-sizing:border-box; /* ensure padding/border is included so the outline wraps correctly */
+}
+
+    .outlined{
+  border:2px solid var(--theme-color);
+  border-radius:12px;
+  padding:14px;
+  background: rgba(255,255,255,0.01);
+  box-sizing:border-box; /* critical for borders/padding to behave on small screens */
+  overflow:hidden;       /* prevents border visuals from appearing broken/partial */
+}
+
+
+    /* ---------- Calculator & form ---------- */
+    .grid{ display:grid; gap:10px; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); align-items:end; }
+    label{ display:block; font-weight:600; color:var(--muted); font-size:14px; }
+    input[type="number"], select{ width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text); font-size:14px; }
+
+    /* ---------- Task UI ---------- */
+    .task-box{ display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:2px solid rgba(255,255,255,0.04); transition: opacity .45s ease, transform .35s ease, border-color .25s ease; }
+    .task-box .title{ font-weight:800; color:var(--text); }
+    .task-box .desc{ color:var(--muted); margin-top:6px; font-size:14px; }
+    .task-box.outlined{ border-color: var(--theme-color); }
+    .task-box.completed{ opacity:0.0; transform: scale(.995); pointer-events:none; }
+
+    .motivation{ margin-top:10px; font-weight:800; color:var(--theme-color); display:none; }
+
+    .tracker-card{ border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border:2px solid rgba(255,255,255,0.02); color:var(--text); }
+
+    .read-more-theme{ color:var(--theme-color); cursor:pointer; font-weight:700; }
+
+    /* responsive tweaks */
+    @media (max-width:720px){
+      .nav-inner{ gap:8px; padding:6px 12px; min-height:64px; }
+      .brand img{ height:60px; max-height:60px; }
+      .hero{ padding:20px 0 8px; }
+      .hero h1{ font-size:26px; }
+      .btn.mode-graded{ min-width:130px; padding:9px 12px; }
+      .links{ gap:12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <nav class="nav" id="mainNav" role="navigation" aria-label="Main Navigation">
+    <div class="nav-inner container">
+      <a class="brand" href="index.html" aria-label="Fitness Sphere home"><img src="logo.png" alt="Fitness Sphere logo" id="brandLogo" /></a>
+      <!-- compact centered title + menu button -->
+<div class="nav-center" aria-hidden="false">
+  <div class="nav-title">FITNESSSPHERE</div>
+
+  <!-- menu button -->
+  <button id="menuBtn" class="menu-btn" aria-label="Open site menu" aria-expanded="false" aria-controls="menuPanel">
+    <!-- use simple hamburger icon; you can swap for ••• if you prefer -->
+    <span class="hamburger" aria-hidden="true">☰</span>
+  </button>
+
+  <!-- popup panel (hidden by default) -->
+  <div id="menuPanel" class="menu-panel" role="menu" aria-hidden="true" hidden>
+    <a class="menu-link" role="menuitem" href="index.html">Home</a>
+    <a class="menu-link" role="menuitem" href="weight-loss.html">Weight Loss</a>
+    <a class="menu-link" role="menuitem" href="calories.html">Calories</a>
+    <a class="menu-link" role="menuitem" href="exercises.html">Exercises</a>
+    <a class="menu-link" role="menuitem" href="premium.html">Premium</a>
+    <hr class="menu-sep" />
+    <a class="menu-link" role="menuitem" href="#" id="openSettings">Settings</a>
+  </div>
+</div>
+
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="container main-section" id="mainContent">
+    <section class="hero section" id="hero">
+      <h1>Weight Gain Guide & Tracker</h1>
+      <p class="lead">Choose a bulking mode, track diet & exercise tasks, and follow a calorie surplus plan.</p>
+
+      <div class="row" style="margin-top:12px;">
+        <button id="btnHealthy" class="btn mode-graded" aria-pressed="false">Healthy Bulk</button>
+        <button id="btnFast" class="btn mode-graded" aria-pressed="false">Fast Bulk</button>
+        <div style="margin-left:auto;"><span id="modeHint" class="muted">No mode selected</span></div>
+      </div>
+
+      <p style="margin-top:10px;" class="muted">
+        <span id="readMore" class="read-more-theme">Read more</span>
+      </p>
+      <div id="descLong" class="muted" style="display:none; margin-top:10px;">
+        <p><strong>Healthy Bulk:</strong> Gentle surplus (+~300 kcal/day), steady strength training, protein-focused for cleaner gains.</p>
+        <p><strong>Fast Bulk:</strong> Larger surplus (+~600 kcal/day) for faster weight gain; expect some fat gain — short phases recommended.</p>
+        <span id="readLess" class="read-more-theme" style="display:inline-block; margin-top:8px;">Show less</span>
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section id="calculator" class="section" style="margin-top:12px;">
+      <h2>Calorie Surplus Calculator</h2>
+      <div class="grid" style="margin-top:10px;">
+        <label>Weight (kg)<input id="wg_weight" type="number" min="20" max="300" step="0.1" /></label>
+        <label>Height (cm)<input id="wg_height" type="number" min="120" max="230" /></label>
+        <label>Age<input id="wg_age" type="number" min="12" max="100" /></label>
+        <label>Gender
+          <select id="wg_gender"><option value="male">Male</option><option value="female">Female</option></select>
+        </label>
+        <label>Activity
+          <select id="wg_activity">
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Lightly active</option>
+            <option value="1.55">Moderately active</option>
+            <option value="1.725">Very active</option>
+            <option value="1.9">Athlete</option>
+          </select>
+        </label>
+        <label>Gain speed
+          <select id="wg_speed">
+            <option value="healthy">Healthy (+300 kcal/day)</option>
+            <option value="fast">Fast (+600 kcal/day)</option>
+          </select>
+        </label>
+      </div>
+
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+        <button id="wg_calcBtn" class="btn mode-graded">Calculate</button>
+        <button id="wg_resetBtn" class="btn secondary">Reset</button>
+        <div style="margin-left:auto;" class="muted"><small>Calculated with Mifflin–St Jeor</small></div>
+      </div>
+
+      <div id="wg_result" class="tracker-card" style="margin-top:12px; display:none;"></div>
+    </section>
+
+    <!-- TASKS -->
+    <section id="tasksSection" class="section" style="margin-top:12px;">
+      <h2>Daily Task</h2>
+      <div id="taskWrap" style="max-width:720px;"></div>
+      <div id="taskMotivate" class="motivation">Nice! Keep the streak — you’ll get the next task tomorrow.</div>
+      <div id="taskInfo" class="muted" style="margin-top:8px;"></div>
+    </section>
+
+    <!-- TIPS -->
+    <section id="tipsSection" class="section" style="margin-top:12px;">
+      <h3>Bulking Tips</h3>
+      <p class="muted">Simple, realistic tips for clean and effective weight gain.</p>
+      <ul>
+        <li>Focus on calorie-dense whole foods (nuts, paneer, oats, milk, rice).</li>
+        <li>Prioritize progressive strength training 3–4x/week.</li>
+        <li>Aim for 1.6–2.2 g protein per kg bodyweight.</li>
+        <li>Sleep and recovery are crucial — don't skimp on rest.</li>
+        <li>Track progress and adjust surplus every 2–4 weeks.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Page scripts -->
+  <script>
+    /* ---------- Data & DOM refs ---------- */
+    const MODES = {
+      healthy: { name: 'Healthy Bulk', color: '#ffb347', gradStart: '#ffcc33', gradEnd: '#ffb347', textOnBtn: '#071022' },
+      fast: { name: 'Fast Bulk', color: '#ff6e40', gradStart: '#ff6e40', gradEnd: '#ff3b3b', textOnBtn: '#071022' }
+    };
+
+    const btnHealthy = document.getElementById('btnHealthy');
+    const btnFast = document.getElementById('btnFast');
+    const modeHint = document.getElementById('modeHint');
+    const descLong = document.getElementById('descLong');
+    const readMore = document.getElementById('readMore');
+    const readLess = document.getElementById('readLess');
+    const wgCalcBtn = document.getElementById('wg_calcBtn');
+    const wgResetBtn = document.getElementById('wg_resetBtn');
+    const wgResult = document.getElementById('wg_result');
+    const taskWrap = document.getElementById('taskWrap');
+    const taskMotivate = document.getElementById('taskMotivate');
+    const taskInfo = document.getElementById('taskInfo');
+    const navEl = document.getElementById('mainNav');
+
+    const TASKS_HEALTHY = [
+      { id: 'diet', title: 'Diet — Add 1 extra calorie-dense snack', desc: 'Small, frequent meals with healthy fats to slowly increase calories.' },
+      { id: 'exercise', title: 'Exercise — Light strength session', desc: 'Focus on form and moderate reps. Prioritize recovery.' }
+    ];
+    const TASKS_FAST = [
+      { id: 'diet', title: 'Diet — Add a high-calorie shake', desc: 'Calorie-forward choices to bump daily intake quickly.' },
+      { id: 'exercise', title: 'Exercise — Heavy strength session', desc: 'Lift heavier with lower reps to maximise gain.' }
+    ];
+    const TASKS_DEFAULT = [
+      { id: 'diet', title: 'Diet — Eat 3 calorie-dense meals today', desc: 'Include whole-food calorie boosts like ghee, paneer, nuts.' },
+      { id: 'exercise', title: 'Exercise — Short bodyweight strength work', desc: 'Keep active with squats, push variations, rows.' }
+    ];
+
+    /* ---------- Theme & mode (persisted) ---------- */
+    function applyModeTheme(modeKey){
+      if(!MODES[modeKey]) return;
+      const mode = MODES[modeKey];
+      document.documentElement.style.setProperty('--theme-color', mode.color);
+      document.documentElement.style.setProperty('--theme-gradient-start', mode.gradStart);
+      document.documentElement.style.setProperty('--theme-gradient-end', mode.gradEnd);
+      document.documentElement.style.setProperty('--btn-text', mode.textOnBtn);
+      document.querySelectorAll('.section').forEach(s => s.classList.add('outlined'));
+      navEl.classList.add('grad-mode');
+      btnHealthy.setAttribute('aria-pressed', modeKey==='healthy');
+      btnFast.setAttribute('aria-pressed', modeKey==='fast');
+      modeHint.textContent = `${MODES[modeKey].name} selected`;
+      modeHint.style.color = mode.color;
+    }
+    function revertToDefaultTheme(){
+      document.documentElement.style.setProperty('--theme-color','#34d399');
+      document.documentElement.style.setProperty('--theme-gradient-start','#34d399');
+      document.documentElement.style.setProperty('--theme-gradient-end','#60a5fa');
+      document.documentElement.style.setProperty('--btn-text','#071022');
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('outlined'));
+      navEl.classList.remove('grad-mode');
+      btnHealthy.setAttribute('aria-pressed','false');
+      btnFast.setAttribute('aria-pressed','false');
+      modeHint.textContent='No mode selected';
+      modeHint.style.color='';
+    }
+    function setMode(modeKey){
+      const currently = localStorage.getItem('wg_mode');
+      if(modeKey===null){ localStorage.removeItem('wg_mode'); revertToDefaultTheme(); buildTaskUI(); return; }
+      if(currently===modeKey){ setMode(null); return; }
+      localStorage.setItem('wg_mode', modeKey); applyModeTheme(modeKey); buildTaskUI();
+    }
+
+    btnHealthy.addEventListener('click',()=>setMode('healthy'));
+    btnFast.addEventListener('click',()=>setMode('fast'));
+
+    /* ---------- Save keys consistency:
+         wg_calc stores: {weight,height,age,gender,activity,speed}
+       ---------- */
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      // restore saved calc if present
+      const savedCalc = localStorage.getItem('wg_calc');
+      if(savedCalc){
+        try{
+          const d = JSON.parse(savedCalc);
+          if(d.weight !== undefined) document.getElementById('wg_weight').value = d.weight;
+          if(d.height !== undefined) document.getElementById('wg_height').value = d.height;
+          if(d.age !== undefined) document.getElementById('wg_age').value = d.age;
+          if(d.gender !== undefined) document.getElementById('wg_gender').value = d.gender;
+          if(d.activity !== undefined) document.getElementById('wg_activity').value = d.activity;
+          if(d.speed !== undefined) document.getElementById('wg_speed').value = d.speed;
+          // recalc so UI shows values
+          calculateSurplus();
+        }catch(e){
+          console.error('Saved calc parse error', e);
+        }
+      }
+
+      const savedMode = localStorage.getItem('wg_mode');
+      if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
+      else revertToDefaultTheme();
+
+      buildTaskUI();
+    });
+
+    /* ---------- Read more toggle ---------- */
+    readMore.addEventListener('click',()=>{ descLong.style.display='block'; readMore.style.display='none'; });
+    readLess.addEventListener('click',()=>{ descLong.style.display='none'; readMore.style.display='inline'; });
+
+    /* ---------- Calculator ---------- */
+    wgCalcBtn.addEventListener('click', calculateSurplus);
+    wgResetBtn.addEventListener('click', ()=>{
+      document.getElementById('wg_weight').value='';
+      document.getElementById('wg_height').value='';
+      document.getElementById('wg_age').value='';
+      document.getElementById('wg_gender').value='male';
+      document.getElementById('wg_activity').value='1.2';
+      document.getElementById('wg_speed').value='healthy';
+      wgResult.style.display='none';
+      localStorage.removeItem('wg_calc');
+    });
+
+    function calculateSurplus(){
+      const weight = parseFloat(document.getElementById('wg_weight').value);
+      const height = parseFloat(document.getElementById('wg_height').value);
+      const age = parseFloat(document.getElementById('wg_age').value);
+      const gender = document.getElementById('wg_gender').value;
+      const activity = parseFloat(document.getElementById('wg_activity').value);
+      const speed = document.getElementById('wg_speed').value;
+
+      if(isNaN(weight) || isNaN(height) || isNaN(age)){
+        alert('Fill all fields');
+        return;
+      }
+
+      let bmr;
+      if(gender==='male') bmr = 10*weight + 6.25*height - 5*age + 5;
+      else bmr = 10*weight + 6.25*height - 5*age -161;
+
+      const tdee = Math.round(bmr * activity);
+      const surplus = (speed==='healthy') ? 300 : 600;
+      const total = tdee + surplus;
+
+      wgResult.innerHTML = `<strong>BMR:</strong> ${Math.round(bmr)} kcal/day<br>
+                            <strong>TDEE:</strong> ${tdee} kcal/day<br>
+                            <strong>Calories for weight gain:</strong> ${total} kcal/day (+${surplus} kcal)`;
+      wgResult.style.display='block';
+
+      localStorage.setItem('wg_calc', JSON.stringify({
+        weight: weight, height: height, age: age, gender: gender, activity: activity, speed: speed
+      }));
+    }
+
+    /* ---------- TASKS with checkbox + 24h cooldown (persisted by timestamp) ---------- */
+    const nowISO = ()=>new Date().toISOString();
+    const msSince = (iso)=>new Date() - new Date(iso);
+    function buildTaskUI(){
+      taskWrap.innerHTML='';
+      const modeKey = localStorage.getItem('wg_mode');
+      const tasks = (modeKey==='healthy') ? TASKS_HEALTHY : (modeKey==='fast') ? TASKS_FAST : TASKS_DEFAULT;
+
+      tasks.forEach(task=>{
+        const key='wg_task_'+task.id;
+        const doneTS = localStorage.getItem(key);
+        const done = doneTS ? (msSince(doneTS) < 24*60*60*1000) : false;
+
+        if(done){
+          // show completed card + countdown
+          const box = document.createElement('div');
+          box.className='task-box outlined';
+          box.innerHTML = `<div style="flex:1">
+            <div class="title">${task.title} — Completed</div>
+            <div class="desc">${task.desc}</div>
+          </div>`;
+          taskWrap.appendChild(box);
+
+          taskMotivate.textContent = (task.id==='diet') ? 'Great job on your diet — keep it up!' : 'Awesome workout — recovery matters!';
+          taskMotivate.style.display='block';
+          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
+
+          updateCountdown(doneTS);
+          const timer = setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(timer); return; } updateCountdown(doneTS); },1000);
+          return;
+        }
+
+        // show actionable task with checkbox
+        const box = document.createElement('div');
+        box.className='task-box' + (modeKey ? ' outlined' : '');
+        const cb = document.createElement('input');
+        cb.type='checkbox';
+        cb.id='cb-'+task.id;
+        cb.style.width='18px';
+        cb.style.height='18px';
+        cb.style.flex='0 0 auto';
+
+        const content = document.createElement('div');
+        content.style.flex='1';
+        const ttitle = document.createElement('div'); ttitle.className='title'; ttitle.textContent=`Day task — ${task.title}`;
+        const tdesc = document.createElement('div'); tdesc.className='desc'; tdesc.textContent=task.desc;
+        content.appendChild(ttitle); content.appendChild(tdesc);
+
+        box.appendChild(cb); box.appendChild(content);
+        taskWrap.appendChild(box);
+
+        cb.addEventListener('change',(e)=>{
+          if(!e.target.checked) return;
+          // mark done
+          const ts = nowISO();
+          localStorage.setItem(key, ts);
+          box.classList.add('completed');
+          // show motivation and countdown
+          taskMotivate.textContent = (task.id==='diet') ? 'Nice! Your meals matter — keep the consistency.' : 'Nice! You completed your workout — recovery now.';
+          taskMotivate.style.display='block';
+          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
+          updateCountdown(ts);
+          const tmr=setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; } updateCountdown(ts); },1000);
+          setTimeout(()=>{ box.style.display='none'; buildTaskUI(); },400);
+        });
+      });
+    }
+
+    function updateCountdown(iso){
+      const el=document.getElementById('timeRemain');
+      if(!el) return;
+      const diff = Math.max(0, 24*60*60*1000 - msSince(iso));
+      const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+      el.textContent = `${h}h ${m}m ${s}s`;
+    }
+
+    /* ---------- Safety: ensure logo never blocks clicks by resizing if image too large ---------- */
+    // If user supplies a huge logo, normalize it on load to avoid overlap problems.
+    const brandLogo = document.getElementById('brandLogo');
+    brandLogo.addEventListener('error', ()=>{ /* ignore */ });
+    brandLogo.addEventListener('load', ()=>{
+      // constrain to max allowed height just in case
+      const maxH = window.matchMedia('(max-width:720px)').matches ? 60 : 72;
+      if(brandLogo.naturalHeight && brandLogo.naturalHeight > maxH*2){
+        brandLogo.style.height = maxH + 'px';
+        brandLogo.style.maxHeight = maxH + 'px';
+      }
+    });
+     // --- robust menu toggle (replaces previous toggle) ---
+(function(){
+  const menuBtn = document.getElementById('menuBtn');
+  const menuPanel = document.getElementById('menuPanel');
+
+  if(!menuBtn || !menuPanel) return;
+
+  // Ensure panel starts hidden (supports cases where CSS/HTML missed it)
+  menuPanel.hidden = true;
+  menuPanel.setAttribute('aria-hidden','true');
+  menuBtn.setAttribute('aria-expanded','false');
+
+  function openMenu(){
+    // unhide -> allow CSS to show it
+    menuPanel.hidden = false;
+    menuPanel.setAttribute('aria-hidden','false');
+    menuBtn.setAttribute('aria-expanded','true');
+    // small entrance animation (handled by CSS transition)
+    menuPanel.style.opacity = '';
+    menuPanel.style.transform = '';
+    // focus first link for keyboard users
+    const first = menuPanel.querySelector('.menu-link');
+    if(first) first.focus();
+  }
+
+  function closeMenu(){
+    // add a short delay for the fade-out by using CSS transitions,
+    // then set hidden to true so layout is unaffected.
+    menuPanel.style.opacity = '0';
+    menuPanel.style.transform = 'translateY(-6px)';
+    menuBtn.setAttribute('aria-expanded','false');
+    menuPanel.setAttribute('aria-hidden','true');
+    // wait for transition to finish then hide (180ms matches CSS)
+    setTimeout(()=> {
+      // double-check not reopened
+      if(menuBtn.getAttribute('aria-expanded') === 'true') return;
+      menuPanel.hidden = true;
+      // clear inline styles so next open uses CSS default
+      menuPanel.style.opacity = '';
+      menuPanel.style.transform = '';
+    }, 190);
+  }
+
+  // toggle on button click
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if(menuPanel.hidden) openMenu(); else closeMenu();
+  });
+
+  // close when clicking outside
+  document.addEventListener('click', (e)=>{
+    if(menuPanel.hidden) return;
+    if(!menuPanel.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) closeMenu();
+  });
+
+  // close on ESC
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  // close on resize (prevents stuck open)
+  window.addEventListener('resize', ()=> closeMenu());
+
+  // Settings hook (placeholder)
+  const openSettings = document.getElementById('openSettings');
+  if(openSettings) openSettings.addEventListener('click', (ev)=>{
+    ev.preventDefault();
+    closeMenu();
+    alert('Settings placeholder — replace with settings panel/page.');
+  });
+})();
+    
+     /* ---------- End of script ---------- */
+  </script>
+</body>
+</html>
+
+    
+        
+
+
+
+          
