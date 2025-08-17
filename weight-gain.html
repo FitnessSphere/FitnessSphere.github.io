@@ -6,6 +6,15 @@
   <title>Fitness Sphere — Weight Gain</title>
 
   <style>
+    #taskWrap {
+  transition: opacity 0.4s ease, transform 0.3s ease;
+  opacity: 1;
+}
+.mode-change {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+    
     /* ---------- Theme variables & base ---------- */
     /* ---------- compact center title + menu dropdown ---------- */
 .nav-center{ display:flex; align-items:center; gap:12px; flex:1 1 auto; justify-content:flex-end; position:relative; }
@@ -432,14 +441,42 @@
       modeHint.style.color='';
     }
     function setMode(modeKey){
-      const currently = localStorage.getItem('wg_mode');
-      if(modeKey===null){ localStorage.removeItem('wg_mode'); revertToDefaultTheme(); buildTaskUI(); return; }
-      if(currently===modeKey){ setMode(null); return; }
-      localStorage.setItem('wg_mode', modeKey); applyModeTheme(modeKey); buildTaskUI();
-    }
+  const currently = localStorage.getItem('wg_mode');
 
-    btnHealthy.addEventListener('click',()=>setMode('healthy'));
-    btnFast.addEventListener('click',()=>setMode('fast'));
+  if(modeKey === null){
+    localStorage.removeItem('wg_mode');
+    revertToDefaultTheme();
+    buildTaskUI();
+
+    // visual only — won't block buildTaskUI or other logic
+    triggerModeAnimation();
+    return;
+  }
+
+  if(currently === modeKey){
+    setMode(null);
+    return;
+  }
+
+  localStorage.setItem('wg_mode', modeKey);
+  applyModeTheme(modeKey);
+  buildTaskUI();
+
+  // visual only — won't block buildTaskUI or other logic
+  triggerModeAnimation();
+}
+
+// small safe helper for the animation (place this in the same <script> area)
+function triggerModeAnimation(){
+  const content = document.getElementById('taskWrap');
+  if(!content) return; // safety: do nothing if element missing
+  content.classList.add('mode-change');
+  setTimeout(() => content.classList.remove('mode-change'), 300);
+}
+
+
+    btnHealthy.addEventListener('click', () => setMode('healthy'));
+btnFast.addEventListener('click', () => setMode('fast'));
 
     /* ---------- Save keys consistency:
          wg_calc stores: {weight,height,age,gender,activity,speed}
