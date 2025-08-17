@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fitness Sphere — Exercises (Ultimate)</title>
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="Comprehensive exercise library, routine builder, timers, logs, charts, export/import, and videos.">
+
+  <style>
+    /* ---------- THEME & LAYOUT ---------- */
+    :root{
+      --mint-start:#7ee8c5;
+      --mint-mid:#64d6b0;
+      --accent:#10b981;
+      --bg:#071023;
+      --card:#0f1724;
+      --text:#e6f1ff;
+      --muted:#a7c7bf;
+      --glass:rgba(255,255,255,0.03);
+      --maxw:1180px;
+      --shadow:0 10px 30px rgba(0,0,0,0.45);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:linear-gradient(180deg,#03121a 0%,#071023 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+
+    /* NAV */
+    .nav{position:sticky;top:0;z-index:200;background:linear-gradient(90deg, rgba(7,12,20,0.95), rgba(6,10,18,0.95));border-bottom:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(6px)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;max-width:var(--maxw);margin:0 auto}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand img{height:54px;border-radius:8px;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45))}
+    .nav-title{font-weight:800;letter-spacing:1px;font-size:18px;color:var(--text);pointer-events:none}
+    .menu-btn{background:var(--glass);border-radius:10px;padding:8px 10px;border:none;color:var(--text);cursor:pointer}
+    .menu-panel{position:absolute;right:12px;top:72px;min-width:220px;background:linear-gradient(180deg, rgba(8,12,16,0.98), rgba(10,14,18,0.98));border-radius:12px;padding:8px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow)}
+    .menu-panel[hidden]{display:none}
+    .menu-link{color:var(--text);text-decoration:none;padding:10px;border-radius:8px;font-weight:700;display:block}
+    .menu-link:hover{background:rgba(255,255,255,0.02)}
+
+    /* HERO */
+    .hero{margin-top:14px;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(10,16,24,0.6), rgba(8,12,18,0.2));border:1px solid rgba(255,255,255,0.02);box-shadow:var(--shadow)}
+    .hero h1{margin:0;font-size:26px}
+    .lead{color:var(--muted);margin-top:6px;font-size:14px}
+
+    /* GRID */
+    .main-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:14px;align-items:start}
+    @media (max-width:1000px){ .main-grid{grid-template-columns:1fr} }
+
+    /* CARDS */
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.02);padding:12px;border-radius:10px;box-shadow:var(--shadow)}
+    .card h3{margin:0}
+    .hint{color:var(--muted);font-size:13px}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* SEARCH & FILTERS */
+    .search-row{display:flex;gap:8px;align-items:center}
+    .search-input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+    .select{padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+
+    /* EX LIST */
+    .ex-list{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .ex-card{display:flex;gap:12px;align-items:flex-start;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);transition:transform .12s ease}
+    .ex-card:hover{transform:translateY(-6px)}
+    .ex-thumb{width:96px;height:72px;border-radius:8px;background:linear-gradient(90deg,var(--mint-start),var(--mint-mid));display:flex;align-items:center;justify-content:center;font-size:20px;color:#042423}
+    .ex-meta{flex:1}
+    .ex-title{font-weight:800;margin:0}
+    .tag{font-size:12px;padding:4px 6px;border-radius:6px;background:rgba(255,255,255,0.02);margin-right:6px;color:var(--muted);display:inline-block}
+
+    /* BUTTONS */
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--mint-start),var(--mint-mid));color:#07201a;font-weight:800;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+    .btn.ghost{background:transparent;color:var(--muted);border:none}
+
+    /* ASIDE */
+    aside{position:relative}
+    .routine-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .routine-item{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02)}
+    .routine-item .title{font-weight:800}
+
+    /* DnD HINT */
+    .drag-handle{cursor:grab;padding:6px;border-radius:6px;background:rgba(255,255,255,0.01);margin-right:8px}
+
+    /* TIMERS */
+    .timers{display:flex;flex-direction:column;gap:8px}
+    .timer-box{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01)}
+
+    /* LOGS & CHART */
+    #logsList{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .log-item{display:flex;justify-content:space-between;padding:8px;background:rgba(255,255,255,0.01);border-radius:8px}
+    .chart-wrap{height:180px;margin-top:12px;padding:8px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.02)}
+
+    /* MODAL */
+    .modal-bg{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:999}
+    .modal{width:980px;max-width:95%;background:linear-gradient(180deg, rgba(8,12,16,0.98), rgba(10,14,18,0.98));padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);box-shadow:var(--shadow);color:var(--text)}
+    .modal .close{float:right;background:transparent;border:0;color:var(--muted);font-weight:800;cursor:pointer}
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    .center{text-align:center}
+    .hidden{display:none}
+    .kbd{background:rgba(255,255,255,0.03);padding:4px 6px;border-radius:6px;font-weight:700}
+
+    /* print-friendly */
+    @media print{
+      body{background:#fff;color:#000}
+      .nav,.menu-panel,.btn,.menu-btn,.card .btn{display:none}
+      .container{max-width:100%;padding:0}
+      .modal-bg{display:none}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main">
+    <div class="nav-inner container">
+      <div class="brand" aria-hidden="false">
+        <img src="logo.png" alt="Fitness Sphere" />
+        <div>
+          <div class="nav-title">FITNESSSPHERE</div>
+          <div class="small muted">Exercises — Library & Builder</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;position:relative">
+        <button id="menuBtn" class="menu-btn" aria-expanded="false" aria-controls="menuPanel">☰</button>
+        <div id="menuPanel" class="menu-panel" hidden>
+          <a class="menu-link" href="index.html">Home</a>
+          <a class="menu-link" href="weight-gain.html">Weight Gain</a>
+          <a class="menu-link" href="weight-loss.html">Weight Loss</a>
+          <a class="menu-link" href="calories.html">Calories</a>
+          <a class="menu-link" href="exercises.html">Exercises</a>
+          <a class="menu-link" href="premium.html">Premium</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="hero card">
+      <h1>Exercises — Ultimate Library & Builder</h1>
+      <p class="lead">Search, filter, preview videos, build routines by drag-and-drop, export/import JSON & CSV, track workouts and see progress — all client-side, saved locally.</p>
+    </div>
+
+    <div class="main-grid">
+      <!-- LEFT COLUMN -->
+      <div>
+        <!-- Search + filters -->
+        <div class="card" style="margin-top:12px;">
+          <div class="search-row">
+            <input id="searchInput" class="search-input" placeholder="Search exercises (name, muscle, equipment) — press Enter to search" aria-label="Search exercises" />
+            <select id="filterMuscle" class="select" aria-label="Filter muscle">
+              <option value="">All muscles</option>
+              <option value="legs">Legs</option><option value="glutes">Glutes</option><option value="quads">Quads</option><option value="hamstrings">Hamstrings</option>
+              <option value="calves">Calves</option><option value="chest">Chest</option><option value="back">Back</option><option value="shoulders">Shoulders</option>
+              <option value="arms">Arms</option><option value="biceps">Biceps</option><option value="triceps">Triceps</option><option value="core">Core</option><option value="fullbody">Full body</option>
+            </select>
+
+            <select id="filterEquip" class="select" aria-label="Filter equipment">
+              <option value="">All equipment</option>
+              <option value="bodyweight">Bodyweight</option><option value="dumbbell">Dumbbell</option><option value="barbell">Barbell</option>
+              <option value="kettlebell">Kettlebell</option><option value="band">Resistance band</option><option value="machine">Machine</option><option value="cardio">Cardio</option>
+            </select>
+
+            <select id="filterDiff" class="select" aria-label="Filter difficulty">
+              <option value="">Any difficulty</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
+            </select>
+
+            <button id="clearFilters" class="btn secondary" title="Clear filters">Clear</button>
+          </div>
+        </div>
+
+        <!-- library -->
+        <div class="card" style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Exercise library</h3>
+            <div class="small muted">Showing <span id="exCount">0</span></div>
+          </div>
+
+          <div id="exList" class="ex-list" style="margin-top:10px;" aria-live="polite"></div>
+        </div>
+
+        <!-- Add custom exercise -->
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Add / edit custom exercise</h3>
+          <div class="hint" style="margin-top:6px">Create a personal exercise (saved locally).</div>
+          <div style="display:grid;gap:8px;margin-top:8px">
+            <input id="customName" placeholder="Name" />
+            <input id="customEquipment" placeholder="Equipment (e.g., dumbbell, barbell, bodyweight)" />
+            <input id="customPrimary" placeholder="Primary muscle (e.g., chest)" />
+            <textarea id="customDesc" placeholder="Short description" style="min-height:60px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"></textarea>
+            <div style="display:flex;gap:8px">
+              <button id="saveCustom" class="btn">Save custom</button>
+              <button id="clearCustom" class="btn secondary">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Random generator -->
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Random workout generator</h3>
+          <div class="hint" style="margin-top:6px">Pick focus, style, equipment and approximate time — generator builds a balanced plan.</div>
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+            <select id="genFocus" class="select"><option value="fullbody">Full body</option><option value="upper">Upper</option><option value="lower">Lower</option><option value="core">Core</option><option value="cardio">Cardio</option></select>
+            <select id="genStyle" class="select"><option value="circuit">Circuit (AMRAP)</option><option value="emom">EMOM</option><option value="tabata">Tabata</option><option value="sets">Sets/Reps</option></select>
+            <select id="genEquip" class="select"><option value="">Any equipment</option><option value="bodyweight">Bodyweight</option><option value="dumbbell">Dumbbell</option><option value="barbell">Barbell</option></select>
+            <input id="genTime" type="number" min="5" max="120" placeholder="mins" style="width:90px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"/>
+            <button id="genBtn" class="btn">Generate</button>
+          </div>
+          <div id="genOutput" style="margin-top:10px"></div>
+        </div>
+
+        <!-- Exercise quick actions -->
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Quick actions & import/export</h3>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button id="exportAllJson" class="btn secondary">Export all exercises (JSON)</button>
+            <button id="importJsonBtn" class="btn secondary">Import exercises (JSON)</button>
+            <input id="importJsonFile" type="file" accept="application/json" style="display:none"/>
+            <button id="exportRoutinesCSV" class="btn">Export routines (CSV)</button>
+            <button id="exportLogsCSV" class="btn">Export logs (CSV)</button>
+          </div>
+          <div style="margin-top:10px" class="hint">Import/Export allows backup and sharing of your routines & custom exercises.</div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN / ASIDE -->
+      <aside>
+        <!-- Routine builder -->
+        <div class="card">
+          <h3 style="margin:0">Workout builder</h3>
+          <div class="hint" style="margin-top:6px">Drag to reorder, or use the up/down buttons. Save/load routines, export or print.</div>
+
+          <input id="routineName" style="margin-top:10px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)" placeholder="Routine name" />
+
+          <div id="routineList" class="routine-list" style="margin-top:10px"></div>
+
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <button id="saveRoutine" class="btn">Save routine</button>
+            <button id="exportRoutine" class="btn secondary">Export JSON</button>
+            <button id="printRoutine" class="btn secondary">Print</button>
+            <button id="clearRoutine" class="btn ghost">Clear</button>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <select id="loadRoutineSelect" class="select" style="flex:1"></select>
+            <button id="loadRoutineBtn" class="btn secondary">Load</button>
+          </div>
+        </div>
+
+        <!-- Timers -->
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin:0">Timers</h3>
+          <div class="timers" style="margin-top:8px">
+            <div class="timer-box">
+              <div><div class="small">Stopwatch</div><div id="stopwatchDisplay" style="font-weight:800">00:00:00</div></div>
+              <div style="display:flex;gap:6px"><button id="swStart" class="btn secondary">Start</button><button id="swStop" class="btn secondary">Stop</button><button id="swReset" class="btn secondary">Reset</button></div>
+            </div>
+
+            <div class="timer-box">
+              <div><div class="small">Interval Timer</div><div id="intervalDisplay" style="font-weight:800">Idle</div></div>
+              <div style="display:flex;gap:6px"><button id="itStart" class="btn">Start Tabata</button><button id="itStop" class="btn secondary">Stop</button></div>
+            </div>
+
+            <div class="timer-box">
+              <div><div class="small">Quick presets</div><div class="muted small">Tabata, 10/20 HIIT, EMOM</div></div>
+              <div style="display:flex;gap:6px"><button class="btn" id="presetTabata">Tabata</button><button class="btn" id="preset10x20">10x20</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin:0">Workout logs</h3>
+          <div class="hint" style="margin-top:6px">Log from routine or add manual entry.</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="logFromRoutine" class="btn">Log routine</button>
+            <button id="manualLog" class="btn secondary">Manual log</button>
+          </div>
+
+          <div id="logsList" style="margin-top:10px"></div>
+
+          <div class="chart-wrap card" style="margin-top:12px">
+            <strong>Progress (workout frequency)</strong>
+            <canvas id="progressChart" width="600" height="160" style="display:block;width:100%"></canvas>
+            <div class="small muted" style="margin-top:8px">Last 12 logs shown on the chart.</div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- MODAL for details & videos -->
+    <div id="modalBg" class="modal-bg" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" id="detailModal">
+        <button class="close" id="modalClose" title="Close">✕</button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <footer style="margin-top:18px;margin-bottom:30px;text-align:center;color:var(--muted)" class="small">Made with ❤️ — Fitness Sphere · All data saved locally in your browser.</footer>
+  </main>
+
+  <script>
+  /* Comprehensive exercises page script
+     - big library + custom exercises
+     - drag & drop routines
+     - export/import JSON & CSV
+     - timers, logs, progress chart
+     - modals with video embeds (lazy)
+     - CSV/JSON helpers and robust localStorage
+  */
+
+  (function() {
+    'use strict';
+
+    /* ---------- Data & initial library (extended) ---------- */
+    // Base library, includes YouTube demo IDs when known (optional). You can extend this array dynamically.
+    const BASE_EXERCISES = [
+      { id:'sq_bwt', name:'Bodyweight Squat', equipment:'bodyweight', primary:'quads', muscles:['quads','glutes'], difficulty:'beginner', duration:60, description:'Stand shoulder-width and sit back into a squat, chest up, knees tracking toes.', steps:['Feet shoulder-width','Hips back','Knees out','Drive up'], tips:'Keep chest up and weight in heels.', mistakes:'Rounding back or knees caving in.', video:'', thumbnail:'' },
+      { id:'back_squat', name:'Back Squat (Barbell)', equipment:'barbell', primary:'quads', muscles:['quads','glutes','hamstrings'], difficulty:'advanced', duration:90, description:'Bar across traps, descend controlled, drive up.', steps:['Unrack safely','Descend to parallel','Drive through heels'], tips:'Keep a neutral spine; use spotter when heavy.', mistakes:'Knee valgus, chest collapse.', video:'', thumbnail:'' },
+      { id:'roman_dead', name:'Romanian Deadlift', equipment:'barbell', primary:'hamstrings', muscles:['hamstrings','glutes','lower back'], difficulty:'intermediate', duration:60, description:'Hinge at hips, knees slightly bent, feel stretch in hamstrings.', steps:['Hold bar','Hinge hips back','Lower bar near knees','Stand tall'], tips:'Lead with hips; don’t round spine.', mistakes:'Rounding back.' , video:'', thumbnail:'' },
+      { id:'push_up', name:'Push-Up', equipment:'bodyweight', primary:'chest', muscles:['chest','triceps','shoulders'], difficulty:'beginner', duration:45, description:'Hands under shoulders, lower chest to ground, press up.', steps:['Hands under shoulders','Lower chest','Press up'], tips:'Keep body straight; full range.', mistakes:'Hips sagging or flared elbows.' , video:'', thumbnail:'' },
+      { id:'db_bench', name:'Dumbbell Bench Press', equipment:'dumbbell', primary:'chest', muscles:['chest','triceps','shoulders'], difficulty:'intermediate', duration:60, description:'Press dumbbells from chest until full extension.', steps:['Set on bench','Press up','Lower controlled'], tips:'Avoid flaring elbows too wide.', mistakes:'Bouncing the weight.' , video:'', thumbnail:'' },
+      { id:'pull_up', name:'Pull-Up', equipment:'bodyweight', primary:'back', muscles:['lats','biceps'], difficulty:'advanced', duration:45, description:'Hang from bar, pull chin above bar.', steps:['Dead hang','Pull up','Control down'], tips:'Use full range; avoid kipping unless intended.', mistakes:'Swinging or partial reps.' , video:'', thumbnail:'' },
+      { id:'plank', name:'Plank', equipment:'bodyweight', primary:'core', muscles:['abs','obliques','lower back'], difficulty:'beginner', duration:60, description:'Forearms on floor, body in straight line, hold.', steps:['Forearms on ground','Keep body straight','Breathe'], tips:'Don’t let hips sag.', video:'', thumbnail:'' },
+      { id:'kb_swing', name:'Kettlebell Swing', equipment:'kettlebell', primary:'posterior chain', muscles:['glutes','hamstrings','back'], difficulty:'intermediate', duration:60, description:'Hinge and snap hips to swing kettlebell to chest height.', steps:['Hinge','Snap hips','Control down'], tips:'Hips do the work, not arms.', video:'', thumbnail:'' },
+      { id:'burpee', name:'Burpee', equipment:'bodyweight', primary:'fullbody', muscles:['fullbody','cardio'], difficulty:'intermediate', duration:45, description:'Drop to plank, push-up, jump up and clap overhead.', steps:['Drop to plank','Push-up','Jump up'], tips:'Move smoothly; scale as needed.', video:'', thumbnail:'' },
+      { id:'box_jump', name:'Box Jump', equipment:'box', primary:'power', muscles:['quads','glutes'], difficulty:'intermediate', duration:30, description:'Jump onto box with soft knees, step down carefully.', steps:['Approach','Explode up','Land softly'], tips:'Land softly and step down to protect knees.' , video:'', thumbnail:'' },
+      { id:'row', name:'Rowing Machine', equipment:'cardio', primary:'cardio', muscles:['fullbody'], difficulty:'intermediate', duration:600, description:'Full-body low-impact cardio. Use legs then back then arms.' , video:'', thumbnail:'' },
+      { id:'bike', name:'Cycling (Stationary)', equipment:'cardio', primary:'cardio', muscles:['legs','glutes'], difficulty:'variable', duration:600, description:'Stationary bike workouts: steady-state or intervals.' , video:'', thumbnail:'' },
+      { id:'dead_bug', name:'Dead Bug', equipment:'bodyweight', primary:'core', muscles:['abs'], difficulty:'beginner', duration:60, description:'Lay on back, alternate opposite arm & leg lowers.' , video:'', thumbnail:'' },
+      { id:'facepull', name:'Face Pull (Band/Cable)', equipment:'band', primary:'rear delts', muscles:['rear delts'], difficulty:'beginner', duration:30, description:'Pull band to face level focusing on scapular retraction.' , video:'', thumbnail:'' }
+      // ... you can keep adding items or allow user to add
+    ];
+
+    /* ---------- Storage keys ---------- */
+    const KEY_EX = 'ex_library_v2';          // stores library including custom items
+    const KEY_ROUTINES = 'ex_routines_v2';   // saved routines
+    const KEY_FAVS = 'ex_favorites_v2';      // favorite exercise ids
+    const KEY_LOGS = 'ex_logs_v2';           // workout logs
+
+    /* ---------- DOM refs ---------- */
+    const menuBtn = document.getElementById('menuBtn'), menuPanel = document.getElementById('menuPanel');
+    const searchInput = document.getElementById('searchInput'), filterMuscle = document.getElementById('filterMuscle');
+    const filterEquip = document.getElementById('filterEquip'), filterDiff = document.getElementById('filterDiff'), clearFilters = document.getElementById('clearFilters');
+    const exListEl = document.getElementById('exList'), exCountEl = document.getElementById('exCount');
+
+    const customName = document.getElementById('customName'), customEquipment = document.getElementById('customEquipment'), customPrimary = document.getElementById('customPrimary'), customDesc = document.getElementById('customDesc');
+    const saveCustom = document.getElementById('saveCustom'), clearCustom = document.getElementById('clearCustom');
+
+    const genBtn = document.getElementById('genBtn'), genOutput = document.getElementById('genOutput'), genFocus = document.getElementById('genFocus'), genStyle = document.getElementById('genStyle'), genEquip = document.getElementById('genEquip'), genTime = document.getElementById('genTime');
+
+    const exportAllJsonBtn = document.getElementById('exportAllJson'), importJsonBtn = document.getElementById('importJsonBtn'), importJsonFile = document.getElementById('importJsonFile');
+    const exportRoutinesCSV = document.getElementById('exportRoutinesCSV'), exportLogsCSV = document.getElementById('exportLogsCSV');
+
+    // Routine builder refs
+    const routineListEl = document.getElementById('routineList'), routineNameInput = document.getElementById('routineName');
+    const saveRoutineBtn = document.getElementById('saveRoutine'), exportRoutineBtn = document.getElementById('exportRoutine'), printRoutineBtn = document.getElementById('printRoutine'), clearRoutineBtn = document.getElementById('clearRoutine');
+    const loadRoutineSelect = document.getElementById('loadRoutineSelect'), loadRoutineBtn = document.getElementById('loadRoutineBtn');
+
+    // Timers & logs
+    const swDisplay = document.getElementById('stopwatchDisplay'), swStart = document.getElementById('swStart'), swStop = document.getElementById('swStop'), swReset = document.getElementById('swReset');
+    const itStart = document.getElementById('itStart'), itStop = document.getElementById('itStop'), intervalDisplay = document.getElementById('intervalDisplay');
+    const presetTabata = document.getElementById('presetTabata'), preset10x20 = document.getElementById('preset10x20');
+
+    const logFromRoutineBtn = document.getElementById('logFromRoutine'), manualLogBtn = document.getElementById('manualLog'), logsList = document.getElementById('logsList');
+
+    const modalBg = document.getElementById('modalBg'), modalContent = document.getElementById('modalContent'), modalClose = document.getElementById('modalClose');
+
+    const progressCanvas = document.getElementById('progressChart');
+
+    /* ---------- State ---------- */
+    let LIB = []; // exercises library (BASE + custom)
+    let currentRoutine = []; // array of {id, reps/sets/notes optional}
+    let routines = []; // saved routines
+    let logs = []; // workout logs
+    let favorites = []; // favorite ids
+
+    /* ---------- Utilities ---------- */
+    function uuid(prefix = '') { return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+    function saveJSONToFile(obj, filename='data.json'){ const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+    function csvFromArray(rows){ return rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'); }
+    function downloadCSV(text, filename='export.csv'){ const blob = new Blob([text], {type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+    function safeParse(raw, fallback){ try{ return JSON.parse(raw); }catch(e){return fallback;} }
+
+    /* ---------- Persistence ---------- */
+    function loadLibrary(){ const raw = localStorage.getItem(KEY_EX); if(raw){ LIB = safeParse(raw, BASE_EXERCISES.slice()); } else { LIB = BASE_EXERCISES.slice(); localStorage.setItem(KEY_EX, JSON.stringify(LIB)); } }
+    function persistLibrary(){ try{ localStorage.setItem(KEY_EX, JSON.stringify(LIB)); }catch(e){console.warn('persist lib failed', e);} }
+    function loadRoutines(){ routines = safeParse(localStorage.getItem(KEY_ROUTINES), []); updateRoutinesDropdown(); }
+    function saveRoutines(){ try{ localStorage.setItem(KEY_ROUTINES, JSON.stringify(routines)); updateRoutinesDropdown(); }catch(e){console.warn('save routines failed', e);} }
+    function loadFavorites(){ favorites = safeParse(localStorage.getItem(KEY_FAVS), []); }
+    function saveFavorites(){ localStorage.setItem(KEY_FAVS, JSON.stringify(favorites)); }
+    function loadLogs(){ logs = safeParse(localStorage.getItem(KEY_LOGS), []); renderLogs(); drawProgressChart(); }
+    function saveLogs(){ localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); renderLogs(); drawProgressChart(); }
+
+    /* ---------- Render library ---------- */
+    function matchesFilter(ex, q, muscle, equip, diff){
+      if(q){
+        const lq = q.toLowerCase();
+        if(!(ex.name.toLowerCase().includes(lq) || (ex.description && ex.description.toLowerCase().includes(lq)) || (ex.muscles && ex.muscles.join(' ').toLowerCase().includes(lq)))) return false;
+      }
+      if(muscle && muscle !== ''){
+        if(ex.primary !== muscle && !(ex.muscles || []).includes(muscle) && !(ex.muscles || []).join(',').includes(muscle)) return false;
+      }
+      if(equip && equip !== ''){
+        if(ex.equipment !== equip) return false;
+      }
+      if(diff && diff !== ''){
+        if(ex.difficulty !== diff) return false;
+      }
+      return true;
+    }
+
+    function renderExerciseCard(ex){
+      const card = document.createElement('div'); card.className='ex-card';
+      // thumb: if ex.thumbnail present, lazy-load img; else show initials
+      const thumb = document.createElement('div'); thumb.className='ex-thumb';
+      if(ex.thumbnail){
+        const img = document.createElement('img'); img.src = ex.thumbnail; img.alt = ex.name; img.loading='lazy'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; img.style.borderRadius='8px';
+        thumb.appendChild(img);
+      } else {
+        thumb.textContent = (ex.name || '').split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
+      }
+
+      const meta = document.createElement('div'); meta.className='ex-meta';
+      const title = document.createElement('div'); title.className='ex-title'; title.textContent = ex.name;
+      const sub = document.createElement('div'); sub.className='small muted'; sub.textContent = `${ex.primary || ''} • ${ex.equipment || '—'} • ${ex.difficulty || '—'}`;
+      const tags = document.createElement('div'); tags.style.marginTop = '6px';
+      (ex.muscles || []).slice(0,3).forEach(m=> { const t = document.createElement('span'); t.className='tag'; t.textContent = m; tags.appendChild(t); });
+
+      const actions = document.createElement('div'); actions.style.marginTop='8px'; actions.style.display='flex'; actions.style.gap='8px';
+      const viewBtn = document.createElement('button'); viewBtn.className='btn secondary'; viewBtn.textContent='View'; viewBtn.addEventListener('click', ()=> showDetail(ex.id));
+      const addBtn = document.createElement('button'); addBtn.className='btn'; addBtn.textContent='Add'; addBtn.addEventListener('click', ()=> addToRoutine(ex.id));
+      const favBtn = document.createElement('button'); favBtn.className='btn ghost'; favBtn.textContent = favorites.includes(ex.id) ? '♥ Fav' : '♡ Fav'; favBtn.addEventListener('click', ()=> { toggleFavorite(ex.id); favBtn.textContent = favorites.includes(ex.id) ? '♥ Fav' : '♡ Fav'; });
+
+      actions.appendChild(viewBtn); actions.appendChild(addBtn); actions.appendChild(favBtn);
+
+      meta.appendChild(title); meta.appendChild(sub); meta.appendChild(tags); meta.appendChild(actions);
+      card.appendChild(thumb); card.appendChild(meta);
+      return card;
+    }
+
+    function renderList(){
+      const q = (searchInput.value || '').trim();
+      const muscle = filterMuscle.value;
+      const equip = filterEquip.value;
+      const diff = filterDiff.value;
+      exListEl.innerHTML = '';
+      const visible = LIB.filter(e => matchesFilter(e, q, muscle, equip, diff));
+      exCountEl.textContent = visible.length;
+      visible.forEach(ex => exListEl.appendChild(renderExerciseCard(ex)));
+    }
+
+    /* ---------- Modal detail with video (lazy embed) ---------- */
+    function showDetail(id){
+      const ex = LIB.find(e=>e.id===id);
+      if(!ex) return;
+      modalContent.innerHTML = '';
+      const title = document.createElement('h2'); title.textContent = ex.name;
+      const p = document.createElement('p'); p.className='muted'; p.textContent = ex.description || '';
+      const info = document.createElement('div'); info.style.marginTop='10px';
+      info.innerHTML = `<div class="small">Equipment: <strong>${ex.equipment || '—'}</strong></div>
+                        <div class="small">Primary: <strong>${ex.primary || '—'}</strong></div>
+                        <div class="small">Difficulty: <strong>${ex.difficulty || '—'}</strong></div>
+                        <div class="small">Duration: <strong>${ex.duration ? ex.duration+'s' : '—'}</strong></div>`;
+      const steps = document.createElement('div'); steps.style.marginTop='10px';
+      if(ex.steps && ex.steps.length){ steps.innerHTML = '<strong>Steps</strong>'; const ol=document.createElement('ol'); ex.steps.forEach(s=>{ const li=document.createElement('li'); li.textContent=s; ol.appendChild(li); }); steps.appendChild(ol); }
+
+      const tips = document.createElement('div'); tips.style.marginTop='8px'; tips.innerHTML = ex.tips ? `<strong>Tips</strong><p class="muted">${ex.tips}</p>` : '';
+      const mistakes = document.createElement('div'); mistakes.style.marginTop='8px'; mistakes.innerHTML = ex.mistakes ? `<strong>Common mistakes</strong><p class="muted">${ex.mistakes}</p>` : '';
+
+      // video embed area (YouTube) — lazy load on click
+      const videoArea = document.createElement('div'); videoArea.style.marginTop='12px';
+      if(ex.video){
+        const preview = document.createElement('div'); preview.className='card'; preview.style.padding='8px'; preview.style.cursor='pointer';
+        preview.innerHTML = `<div class="small muted">Play demo</div><div style="margin-top:6px"><img src="https://img.youtube.com/vi/${ex.video}/hqdefault.jpg" alt="demo thumbnail" style="width:100%;max-height:240px;object-fit:cover;border-radius:6px"></div>`;
+        preview.addEventListener('click', ()=>{
+          videoArea.innerHTML = `<iframe width="100%" height="360" src="https://www.youtube.com/embed/${ex.video}?rel=0&autoplay=1" title="YouTube video demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        });
+        videoArea.appendChild(preview);
+      } else {
+        videoArea.innerHTML = '<div class="small muted">No demo video provided. You can add one when creating a custom exercise.</div>';
+      }
+
+      const actions = document.createElement('div'); actions.style.marginTop='12px'; actions.style.display='flex'; actions.style.gap='8px';
+      const addBtn = document.createElement('button'); addBtn.className='btn'; addBtn.textContent='Add to routine'; addBtn.addEventListener('click', ()=> { addToRoutine(ex.id); hideModal(); });
+      const favBtn = document.createElement('button'); favBtn.className='btn secondary'; favBtn.textContent = favorites.includes(ex.id) ? 'Favorited' : 'Add favorite'; favBtn.addEventListener('click', ()=> { toggleFavorite(ex.id); favBtn.textContent = favorites.includes(ex.id) ? 'Favorited' : 'Add favorite'; });
+
+      actions.appendChild(addBtn); actions.appendChild(favBtn);
+
+      modalContent.appendChild(title); modalContent.appendChild(p); modalContent.appendChild(info); modalContent.appendChild(steps); modalContent.appendChild(tips); modalContent.appendChild(mistakes); modalContent.appendChild(videoArea); modalContent.appendChild(actions);
+
+      showModal();
+    }
+    function showModal(){ modalBg.style.display='flex'; modalBg.setAttribute('aria-hidden','false'); }
+    function hideModal(){ modalBg.style.display='none'; modalBg.setAttribute('aria-hidden','true'); }
+    modalClose.addEventListener('click', hideModal);
+    modalBg.addEventListener('click', e => { if(e.target === modalBg) hideModal(); });
+
+    /* ---------- Favorites ---------- */
+    function toggleFavorite(id){
+      const idx = favorites.indexOf(id);
+      if(idx >= 0) favorites.splice(idx,1);
+      else favorites.push(id);
+      saveFavorites(); renderList();
+    }
+
+    /* ---------- Custom exercise save ---------- */
+    saveCustom.addEventListener('click', ()=>{
+      const name = (customName.value || '').trim();
+      if(!name) return alert('Enter a name for the custom exercise');
+      const ex = {
+        id: uuid('custom_'),
+        name,
+        equipment: (customEquipment.value || 'bodyweight').trim(),
+        primary: (customPrimary.value || '').trim(),
+        muscles: (customPrimary.value ? [customPrimary.value.trim()] : []),
+        difficulty: 'beginner',
+        duration: 60,
+        description: (customDesc.value || '').trim()
+      };
+      LIB.unshift(ex); persistLibrary(); renderList();
+      customName.value = customEquipment.value = customPrimary.value = customDesc.value = '';
+      alert('Custom exercise saved locally');
+    });
+    clearCustom.addEventListener('click', ()=> { customName.value=''; customEquipment.value=''; customPrimary.value=''; customDesc.value=''; });
+
+    /* ---------- Routines (drag & drop + persistence) ---------- */
+    function renderRoutine(){
+      routineListEl.innerHTML = '';
+      currentRoutine.forEach((id, idx) => {
+        const ex = LIB.find(e=>e.id===id) || { name: id, equipment:'', primary:'' };
+        const item = document.createElement('div'); item.className='routine-item'; item.draggable = true; item.dataset.idx = idx;
+        const left = document.createElement('div'); left.style.display='flex'; left.style.alignItems='center';
+        const handle = document.createElement('div'); handle.className='drag-handle'; handle.textContent='⋮';
+        const txt = document.createElement('div'); txt.innerHTML = `<div class="title">${ex.name}</div><div class="small muted">${ex.equipment} • ${ex.primary}</div>`;
+        left.appendChild(handle); left.appendChild(txt);
+
+        const right = document.createElement('div'); right.style.display='flex'; right.style.gap='6px';
+        const up = document.createElement('button'); up.className='btn secondary'; up.textContent='↑'; up.addEventListener('click', ()=> { if(idx>0){ [currentRoutine[idx-1], currentRoutine[idx]]=[currentRoutine[idx], currentRoutine[idx-1]]; renderRoutine(); } });
+        const down = document.createElement('button'); down.className='btn secondary'; down.textContent='↓'; down.addEventListener('click', ()=> { if(idx<currentRoutine.length-1){ [currentRoutine[idx+1], currentRoutine[idx]]=[currentRoutine[idx], currentRoutine[idx+1]]; renderRoutine(); } });
+        const rem = document.createElement('button'); rem.className='btn secondary'; rem.textContent='Remove'; rem.addEventListener('click', ()=> { currentRoutine.splice(idx,1); renderRoutine(); });
+
+        right.appendChild(up); right.appendChild(down); right.appendChild(rem);
+        item.appendChild(left); item.appendChild(right);
+        // drag handlers
+        item.addEventListener('dragstart', (e)=> { item.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', idx); });
+        item.addEventListener('dragend', ()=> { item.classList.remove('dragging'); });
+        item.addEventListener('dragover', (e)=> { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+        item.addEventListener('drop', (e)=> {
+          e.preventDefault();
+          const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+          const toIdx = parseInt(item.dataset.idx);
+          if(isNaN(fromIdx) || isNaN(toIdx)) return;
+          const [moved] = currentRoutine.splice(fromIdx,1);
+          currentRoutine.splice(toIdx,0,moved);
+          renderRoutine();
+        });
+
+        routineListEl.appendChild(item);
+      });
+    }
+
+    function addToRoutine(id){
+      currentRoutine.push(id);
+      renderRoutine();
+    }
+
+    saveRoutineBtn.addEventListener('click', ()=>{
+      const name = (routineNameInput.value || 'Untitled Routine').trim();
+      if(!name) return alert('Enter a routine name');
+      routines.push({ id: uuid('routine_'), name, exercises: currentRoutine.slice(), created: Date.now() });
+      saveRoutines();
+      routineNameInput.value = '';
+      currentRoutine = [];
+      renderRoutine();
+      alert('Routine saved');
+    });
+
+    function updateRoutinesDropdown(){
+      loadRoutineSelect.innerHTML = '';
+      routines = safeParse(localStorage.getItem(KEY_ROUTINES), routines || []);
+      routines.forEach((r, idx)=> {
+        const o = document.createElement('option'); o.value = idx; o.textContent = `${r.name} — ${new Date(r.created).toLocaleDateString()}`; loadRoutineSelect.appendChild(o);
+      });
+    }
+
+    loadRoutineBtn.addEventListener('click', ()=> {
+      const idx = parseInt(loadRoutineSelect.value);
+      if(isNaN(idx) || !routines[idx]) return alert('Select a routine to load');
+      currentRoutine = routines[idx].exercises.slice();
+      renderRoutine();
+    });
+
+    exportRoutineBtn.addEventListener('click', ()=> {
+      const name = (routineNameInput.value || 'routine').replace(/\s+/g,'_');
+      const data = { name: routineNameInput.value || 'Routine', exercises: currentRoutine.map(id => LIB.find(e=>e.id===id) || { id }) };
+      saveJSONToFile(data, `${name}.json`);
+    });
+
+    printRoutineBtn.addEventListener('click', ()=> {
+      const win = window.open('', '_blank', 'width=800,height=900');
+      let html = `<html><head><title>${routineNameInput.value || 'Routine'}</title><style>body{font-family:Arial;padding:20px;color:#000}h1{font-size:20px}</style></head><body>`;
+      html += `<h1>${routineNameInput.value || 'Routine'}</h1><ol>`;
+      currentRoutine.forEach(id => { const ex = LIB.find(e=>e.id===id); html += `<li><strong>${ex ? ex.name : id}</strong><div style="margin-bottom:8px">${ex && ex.description ? ex.description : ''}</div></li>`; });
+      html += '</ol></body></html>';
+      win.document.write(html); win.document.close(); win.print();
+    });
+
+    clearRoutineBtn.addEventListener('click', ()=> { currentRoutine = []; renderRoutine(); });
+
+    /* ---------- Export / Import ---------- */
+    exportAllJsonBtn.addEventListener('click', ()=> { saveJSONToFile(LIB, 'exercises-library.json'); });
+
+    importJsonBtn.addEventListener('click', ()=> importJsonFile.click());
+    importJsonFile.addEventListener('change', (e)=> {
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=> {
+        try{
+          const parsed = JSON.parse(ev.target.result);
+          if(Array.isArray(parsed)){
+            // merge: keep existing ids, append new ones that don't conflict
+            parsed.forEach(item => {
+              if(!item.id) item.id = uuid('imp_');
+              // avoid duplicates by id or name
+              if(!LIB.find(x => x.id === item.id || x.name === item.name)){
+                LIB.unshift(item);
+              }
+            });
+            persistLibrary(); renderList();
+            alert('Imported exercises (merged)');
+          } else {
+            alert('JSON should be an array of exercises');
+          }
+        }catch(err){ alert('Import failed: invalid JSON'); }
+      };
+      reader.readAsText(f);
+    });
+
+    exportRoutinesCSV.addEventListener('click', ()=> {
+      const arr = routines || [];
+      const rows = [['name','created','ex_count','ex_list']];
+      arr.forEach(r=> rows.push([r.name, new Date(r.created).toISOString(), r.exercises.length, r.exercises.join('|')]));
+      downloadCSV(csvFromArray(rows), 'routines.csv');
+    });
+
+    exportLogsCSV.addEventListener('click', ()=> {
+      const arr = logs || [];
+      const rows = [['name','date','duration','ex_count']];
+      arr.forEach(l=> rows.push([l.name, new Date(l.date).toISOString(), l.duration || '', (l.exercises||[]).length]));
+      downloadCSV(csvFromArray(rows), 'workout_logs.csv');
+    });
+
+    /* ---------- Random generator ---------- */
+    function generateWorkout(){
+      const focus = genFocus.value;
+      const style = genStyle.value;
+      const equip = genEquip.value;
+      const time = Math.max(5, parseInt(genTime.value) || 20);
+      let pool = LIB.slice();
+      if(equip) pool = pool.filter(e => e.equipment === equip || e.equipment === 'bodyweight');
+      if(focus==='upper') pool = pool.filter(e => (e.primary && ['chest','back','shoulders','arms'].includes(e.primary)) || (e.muscles && e.muscles.some(m=>['chest','back','shoulders','arms'].includes(m))));
+      if(focus==='lower') pool = pool.filter(e => (e.primary && ['quads','glutes','hamstrings','calves'].includes(e.primary)) || (e.muscles && e.muscles.some(m=>['quads','glutes','hamstrings','calves'].includes(m))));
+      if(focus==='core') pool = pool.filter(e => (e.primary && e.primary==='core') || (e.muscles && e.muscles.includes('core')));
+      if(focus==='cardio') pool = pool.filter(e => e.type==='cardio' || e.equipment==='cardio' || e.primary==='cardio' || /cardio|run|bike|row/i.test(e.name));
+
+      if(pool.length === 0) pool = LIB.slice();
+
+      const rnd = (n)=> pool[Math.floor(Math.random()*pool.length)];
+      let html = '';
+      if(style === 'tabata'){
+        const picks = shuffle(pool).slice(0,6);
+        html += `<div class="small muted">Tabata circuit — 20s on / 10s off — repeat 4–6 rounds</div><ol>`;
+        picks.forEach(p => html += `<li>${p.name} — ${p.equipment || 'bodyweight'}</li>`);
+        html += '</ol>';
+      } else if(style === 'emom'){
+        const minutes = Math.max(5, time);
+        const picks = shuffle(pool).slice(0, Math.min(minutes, pool.length));
+        html += `<div class="small muted">EMOM — ${minutes} minutes</div><ol>`;
+        picks.forEach((p,i)=> html += `<li>Minute ${i+1}: ${p.name} — ${p.equipment || 'bodyweight'}</li>`);
+        html += '</ol>';
+      } else if(style === 'circuit'){
+        const picks = shuffle(pool).slice(0, Math.min(8, pool.length));
+        html += `<div class="small muted">Circuit / AMRAP — ${time} minutes</div><ol>`;
+        picks.forEach(p => html += `<li>${p.name} — 30–60s or 8–15 reps</li>`);
+        html += '</ol>';
+      } else {
+        const picks = shuffle(pool).slice(0,5);
+        html += `<div class="small muted">Strength set-based ~ ${time} minutes</div><ol>`;
+        picks.forEach(p => html += `<li>${p.name} — 3–4 sets x 6–12 reps</li>`);
+        html += '</ol>';
+      }
+      genOutput.innerHTML = html;
+    }
+    genBtn.addEventListener('click', generateWorkout);
+
+    function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+
+    /* ---------- Timers (Stopwatch & Tabata/Interval) ---------- */
+    let swTimer=null, swStartTime=0, swElapsed=0;
+    function msToTime(ms){
+      const s = Math.floor(ms/1000)%60; const m = Math.floor(ms/60000)%60; const h = Math.floor(ms/3600000);
+      return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
+    }
+    swStart.addEventListener('click', ()=>{
+      if(swTimer) return;
+      swStartTime = Date.now() - swElapsed;
+      swTimer = setInterval(()=> { swElapsed = Date.now() - swStartTime; swDisplay.textContent = msToTime(swElapsed); }, 200);
+    });
+    swStop.addEventListener('click', ()=> { if(swTimer) clearInterval(swTimer); swTimer = null; });
+    swReset.addEventListener('click', ()=> { if(swTimer) clearInterval(swTimer); swTimer=null; swElapsed=0; swDisplay.textContent='00:00:00'; });
+
+    // Interval Timer (Tabata preset)
+    let intervalRunning=false, intervalTimeout=null;
+    function startInterval(workSec=20, restSec=10, rounds=8){
+      if(intervalRunning) return;
+      intervalRunning = true;
+      let round = 0;
+      function next(){
+        if(!intervalRunning) return;
+        round++;
+        if(round > rounds){ stopInterval(); return; }
+        intervalDisplay.textContent = `Round ${round}/${rounds} — WORK (${workSec}s)`;
+        playBeep();
+        intervalTimeout = setTimeout(()=> {
+          if(!intervalRunning) return;
+          intervalDisplay.textContent = `Round ${round}/${rounds} — REST (${restSec}s)`;
+          playBeep();
+          intervalTimeout = setTimeout(()=> next(), restSec*1000);
+        }, workSec*1000);
+      }
+      next();
+    }
+    function stopInterval(){ intervalRunning=false; if(intervalTimeout) clearTimeout(intervalTimeout); intervalDisplay.textContent='Stopped'; }
+    itStart.addEventListener('click', ()=> startInterval(20,10,8));
+    itStop.addEventListener('click', stopInterval);
+    presetTabata.addEventListener('click', ()=> startInterval(20,10,8));
+    preset10x20.addEventListener('click', ()=> startInterval(20,10,10));
+
+    function playBeep(){
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type='sine'; o.frequency.value = 750;
+        g.gain.value = 0.0001; g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
+        o.start(); setTimeout(()=> { g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18); o.stop(ctx.currentTime + 0.19); }, 180);
+      }catch(e){}
+    }
+
+    /* ---------- Logs & progress chart ---------- */
+    function logRoutine(name, exercises){
+      const entry = { id: uuid('log_'), name, date: Date.now(), exercises: exercises.slice(), duration: Math.round((exercises.length || 1) * 5) };
+      logs.unshift(entry);
+      if(logs.length > 200) logs.pop();
+      saveLogs();
+      alert('Workout logged: ' + name);
+    }
+
+    logFromRoutineBtn.addEventListener('click', ()=>{
+      if(currentRoutine.length === 0) return alert('No exercises in current routine to log');
+      const name = prompt('Enter workout name', (routineNameInput.value || 'Routine'));
+      if(!name) return;
+      logRoutine(name, currentRoutine);
+    });
+
+    manualLogBtn.addEventListener('click', ()=>{
+      const name = prompt('Workout name', 'Manual workout');
+      if(!name) return;
+      const duration = parseInt(prompt('Duration (minutes)', '30')) || 0;
+      const entry = { id: uuid('log_'), name, date: Date.now(), exercises: [], duration };
+      logs.unshift(entry);
+      saveLogs();
+      alert('Manual log saved');
+    });
+
+    function renderLogs(){
+      logsList.innerHTML = '';
+      logs.slice(0,50).forEach(l => {
+        const el = document.createElement('div'); el.className='log-item';
+        el.innerHTML = `<div><strong>${l.name}</strong><div class="small muted">${new Date(l.date).toLocaleString()}</div></div><div class="small muted">${l.duration || '—'} min • ${ (l.exercises || []).length } ex</div>`;
+        logsList.appendChild(el);
+      });
+      drawProgressChart();
+    }
+
+    /* ---------- Chart (simple canvas line chart) ---------- */
+    function drawProgressChart(){
+      const ctx = progressCanvas.getContext('2d');
+      ctx.clearRect(0,0,progressCanvas.width, progressCanvas.height);
+      const data = logs.slice(0,12).reverse(); // oldest → newest
+      if(data.length === 0){
+        ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.font='14px Inter, Arial'; ctx.fillText('No logs yet', 10, 30); return;
+      }
+      // Chart: x positions across canvas, y = duration (minutes) scaled
+      const w = progressCanvas.clientWidth; const h = progressCanvas.clientHeight;
+      progressCanvas.width = progressCanvas.clientWidth * (window.devicePixelRatio || 1);
+      progressCanvas.height = progressCanvas.clientHeight * (window.devicePixelRatio || 1);
+      const scale = window.devicePixelRatio || 1;
+      const g = progressCanvas.getContext('2d');
+      g.scale(scale, scale);
+      g.clearRect(0,0,w,h);
+      const max = Math.max(...data.map(d => d.duration || 0), 30);
+      const pad = 20;
+      const plotW = w - pad*2; const plotH = h - pad*2;
+      // axes
+      g.strokeStyle = 'rgba(255,255,255,0.06)'; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(pad, pad); g.lineTo(pad, pad + plotH); g.lineTo(pad + plotW, pad + plotH); g.stroke();
+      // line
+      g.strokeStyle = 'rgba(126,232,197,0.95)'; g.lineWidth = 2; g.beginPath();
+      data.forEach((d,i) => {
+        const x = pad + (i/(data.length-1 || 1))*plotW;
+        const y = pad + (1 - ( (d.duration || 0) / max )) * plotH;
+        if(i===0) g.moveTo(x,y); else g.lineTo(x,y);
+      });
+      g.stroke();
+      // fill under
+      g.fillStyle = 'rgba(126,232,197,0.06)';
+      g.lineTo(pad + plotW, pad + plotH); g.lineTo(pad, pad + plotH); g.closePath();
+      g.fill();
+      // labels
+      g.fillStyle = 'rgba(255,255,255,0.7)'; g.font = '12px Inter, Arial';
+      g.fillText('Duration (min)', pad, 12);
+      // x labels
+      data.forEach((d,i)=>{
+        const x = pad + (i/(data.length-1 || 1))*plotW;
+        const label = new Date(d.date).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+        g.fillText(label, x-18, pad + plotH + 16);
+      });
+    }
+
+    /* ---------- Logs CSV Export helper already added above ---------- */
+
+    /* ---------- Import of local saved state ---------- */
+    function init(){
+      loadLibrary();
+      loadFavorites();
+      loadRoutines();
+      loadLogs();
+      renderList();
+      renderRoutine();
+      renderLogs();
+      updateRoutinesDropdown();
+    }
+
+    // load library from localStorage or use base
+    function loadLibrary(){
+      const raw = localStorage.getItem(KEY_EX);
+      if(raw){
+        try{ LIB = JSON.parse(raw); }catch(e){ LIB = BASE_EXERCISES.slice(); localStorage.setItem(KEY_EX, JSON.stringify(LIB)); }
+      } else {
+        LIB = BASE_EXERCISES.slice();
+        try{ localStorage.setItem(KEY_EX, JSON.stringify(LIB)); }catch(e){ console.warn('store base lib failed', e); }
+      }
+    }
+
+    // wrappers for routines and logs already defined earlier
+    function loadRoutines(){ routines = safeParse(localStorage.getItem(KEY_ROUTINES), []); updateRoutinesDropdown(); }
+    function loadFavorites(){ favorites = safeParse(localStorage.getItem(KEY_FAVS), []); }
+    function loadLogs(){ logs = safeParse(localStorage.getItem(KEY_LOGS), []); renderLogs(); }
+
+    function persistLibrary(){ try{ localStorage.setItem(KEY_EX, JSON.stringify(LIB)); }catch(e){console.warn('persist failed',e);} }
+
+    /* ---------- Event wiring ---------- */
+    searchInput.addEventListener('input', renderList);
+    [filterMuscle, filterEquip, filterDiff].forEach(el => el.addEventListener('change', renderList));
+    clearFilters.addEventListener('click', ()=> { searchInput.value=''; filterMuscle.value=''; filterEquip.value=''; filterDiff.value=''; renderList(); });
+
+    // menu toggle
+    if(menuBtn && menuPanel){
+      menuBtn.addEventListener('click', ()=> { const expanded = menuBtn.getAttribute('aria-expanded') === 'true'; menuBtn.setAttribute('aria-expanded', String(!expanded)); menuPanel.hidden = expanded; });
+      document.addEventListener('click', (e)=> { if(menuPanel.hidden) return; if(menuBtn.contains(e.target) || menuPanel.contains(e.target)) return; menuPanel.hidden = true; menuBtn.setAttribute('aria-expanded','false'); });
+    }
+
+    // logs persist helpers
+    function saveLogs(){ try{ localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); renderLogs(); }catch(e){console.warn('save logs failed', e);} }
+    function saveRoutines(){ try{ localStorage.setItem(KEY_ROUTINES, JSON.stringify(routines)); updateRoutinesDropdown(); }catch(e){console.warn('save routines failed', e);} }
+    function saveLibrary(){ try{ localStorage.setItem(KEY_EX, JSON.stringify(LIB)); }catch(e){console.warn('save lib failed', e);} }
+
+    // add some small keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      if(e.ctrlKey && e.key === 'f'){ e.preventDefault(); searchInput.focus(); searchInput.select(); }
+    });
+
+    // when page is visible resize chart
+    window.addEventListener('resize', ()=> { drawProgressChart(); });
+
+    /* ---------- Export CSV for routines & logs (immediate implementation) ---------- */
+    exportRoutinesCSV.addEventListener('click', ()=> {
+      const arr = routines || [];
+      const rows = [['name','created','ex_count','ex_list']];
+      arr.forEach(r=> rows.push([r.name, new Date(r.created).toISOString(), r.exercises.length, r.exercises.join('|')]));
+      downloadCSV(csvFromArray(rows), 'routines.csv');
+    });
+
+    exportLogsCSV.addEventListener('click', ()=> {
+      const arr = logs || [];
+      const rows = [['name','date','duration','ex_count']];
+      arr.forEach(l=> rows.push([l.name, new Date(l.date).toISOString(), l.duration || '', (l.exercises||[]).length]));
+      downloadCSV(csvFromArray(rows), 'workout_logs.csv');
+    });
+
+    // import exercise file handled earlier in init wiring
+    // re-wire import JSON file input
+    importJsonBtn.addEventListener('click', ()=> importJsonFile.click());
+    importJsonFile.addEventListener('change', (e)=> {
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=> {
+        try{
+          const parsed = JSON.parse(ev.target.result);
+          if(Array.isArray(parsed)){
+            parsed.forEach(item => {
+              if(!item.id) item.id = uuid('imp_');
+              if(!LIB.find(x => x.id === item.id || x.name === item.name)) LIB.unshift(item);
+            });
+            saveLibrary(); renderList();
+            alert('Imported exercises (merged)');
+          } else {
+            alert('JSON should be an array of exercises');
+          }
+        }catch(err){ alert('Import failed: invalid JSON'); }
+      };
+      reader.readAsText(f);
+    });
+
+    // Add / edit custom exercises already wired earlier (saveCustom)
+
+    // Modal close is wired earlier
+    modalClose.addEventListener('click', hideModal);
+
+    // Export entire library as JSON already wired
+    exportAllJsonBtn.addEventListener('click', ()=> saveJSONToFile(LIB, 'exercises-library.json'));
+
+    // Log & chart wiring
+    loadRoutines(); loadFavorites(); loadLogs(); renderList(); renderRoutine(); renderLogs();
+
+    // utility: update routines dropdown after loading routines
+    function updateRoutinesDropdown(){ loadRoutines(); loadRoutines(); // load twice safe-guard
+      loadRoutineSelect.innerHTML = '';
+      routines.forEach((r, idx) => { const o=document.createElement('option'); o.value = idx; o.textContent = `${r.name} — ${new Date(r.created).toLocaleDateString()}`; loadRoutineSelect.appendChild(o); });
+    }
+
+    // Persist favorites when toggled, renderList will show updated fav states
+    function toggleFavorite(id){ const i = favorites.indexOf(id); if(i>=0) favorites.splice(i,1); else favorites.push(id); localStorage.setItem(KEY_FAVS, JSON.stringify(favorites)); renderList(); }
+
+    // Logging helpers: saveLog, renderLogs implemented above as well
+    function saveLog(entry){
+      logs.unshift(entry); if(logs.length>500) logs.pop(); localStorage.setItem(KEY_LOGS, JSON.stringify(logs)); renderLogs();
+    }
+
+    // manual logging: implemented earlier
+
+    // keyboard shortuct: Ctrl+G = generator
+    document.addEventListener('keydown', (e)=> { if(e.ctrlKey && e.key === 'g'){ e.preventDefault(); genBtn.click(); } });
+
+    /* ---------- Final init ---------- */
+    (function finalInit(){
+      // load env & state
+      loadLibrary();
+      loadFavorites();
+      loadRoutines();
+      loadLogs();
+      renderList();
+      renderRoutine();
+      renderLogs();
+      updateRoutinesDropdown();
+
+      // attach small convenience: add first library item to routine quickly by double-clicking its card
+      exListEl.addEventListener('dblclick', (e)=> {
+        const card = e.target.closest('.ex-card');
+        if(!card) return;
+        const title = card.querySelector('.ex-title');
+        if(!title) return;
+        const name = title.textContent;
+        const ex = LIB.find(x => x.name === name);
+        if(ex) { addToRoutine(ex.id); }
+      });
+
+      // small onboarding hint
+      setTimeout(()=> {
+        if(!localStorage.getItem('ex_onboard_shown')){
+          alert('Tip: drag and drop items in the routine builder, Ctrl+F to focus search, double-click an exercise card to add it quickly.');
+          localStorage.setItem('ex_onboard_shown', '1');
+        }
+      }, 500);
+    })();
+
+    // Expose helpers for debugging (optional)
+    window.fp = { LIB, routines, logs, favorites, addToRoutine, saveLibrary, saveRoutines, saveLogs, renderList, renderRoutine, drawProgressChart };
+
+  })();
+  </script>
+</body>
+</html>
