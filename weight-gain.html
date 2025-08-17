@@ -6,6 +6,26 @@
   <title>Fitness Sphere — Weight Gain</title>
 
   <style>
+   /* Smooth transition for bulk content */
+#bulkContent {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.4s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+    
     /* ---------- Theme variables & base ---------- */
     /* ---------- compact center title + menu dropdown ---------- */
 .nav-center{ display:flex; align-items:center; gap:12px; flex:1 1 auto; justify-content:flex-end; position:relative; }
@@ -283,7 +303,9 @@
     <a class="menu-link" role="menuitem" href="premium.html">Premium</a>
     <hr class="menu-sep" />
     <a class="menu-link" role="menuitem" href="#" id="openSettings">Settings</a>
-  </div>
+ <div id="bulkContent">
+  <!-- Existing Fast Bulk / Slow Bulk content here -->
+ </div>
 </div>
 
     </div>
@@ -432,14 +454,41 @@
       modeHint.style.color='';
     }
     function setMode(modeKey){
-      const currently = localStorage.getItem('wg_mode');
-      if(modeKey===null){ localStorage.removeItem('wg_mode'); revertToDefaultTheme(); buildTaskUI(); return; }
-      if(currently===modeKey){ setMode(null); return; }
-      localStorage.setItem('wg_mode', modeKey); applyModeTheme(modeKey); buildTaskUI();
-    }
+  const currently = localStorage.getItem('wg_mode');
+  const content = document.getElementById('bulkContent'); // container to animate
 
-    btnHealthy.addEventListener('click',()=>setMode('healthy'));
-    btnFast.addEventListener('click',()=>setMode('fast'));
+  if(modeKey===null){ 
+    localStorage.removeItem('wg_mode'); 
+    revertToDefaultTheme(); 
+
+    content.classList.add('fade-out');
+    setTimeout(() => {
+      buildTaskUI(); 
+      content.classList.remove('fade-out');
+      content.classList.add('fade-in');
+      setTimeout(() => content.classList.remove('fade-in'), 400);
+    }, 300);
+
+    return; 
+  }
+
+  if(currently===modeKey){ 
+    setMode(null); 
+    return; 
+  }
+
+  localStorage.setItem('wg_mode', modeKey); 
+  applyModeTheme(modeKey);
+
+  // Animate mode change
+  content.classList.add('fade-out');
+  setTimeout(() => {
+    buildTaskUI();
+    content.classList.remove('fade-out');
+    content.classList.add('fade-in');
+    setTimeout(() => content.classList.remove('fade-in'), 400);
+  }, 300);
+}
 
     /* ---------- Save keys consistency:
          wg_calc stores: {weight,height,age,gender,activity,speed}
