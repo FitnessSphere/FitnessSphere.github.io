@@ -431,6 +431,21 @@
       modeHint.textContent='No mode selected';
       modeHint.style.color='';
     }
+    <div id="bulkContent">
+    <div class="row" style="margin-top:12px;">
+  <button id="btnHealthy" class="btn mode-graded" aria-pressed="false">Healthy Bulk</button>
+  <button id="btnFast" class="btn mode-graded" aria-pressed="false">Fast Bulk</button>
+  <div style="margin-left:auto;"><span id="modeHint" class="muted">No mode selected</span></div>
+</div>
+
+<p style="margin-top:10px;" class="muted">
+  <span id="readMore" class="read-more-theme">Read more</span>
+</p>
+<div id="descLong" class="muted" style="display:none; margin-top:10px;">
+  ...
+</div>
+    </div>
+    
     function setMode(modeKey){
       const currently = localStorage.getItem('wg_mode');
       if(modeKey===null){ localStorage.removeItem('wg_mode'); revertToDefaultTheme(); buildTaskUI(); return; }
@@ -440,7 +455,7 @@
 
     btnHealthy.addEventListener('click',()=>setMode('healthy'));
     btnFast.addEventListener('click',()=>setMode('fast'));
-
+      
     /* ---------- Save keys consistency:
          wg_calc stores: {weight,height,age,gender,activity,speed}
        ---------- */
@@ -469,7 +484,10 @@
       else revertToDefaultTheme();
 
       buildTaskUI();
-    });
+      const content = document.getElementById('bulkContent') || document.getElementById('taskWrap');
+content.classList.add('mode-change');
+setTimeout(() => content.classList.remove('mode-change'), 300);
+    
 
     /* ---------- Read more toggle ---------- */
     readMore.addEventListener('click',()=>{ descLong.style.display='block'; readMore.style.display='none'; });
@@ -551,6 +569,17 @@
           return;
         }
 
+        /* smooth fade and subtle scale when mode changes */
+#bulkContent, #taskWrap {
+  transition: opacity 0.4s ease, transform 0.3s ease;
+  opacity: 1;
+}
+
+.mode-change {
+  transform: scale(1.02);
+  opacity: 0.9;
+      }
+  
         // show actionable task with checkbox
         const box = document.createElement('div');
         box.className='task-box' + (modeKey ? ' outlined' : '');
