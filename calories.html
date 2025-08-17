@@ -2,423 +2,494 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Calories & Nutrition Hub</title>
-  <link rel="stylesheet" href="css/styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fitness Sphere — Calories</title>
+
   <style>
-    /* Page-specific */
-    .hero-bar { padding:28px 0 18px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); color:#071022; border-radius:12px; margin-bottom:18px; box-shadow:var(--shadow); }
-    .camera-card { display:grid; gap:10px; grid-template-columns: 1fr 320px; align-items:start; }
-    @media (max-width:860px){ .camera-card { grid-template-columns: 1fr; } }
-    .camera-area { background:linear-gradient(180deg,#0f1530,#061022); border-radius:12px; padding:12px; border:1px solid #22305e; }
-    video, canvas { width:100%; border-radius:10px; background:#071022; display:block; }
-    .controls-row { display:flex; gap:8px; flex-wrap:wrap; }
-    .estimate-result { background:linear-gradient(90deg,#0e1632,#071022); border-radius:10px; padding:12px; border:1px solid #22305e; color:var(--text); }
-    .disclaimer { font-size:0.9rem; color:var(--muted); margin-top:8px; }
-    .small-btn { padding:8px 12px; font-size:0.95rem; border-radius:10px; }
+    /* ---------- Shared look & feel (matches weight pages) ---------- */
+    :root{
+      --theme-color: #f59e0b;
+      --theme-gradient-start: #f97316;
+      --theme-gradient-end: #f59e0b;
+      --btn-text: #071022;
+      --bg: #0b1020;
+      --card-bg: #0f1724;
+      --text: #e6f1ff;
+      --muted: #9fb2cc;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: var(--bg); color: var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; line-height:1.45; }
+    .container{ max-width:1100px; width:100%; margin:0 auto; padding:0 16px; }
+
+    /* ---------- Header & nav (matching other pages) ---------- */
+    .nav{
+      position: sticky; top:0; z-index:60;
+      background: rgba(11,16,32,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+    .nav-inner{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 16px; max-width:1100px; margin:0 auto; min-height:72px; }
+    .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; flex:0 0 auto; z-index:70; padding:2px 0; }
+    .brand img{ height:72px; max-height:72px; width:auto; display:block; border-radius:10px; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45)); }
+    .nav-center{ display:flex; align-items:center; gap:12px; flex:1 1 auto; justify-content:flex-end; position:relative; }
+    .nav-title{ position:absolute; left:50%; transform:translateX(-50%); font-weight:800; letter-spacing:1px; font-size:18px; color:var(--text); pointer-events:none; }
+
+    .menu-btn{ display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; padding:6px; border-radius:10px; background:rgba(255,255,255,0.02); color:var(--text); cursor:pointer; font-size:20px; border:none; transition: background .18s, transform .12s; z-index:120; }
+    .menu-panel{ position:absolute; right:8px; top:calc(100% + 8px); min-width:190px; max-width:260px; background: linear-gradient(180deg, rgba(11,16,32,0.98), rgba(14,20,36,0.98)); border:1px solid rgba(255,255,255,0.04); border-radius:12px; padding:8px; box-shadow: 0 12px 30px rgba(2,6,23,0.65); display:flex; flex-direction:column; gap:6px; z-index:110; transition: opacity .18s ease, transform .18s ease; }
+    .menu-panel[hidden]{ display:none !important; opacity:0 !important; transform:translateY(-6px) !important; }
+    .menu-link{ color:var(--text); text-decoration:none; padding:10px 12px; display:inline-block; border-radius:8px; font-weight:700; }
+    .menu-link:hover{ background: rgba(255,255,255,0.03); }
+
+    /* ---------- Hero ---------- */
+    .main-section{ padding:18px 0 22px; }
+    .hero{ padding:28px 0 10px; border-radius:14px; box-shadow: 0 8px 30px rgba(0,0,0,0.35); background: radial-gradient(ellipse at 50% -80px, rgba(25,14,0,0.2) 0%, transparent 60%); }
+    .hero h1{ font-size:34px; margin:0 0 8px; color:var(--text); letter-spacing:-0.5px; }
+    .lead{ color:var(--muted); margin:0 0 16px; font-size:16px; }
+
+    /* ---------- Buttons ---------- */
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:10px 16px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; transition: transform .16s ease, background .25s ease, box-shadow .25s ease; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+    .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:8px 12px; font-weight:700; }
+    .btn.mode-graded{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: 0 8px 22px rgba(0,0,0,0.36); min-width:150px; border-radius:16px; }
+
+    /* layout helpers */
+    .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    .grid{ display:grid; gap:10px; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); align-items:end; }
+
+    /* cards */
+    .tracker-card{ border-radius:10px; padding:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border:2px solid rgba(255,255,255,0.02); color:var(--text); box-shadow: var(--shadow); }
+    .big-result{ padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); border:2px solid rgba(255,255,255,0.03); min-height:90px; }
+
+    label{ display:block; font-weight:600; color:var(--muted); font-size:14px; }
+    input[type="number"], select{ width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text); font-size:14px; }
+
+    .muted{ color:var(--muted); }
+    .hint{ color:var(--muted); font-size:13px; }
+
+    /* photo box */
+    .photo-box{ display:flex; gap:12px; align-items:center; }
+    .photo-preview{ width:120px; height:90px; border-radius:8px; object-fit:cover; border:1px solid rgba(255,255,255,0.04); box-shadow: 0 6px 18px rgba(0,0,0,0.45); }
+
+    /* read more */
+    .read-more-theme{ color:var(--theme-color); cursor:pointer; font-weight:700; }
+
+    /* animations */
+    #calResult { transition: transform .25s ease, opacity .25s ease; transform-origin:center; }
+    .result-pop { transform: scale(1.02); opacity:0.98; }
+
+    /* small helpers */
+    .flex-between{ display:flex; align-items:center; gap:12px; justify-content:space-between; }
+    .small{ font-size:13px; }
+
+    @media (max-width:720px){
+      .brand img{ height:60px; }
+      .hero h1{ font-size:26px; }
+      .btn.mode-graded{ min-width:130px; padding:9px 12px; }
+    }
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html">
-        <img src="assets/logo.png" alt="logo" width="120" onerror="this.onerror=null; this.src='logo.png'"/>
-      </a>
+  <!-- HEADER -->
+  <nav class="nav" id="mainNav" role="navigation" aria-label="Main Navigation">
+    <div class="nav-inner container">
+      <a class="brand" href="index.html" aria-label="Fitness Sphere home"><img src="logo.png" alt="Fitness Sphere logo" /></a>
 
-      <div class="links" data-menu>
-        <!-- removed 'Calories' link here because we're on this page -->
-        <a class="link" href="weight-gain.html">Weight Gain</a>
-        <a class="link" href="weight-loss.html">Weight Loss</a>
-        <a class="link" href="exercises.html">Exercises</a>
-        <a class="link" href="premium.html">Premium</a>
+      <div class="nav-center" aria-hidden="false">
+        <div class="nav-title">FITNESSSPHERE</div>
+
+        <button id="menuBtn" class="menu-btn" aria-label="Open site menu" aria-expanded="false" aria-controls="menuPanel">
+          <span class="hamburger" aria-hidden="true">☰</span>
+        </button>
+
+        <div id="menuPanel" class="menu-panel" role="menu" aria-hidden="true" hidden>
+          <a class="menu-link" role="menuitem" href="index.html">Home</a>
+          <a class="menu-link" role="menuitem" href="weight-gain.html">Weight Gain</a>
+          <a class="menu-link" role="menuitem" href="weight-loss.html">Weight Loss</a>
+          <a class="menu-link" role="menuitem" href="calories.html">Calories</a>
+          <a class="menu-link" role="menuitem" href="exercises.html">Exercises</a>
+          <a class="menu-link" role="menuitem" href="premium.html">Premium</a>
+          <hr class="menu-sep" />
+          <a class="menu-link" role="menuitem" href="#" id="openSettings">Settings</a>
+        </div>
       </div>
-
-      <button class="btn secondary" data-menu-btn>Menu</button>
     </div>
   </nav>
 
-  <main class="container section">
-    <div class="hero-bar">
-      <h1 style="margin:0; font-size:28px">Calories & Nutrition Hub</h1>
-      <p style="margin:6px 0 0" class="muted">BMR/TDEE, macros, BMI, water, meal plans — plus a quick photo-based calorie estimator (demo).</p>
-    </div>
+  <main class="container main-section" id="mainContent">
+    <section class="hero section" id="hero">
+      <h1>Calories — Calculator & Guide</h1>
+      <p class="lead">Calculate BMR, TDEE, set goals (maintain / lose / gain), get macros and meal ideas. Upload a photo to keep with your calculation.</p>
+    </section>
 
-    <!-- BMR & TDEE Calculator -->
-    <div class="card fade-in">
-      <h2>💪 BMR & TDEE Calculator</h2>
-      <div style="display:grid; gap:12px; grid-template-columns: 1fr 1fr;">
-        <div>
-          <label>Weight (kg):</label>
-          <input id="weight" type="number" placeholder="Enter your weight">
-        </div>
-        <div>
-          <label>Height (cm):</label>
-          <input id="height" type="number" placeholder="Enter your height">
-        </div>
-        <div>
-          <label>Age (years):</label>
-          <input id="age" type="number" placeholder="Enter your age">
-        </div>
-        <div>
-          <label>Gender:</label>
-          <select id="gender"><option value="male">Male</option><option value="female">Female</option></select>
-        </div>
+    <!-- CALCULATOR -->
+    <section id="calculator" class="section" style="margin-top:12px;">
+      <div class="flex-between">
+        <h2>Calorie Calculator</h2>
+        <div class="hint small">Mifflin–St Jeor formula • results saved locally</div>
       </div>
-      <div style="display:flex;gap:10px;margin-top:12px;align-items:center;">
-        <div style="flex:1">
-          <label>Activity Level:</label>
-          <select id="activity">
+
+      <div class="grid" style="margin-top:10px;">
+        <label>Weight (kg)
+          <input id="cal_weight" type="number" min="20" max="300" step="0.1" />
+        </label>
+        <label>Height (cm)
+          <input id="cal_height" type="number" min="120" max="230" />
+        </label>
+        <label>Age
+          <input id="cal_age" type="number" min="12" max="100" />
+        </label>
+        <label>Gender
+          <select id="cal_gender"><option value="male">Male</option><option value="female">Female</option></select>
+        </label>
+        <label>Activity
+          <select id="cal_activity">
             <option value="1.2">Sedentary</option>
             <option value="1.375">Lightly active</option>
             <option value="1.55">Moderately active</option>
             <option value="1.725">Very active</option>
-            <option value="1.9">Extra active</option>
+            <option value="1.9">Athlete</option>
           </select>
-        </div>
-        <div style="width:220px;align-self:flex-end">
-          <button class="btn" id="calcBtn">Calculate</button>
-        </div>
+        </label>
+
+        <label>Goal
+          <select id="cal_goal">
+            <option value="maintain">Maintenance</option>
+            <option value="loss">Weight loss</option>
+            <option value="gain">Weight gain</option>
+          </select>
+        </label>
+
+        <label id="cal_speed_label">Speed (loss/gain)
+          <select id="cal_speed">
+            <option value="healthy">Healthy (±300 kcal/day)</option>
+            <option value="fast">Fast (±600 kcal/day)</option>
+          </select>
+        </label>
+
+        <label>Protein target (g/kg)
+          <input id="cal_protein_per_kg" type="number" min="0.8" max="3" step="0.1" value="1.6" />
+        </label>
+
+        <label>Fat percentage (of calories)
+          <input id="cal_fat_pct" type="number" min="10" max="40" step="1" value="25" />
+        </label>
       </div>
-      <div id="result" class="result mt-2" style="display:none"></div>
-    </div>
 
-    <!-- Camera / Photo-based estimator -->
-    <div class="card fade-in mt-3">
-      <h2>📸 Photo-based Calorie Estimator (Demo)</h2>
-      <p class="muted small">Take a photo of your plate or upload an image. The site runs a demo heuristic estimator in the browser and provides an approximate calorie range. For accurate results use a trained model (see notes below).</p>
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+        <button id="cal_calcBtn" class="btn mode-graded">Calculate</button>
+        <button id="cal_resetBtn" class="btn secondary">Reset</button>
+        <div style="margin-left:auto;" class="muted small">Saved under <code>cal_calc</code></div>
+      </div>
 
-      <div class="camera-card mt-2">
-        <div class="camera-area">
-          <div style="display:flex;gap:10px;align-items:center;">
-            <button class="btn small-btn" id="startCameraBtn">Open Camera</button>
-            <button class="btn small-btn secondary" id="stopCameraBtn">Stop Camera</button>
-            <label class="btn small-btn ghost" style="padding:8px 10px; cursor:pointer;">
-              Upload Image
-              <input id="uploadInput" type="file" accept="image/*" style="display:none">
-            </label>
-            <button class="btn small-btn" id="captureBtn">Capture Photo</button>
-            <button class="btn small-btn" id="estimateBtn">Estimate Calories</button>
+      <div id="calRow" style="margin-top:12px; display:grid; gap:12px; grid-template-columns: 1fr 320px;">
+        <!-- results -->
+        <div id="calResult" class="big-result tracker-card" aria-live="polite" role="status" style="min-height:120px;">
+          <div id="calText" style="opacity:0.95;">
+            <strong>No calculation yet</strong>
+            <div class="muted" style="margin-top:6px;">Enter values and press Calculate.</div>
           </div>
-
-          <div style="margin-top:10px;">
-            <video id="cameraVideo" autoplay playsinline style="display:none; border-radius:8px;"></video>
-            <canvas id="captureCanvas" style="display:none; border-radius:8px;"></canvas>
-            <img id="previewImg" src="" alt="Preview" style="display:none; width:100%; border-radius:8px; margin-top:10px;">
-          </div>
-
-          <div id="estInfo" class="estimate-result mt-2" style="display:none"></div>
-          <div class="disclaimer">This is an approximate, demo estimate. Actual calories depend on ingredients, portion, and preparation. See the comments at the bottom to integrate a real ML model.</div>
         </div>
 
-        <!-- Right column: quick manual controls -->
-        <div>
-          <div class="card">
-            <h3>Manual Adjust</h3>
-            <label>Food type (use for better estimate):</label>
-            <select id="manualFood">
-              <option value="auto">Auto-detect (demo)</option>
-              <option value="salad">Salad / Veg (low)</option>
-              <option value="carb">Carb-heavy (rice, pasta)</option>
-              <option value="protein">Protein-heavy (meat, fish)</option>
-              <option value="dessert">Dessert (high)</option>
-            </select>
+        <!-- right column: photo + macros summary -->
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="tracker-card" style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
+              <strong>Photo (optional)</strong>
+              <div class="small muted">Upload a meal or progress photo</div>
+            </div>
+            <div class="photo-box">
+              <img id="photoPreview" class="photo-preview" src="" alt="No photo" style="display:none;" />
+              <div style="flex:1;">
+                <input id="cal_photo" type="file" accept="image/*" />
+                <div style="margin-top:8px;">
+                  <button id="removePhoto" class="btn secondary" style="display:none;">Remove photo</button>
+                </div>
+                <div id="photoHint" class="muted small" style="margin-top:8px;">Preview will appear here after you upload.</div>
+              </div>
+            </div>
+          </div>
 
-            <label class="mt-2">Portion multiplier</label>
-            <input id="portionRange" type="range" min="0.25" max="3" step="0.05" value="1">
-
-            <div class="muted small mt-2">Preview multiplier: <span id="portionValue">1.00x</span></div>
-
-            <div style="margin-top:14px;">
-              <button class="btn" id="manualEstimateBtn">Manual Estimate</button>
-              <button class="btn secondary" id="clearPhotoBtn">Clear Photo</button>
+          <div id="macroCard" class="tracker-card" style="min-height:120px;">
+            <strong>Macros overview</strong>
+            <div id="macros" class="muted small" style="margin-top:8px;">
+              No macros calculated yet.
             </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="muted small mt-2">
-        <strong>About this demo:</strong> to integrate a real image→calorie solution you can:
-        <ol>
-          <li>Use a food-image classifier + caloric lookup table on the server, or</li>
-          <li>Use TensorFlow.js with a trained model (MobileNet fine-tuned) to classify food type, then estimate calories using portion area.</li>
-        </ol>
-      </div>
-    </div>
+    <!-- MEAL IDEAS & TIPS -->
+    <section id="tipsSection" class="section" style="margin-top:12px;">
+      <h3>Calorie Tips & Meal Ideas</h3>
+      <p class="muted">Small, practical ideas that change the calorie math without sacrificing satisfaction.</p>
+      <ul>
+        <li>Use calorie-dense, nutritious foods when trying to gain (nuts, seeds, full-fat dairy, peanut butter).</li>
+        <li>For loss, prioritize protein and high-volume veggies to feel full on fewer calories.</li>
+        <li>Drink water before meals to reduce overeating. Watch liquid calories (sodas, juices).</li>
+        <li>Batch meals and pre-portion to avoid accidental overeating or under-eating.</li>
+        <li>Adjust your plan every 2–4 weeks based on progress, not daily fluctuations.</li>
+      </ul>
 
-    <!-- Macros / BMI / Water / Meal plan (original features preserved) -->
-    <div class="card fade-in mt-3">
-      <h2>🍽️ Macronutrient Breakdown</h2>
-      <p class="muted">Based on your calculated calories, get recommended protein, carbs and fats.</p>
-      <div style="display:flex;gap:10px;">
-        <button class="btn" id="macroBtn">Show Macronutrients</button>
-        <div id="macrosResult" class="result" style="display:none"></div>
+      <p style="margin-top:10px;"><span id="calReadMore" class="read-more-theme">More facts & recommendations</span></p>
+      <div id="calFacts" style="display:none; margin-top:8px;" class="muted">
+        <p><strong>Fact:</strong> 1 kg of body weight ~ 7,700 kcal (rough estimate). Use weekly averages to track trends.</p>
+        <p><strong>Protein:</strong> Higher protein helps preserve muscle during deficits — 1.6–2.2 g/kg is a good range.</p>
+        <p><strong>Patience:</strong> Aim for 0.25–0.5 kg/week for sustainable loss, or 0.25–0.5 kg/month for very conservative gain when bulking cleanly.</p>
       </div>
-    </div>
+    </section>
 
-    <div class="card fade-in mt-3">
-      <h2>⚖️ BMI Calculator</h2>
-      <div style="display:flex;gap:10px;align-items:flex-end;">
-        <div style="flex:1"><label>Weight (kg)</label><input id="bmiWeight" type="number"></div>
-        <div style="flex:1"><label>Height (cm)</label><input id="bmiHeight" type="number"></div>
-        <div style="width:220px"><button class="btn" id="bmiBtn">Calculate BMI</button></div>
+    <section id="mealIdeas" class="section" style="margin-top:12px;">
+      <h3>Quick Meal Ideas</h3>
+      <div style="display:grid; gap:10px; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); margin-top:10px;">
+        <div class="tracker-card"><strong>High-protein breakfast</strong><div class="muted small">Oats + milk + scoop protein + banana + spoon peanut butter.</div></div>
+        <div class="tracker-card"><strong>Calorie-dense snack</strong><div class="muted small">Nuts, dates, and a glass of full-fat milk.</div></div>
+        <div class="tracker-card"><strong>Low-calorie volume meal</strong><div class="muted small">Large salad with lean protein and vinegar-based dressing.</div></div>
       </div>
-      <div id="bmiResult" class="result mt-2" style="display:none"></div>
-    </div>
-
-    <div class="card fade-in mt-3">
-      <h2>💧 Daily Water Intake</h2>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <input id="waterWeight" type="number" placeholder="Weight (kg)">
-        <button class="btn" id="waterBtn">Calculate Water</button>
-      </div>
-      <div id="waterResult" class="result mt-2" style="display:none"></div>
-    </div>
-
-    <div class="card fade-in mt-3">
-      <h2>🥗 Meal Plan Generator</h2>
-      <label>Diet Preference:</label>
-      <select id="dietType">
-        <option value="veg">Vegetarian</option>
-        <option value="nonveg">Non-Vegetarian</option>
-      </select>
-      <div style="margin-top:10px;">
-        <button class="btn" id="mealBtn">Generate Meal Plan</button>
-        <button class="btn secondary" id="copyMealBtn" style="display:none">Copy Meal Plan</button>
-      </div>
-      <div id="mealPlanResult" class="result mt-2" style="display:none; white-space:pre-wrap"></div>
-    </div>
+    </section>
 
   </main>
 
-  <script src="js/ui.js"></script>
-
+  <!-- SCRIPTS -->
   <script>
-  (function(){
-    // safe fallbacks
-    if (typeof showToast !== 'function') window.showToast = function(m,t){ alert(m); };
-    if (typeof showModal !== 'function') window.showModal = function(t,c){ alert(t + "\\n\\n" + (c.replace(/<[^>]+>/g,''))); };
-    if (typeof triggerFadeIn !== 'function') window.triggerFadeIn = function(){ document.querySelectorAll('.fade-in').forEach(e=>e.classList.add('visible')); };
+    document.addEventListener('DOMContentLoaded', () => {
+      // DOM refs
+      const menuBtn = document.getElementById('menuBtn');
+      const menuPanel = document.getElementById('menuPanel');
 
-    // ---------- calculator logic (same as earlier pages) ----------
-    let latestCalories = null;
-    document.getElementById('calcBtn').addEventListener('click', ()=>{
-      const weight = parseFloat(document.getElementById('weight').value);
-      const height = parseFloat(document.getElementById('height').value);
-      const age = parseFloat(document.getElementById('age').value);
-      const gender = document.getElementById('gender').value;
-      const activity = parseFloat(document.getElementById('activity').value);
+      const calWeight = document.getElementById('cal_weight');
+      const calHeight = document.getElementById('cal_height');
+      const calAge = document.getElementById('cal_age');
+      const calGender = document.getElementById('cal_gender');
+      const calActivity = document.getElementById('cal_activity');
+      const calGoal = document.getElementById('cal_goal');
+      const calSpeed = document.getElementById('cal_speed');
+      const calSpeedLabel = document.getElementById('cal_speed_label');
+      const calProteinPerKg = document.getElementById('cal_protein_per_kg');
+      const calFatPct = document.getElementById('cal_fat_pct');
 
-      if(!weight || !height || !age){ showToast('Please fill all fields!', 'error'); return; }
+      const calCalcBtn = document.getElementById('cal_calcBtn');
+      const calResetBtn = document.getElementById('cal_resetBtn');
+      const calResult = document.getElementById('calResult');
+      const calText = document.getElementById('calText');
+      const macrosDiv = document.getElementById('macros');
 
-      const bmr = (gender === 'male') ? (10*weight + 6.25*height - 5*age + 5) : (10*weight + 6.25*height - 5*age - 161);
-      const tdee = Math.round(bmr * activity);
-      const deficit = tdee - 500;
-      const surplus = tdee + 500;
-      latestCalories = tdee;
+      const calPhoto = document.getElementById('cal_photo');
+      const photoPreview = document.getElementById('photoPreview');
+      const removePhoto = document.getElementById('removePhoto');
+      const photoHint = document.getElementById('photoHint');
 
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('result').innerHTML = `
-        Maintenance Calories: <b>${tdee} kcal</b><br>
-        Calories for Weight Loss: <b>${deficit} kcal</b><br>
-        Calories for Weight Gain: <b>${surplus} kcal</b>
-      `;
-      showToast('Calories calculated', 'success');
-    });
+      const calReadMore = document.getElementById('calReadMore');
+      const calFacts = document.getElementById('calFacts');
 
-    // macros
-    document.getElementById('macroBtn').addEventListener('click', ()=>{
-      if(!latestCalories){ showToast('Please calculate calories first!', 'error'); return; }
-      const protein = Math.round(latestCalories * 0.3 / 4);
-      const carbs = Math.round(latestCalories * 0.45 / 4);
-      const fats = Math.round(latestCalories * 0.25 / 9);
-      document.getElementById('macrosResult').style.display = 'block';
-      document.getElementById('macrosResult').innerHTML = `Protein: <b>${protein} g</b><br>Carbs: <b>${carbs} g</b><br>Fats: <b>${fats} g</b>`;
-    });
+      const localKey = 'cal_calc';
 
-    // BMI
-    document.getElementById('bmiBtn').addEventListener('click', ()=>{
-      const w = parseFloat(document.getElementById('bmiWeight').value);
-      const h = parseFloat(document.getElementById('bmiHeight').value)/100;
-      if(!w || !h){ showToast('Please fill all fields!', 'error'); return; }
-      const bmi = (w/(h*h)).toFixed(1);
-      const cat = bmi < 18.5 ? 'Underweight' : bmi < 24.9 ? 'Normal weight' : bmi < 29.9 ? 'Overweight' : 'Obese';
-      document.getElementById('bmiResult').style.display='block';
-      document.getElementById('bmiResult').innerHTML = `BMI: <b>${bmi}</b> (${cat})`;
-    });
-
-    // Water
-    document.getElementById('waterBtn').addEventListener('click', ()=>{
-      const w = parseFloat(document.getElementById('waterWeight').value);
-      if(!w){ showToast('Please enter weight!', 'error'); return; }
-      const water = (w * 35 / 1000).toFixed(1);
-      document.getElementById('waterResult').style.display='block';
-      document.getElementById('waterResult').innerHTML = `Recommended Water Intake: <b>${water} L/day</b>`;
-    });
-
-    // Meal plan
-    document.getElementById('mealBtn').addEventListener('click', ()=>{
-      if(!latestCalories){ showToast('Calculate calories first!', 'error'); return; }
-      const diet = document.getElementById('dietType').value;
-      const calories = latestCalories;
-      const breakfast = Math.round(calories * 0.25);
-      const lunch = Math.round(calories * 0.35);
-      const dinner = Math.round(calories * 0.3);
-      const snacks = Math.round(calories * 0.1);
-      let meal = '';
-      if(diet === 'veg'){
-        meal = `Breakfast (~${breakfast} kcal):\n- Oats with milk, banana, nuts\n\nLunch (~${lunch} kcal):\n- 2-3 chapatis + veg curry + dal\n\nDinner (~${dinner} kcal):\n- Veg pulao + paneer curry\n\nSnacks (~${snacks} kcal):\n- Nuts, fruit`;
-      } else {
-        meal = `Breakfast (~${breakfast} kcal):\n- Eggs (2-3) + toast\n\nLunch (~${lunch} kcal):\n- Grilled chicken/fish + rice/chapati\n\nDinner (~${dinner} kcal):\n- Chicken/fish curry + rice/chapati\n\nSnacks (~${snacks} kcal):\n- Nuts, fruit`;
-      }
-      document.getElementById('mealPlanResult').style.display='block';
-      document.getElementById('mealPlanResult').innerText = meal;
-      document.getElementById('copyMealBtn').style.display='inline-block';
-    });
-    document.getElementById('copyMealBtn').addEventListener('click', ()=>{
-      const meal = document.getElementById('mealPlanResult').innerText;
-      navigator.clipboard.writeText(meal).then(()=> showToast('Meal plan copied!', 'success')).catch(()=> showToast('Copy failed', 'error'));
-    });
-
-    // ---------- Camera & Image estimator ----------
-    const startCameraBtn = document.getElementById('startCameraBtn');
-    const stopCameraBtn = document.getElementById('stopCameraBtn');
-    const captureBtn = document.getElementById('captureBtn');
-    const estimateBtn = document.getElementById('estimateBtn');
-    const uploadInput = document.getElementById('uploadInput');
-    const previewImg = document.getElementById('previewImg');
-    const video = document.getElementById('cameraVideo');
-    const canvas = document.getElementById('captureCanvas');
-    const estInfo = document.getElementById('estInfo');
-    const manualFood = document.getElementById('manualFood');
-    const portionRange = document.getElementById('portionRange');
-    const portionValue = document.getElementById('portionValue');
-    const manualEstimateBtn = document.getElementById('manualEstimateBtn');
-    const clearPhotoBtn = document.getElementById('clearPhotoBtn');
-
-    let stream = null;
-    let latestImageDataUrl = null;
-
-    function stopStream(){
-      if(stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; video.style.display='none'; }
-    }
-
-    startCameraBtn.addEventListener('click', async ()=>{
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio:false });
-        video.srcObject = stream;
-        video.style.display = 'block';
-        previewImg.style.display = 'none';
-        showToast('Camera started', 'info');
-      } catch(e){
-        showToast('Camera access denied or not available. Use upload instead.', 'error');
-      }
-    });
-
-    stopCameraBtn.addEventListener('click', ()=>{
-      stopStream();
-      showToast('Camera stopped', 'info');
-    });
-
-    captureBtn.addEventListener('click', ()=>{
-      // capture from video if available; otherwise nothing
-      if (video && video.srcObject){
-        const w = video.videoWidth || 640;
-        const h = video.videoHeight || 480;
-        canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, w, h);
-        latestImageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        previewImg.src = latestImageDataUrl;
-        previewImg.style.display = 'block';
-        showToast('Photo captured', 'success');
-      } else {
-        showToast('Camera not active. Use upload or start camera.', 'error');
-      }
-    });
-
-    uploadInput.addEventListener('change', (e)=>{
-      const f = e.target.files && e.target.files[0];
-      if(!f) return;
-      const reader = new FileReader();
-      reader.onload = function(ev){
-        latestImageDataUrl = ev.target.result;
-        previewImg.src = latestImageDataUrl;
-        previewImg.style.display = 'block';
-        showToast('Image loaded', 'success');
-      };
-      reader.readAsDataURL(f);
-    });
-
-    portionRange.addEventListener('input', ()=> { portionValue.textContent = parseFloat(portionRange.value).toFixed(2) + 'x'; });
-
-    // Clear photo
-    clearPhotoBtn.addEventListener('click', ()=>{
-      latestImageDataUrl = null;
-      previewImg.src = '';
-      previewImg.style.display = 'none';
-      estInfo.style.display = 'none';
-      stopStream();
-      showToast('Cleared photo', 'info');
-    });
-
-    // Estimate calories (demo heuristic)
-    async function estimateCaloriesFromImage(dataUrl, manualType='auto', portion=1.0){
-      // Simple client-side heuristic:
-      // 1. downscale to 200x200, compute average RGB and non-white pixel ratio (coverage)
-      // 2. decide category by dominant color (green->veg, red/brown->protein, yellow->carb, bright->dessert)
-      // 3. base calories per portion by category (veg:200-350, carb:400-600, protein:450-700, dessert:300-900)
-      // 4. result = base * coverage * portion (coverage 0.2..1.0)
-      if(!dataUrl) throw new Error('No image');
-
-      return new Promise((resolve)=>{
-        const img = new Image();
-        img.onload = function(){
-          const w = 200, h = Math.round(200 * (img.height / img.width || 1));
-          const tmp = document.createElement('canvas');
-          tmp.width = w; tmp.height = h;
-          const ctx = tmp.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          const pixels = ctx.getImageData(0,0,w,h).data;
-          let rSum=0,gSum=0,bSum=0, count=0, nonwhite=0;
-          for(let i=0;i<pixels.length;i+=4){
-            const r=pixels[i], g=pixels[i+1], b=pixels[i+2];
-            rSum+=r; gSum+=g; bSum+=b; count++;
-            // treat 'non-white' threshold
-            if(!(r>240 && g>240 && b>240)) nonwhite++;
+      // menu toggle
+      if(menuBtn && menuPanel){
+        menuBtn.addEventListener('click', () => {
+          const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', String(!expanded));
+          if(expanded){
+            menuPanel.hidden = true; menuPanel.setAttribute('aria-hidden','true');
+          } else {
+            menuPanel.hidden = false; menuPanel.setAttribute('aria-hidden','false');
           }
-          const avgR = rSum/count, avgG = gSum/count, avgB = bSum/count;
-          const coverage = Math.max(0.05, Math.min(1, nonwhite / count)); // 0.05..1
+        });
 
-          // decide category
-          let cat = 'unknown';
-          if (manualType && manualType !== 'auto') cat = manualType;
-          else {
-            if (avgG > avgR + 12 && avgG > avgB + 12) cat = 'salad'; // green
-            else if (avgR > avgG + 8 && avgR > avgB - 10) cat = 'protein'; // red/brown
-            else if (avgB > avgR && avgB > avgG) cat = 'dessert';
-            else if (avgR > 150 && avgG > 120 && avgB < 120) cat = 'carb';
-            else cat = 'protein';
-          }
+        document.addEventListener('click', (e) => {
+          if(!menuPanel || menuPanel.hidden) return;
+          if(menuPanel.contains(e.target) || menuBtn.contains(e.target)) return;
+          menuPanel.hidden = true; menuPanel.setAttribute('aria-hidden','true'); menuBtn.setAttribute('aria-expanded','false');
+        });
+      }
 
-          let baseMin=300, baseMax=500;
-          switch(cat){
-            case 'salad': baseMin=120; baseMax=350; break;
-            case 'carb': baseMin=350; baseMax=700; break;
-            case 'protein': baseMin=400; baseMax=800; break;
-            case 'dessert': baseMin=300; baseMax=1000; break;
-            default: baseMin=300; baseMax=700;
-          }
+      // show/hide speed label depending on goal
+      function updateSpeedVisibility(){
+        if(!calGoal) return;
+        if(calGoal.value === 'maintain'){
+          calSpeedLabel.style.display = 'none';
+        } else {
+          calSpeedLabel.style.display = 'block';
+        }
+      }
+      calGoal.addEventListener('change', updateSpeedVisibility);
+      updateSpeedVisibility();
 
-          // portion and coverage influence
-          const estLow = Math.round(baseMin * coverage * portion);
-          const estHigh = Math.round(baseMax * coverage * portion);
-
-          resolve({ category: cat, coverage: coverage, avgColor:{r:avgR,g:avgG,b:avgB}, estimate:{low:estLow, high:estHigh} });
+      // photo upload & preview (no heavy persistence)
+      calPhoto.addEventListener('change', () => {
+        const f = calPhoto.files && calPhoto.files[0];
+        if(!f) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          photoPreview.src = ev.target.result;
+          photoPreview.style.display = 'block';
+          removePhoto.style.display = 'inline-block';
+          photoHint.style.display = 'none';
+          // store small preview in localStorage if size < 200KB (optional)
+          try{
+            if(ev.target.result.length < 200000){
+              const cur = JSON.parse(localStorage.getItem(localKey) || '{}');
+              cur.photo = ev.target.result;
+              localStorage.setItem(localKey, JSON.stringify(cur));
+            }
+          }catch(e){ /* ignore heavy images */ }
         };
-        img.onerror = function(){ resolve(null); };
-        img.src = dataUrl;
+        reader.readAsDataURL(f);
       });
-    }
+      removePhoto.addEventListener('click', () => {
+        photoPreview.src = '';
+        photoPreview.style.display = 'none';
+        removePhoto.style.display = 'none';
+        photoHint.style.display = 'block';
+        // remove photo from storage if present
+        try{
+          const cur = JSON.parse(localStorage.getItem(localKey) || '{}');
+          delete cur.photo;
+          localStorage.setItem(localKey, JSON.stringify(cur));
+        }catch(e){}
+      });
 
-    estimateBtn.addEven
+      // Read more toggle
+      if(calReadMore && calFacts){
+        calReadMore.addEventListener('click', () => {
+          calFacts.style.display = 'block';
+          calReadMore.style.display = 'none';
+        });
+      }
+
+      // Load saved calc if present
+      function loadSaved(){
+        try{
+          const raw = localStorage.getItem(localKey);
+          if(!raw) return;
+          const d = JSON.parse(raw);
+          if(d.weight !== undefined) calWeight.value = d.weight;
+          if(d.height !== undefined) calHeight.value = d.height;
+          if(d.age !== undefined) calAge.value = d.age;
+          if(d.gender !== undefined) calGender.value = d.gender;
+          if(d.activity !== undefined) calActivity.value = d.activity;
+          if(d.goal !== undefined) calGoal.value = d.goal;
+          if(d.speed !== undefined) calSpeed.value = d.speed;
+          if(d.proteinPerKg !== undefined) calProteinPerKg.value = d.proteinPerKg;
+          if(d.fatPct !== undefined) calFatPct.value = d.fatPct;
+          if(d.photo){
+            photoPreview.src = d.photo;
+            photoPreview.style.display = 'block';
+            removePhoto.style.display = 'inline-block';
+            photoHint.style.display = 'none';
+          }
+          updateSpeedVisibility();
+          // calculate immediately if values present (gentle check)
+          if(d.weight && d.height && d.age) calculateAndShow();
+        }catch(e){
+          console.error('Load saved calc error', e);
+        }
+      }
+      loadSaved();
+
+      // reset
+      calResetBtn.addEventListener('click', () => {
+        calWeight.value=''; calHeight.value=''; calAge.value=''; calGender.value='male';
+        calActivity.value='1.2'; calGoal.value='maintain'; calSpeed.value='healthy';
+        calProteinPerKg.value='1.6'; calFatPct.value='25';
+        photoPreview.src=''; photoPreview.style.display='none'; removePhoto.style.display='none'; photoHint.style.display='block';
+        document.getElementById('calText').innerHTML = '<strong>No calculation yet</strong><div class="muted" style="margin-top:6px;">Enter values and press Calculate.</div>';
+        macrosDiv.textContent = 'No macros calculated yet.';
+        try{ localStorage.removeItem(localKey); }catch(e){}
+        updateSpeedVisibility();
+      });
+
+      // calculation logic
+      calCalcBtn.addEventListener('click', calculateAndShow);
+
+      function calculateAndShow(){
+        const weight = parseFloat(calWeight.value);
+        const height = parseFloat(calHeight.value);
+        const age = parseFloat(calAge.value);
+        const gender = calGender.value;
+        const activity = parseFloat(calActivity.value);
+        const goal = calGoal.value;
+        const speed = calSpeed.value;
+        const proteinPerKg = parseFloat(calProteinPerKg.value) || 1.6;
+        const fatPct = parseFloat(calFatPct.value) || 25;
+
+        if(isNaN(weight) || isNaN(height) || isNaN(age)){
+          alert('Please fill weight, height and age.');
+          return;
+        }
+
+        // BMR Mifflin–St Jeor
+        let bmr;
+        if(gender === 'male') bmr = 10*weight + 6.25*height - 5*age + 5;
+        else bmr = 10*weight + 6.25*height - 5*age - 161;
+        const tdee = Math.round(bmr * activity);
+
+        // goal adjustments
+        let adj = 0;
+        if(goal === 'loss'){
+          adj = (speed === 'fast') ? -600 : -300;
+        } else if(goal === 'gain'){
+          adj = (speed === 'fast') ? 600 : 300;
+        } else adj = 0; // maintain
+
+        const target = Math.max(1000, tdee + adj); // ensure reasonable floor
+
+        // macros
+        const proteinG = Math.round(proteinPerKg * weight);
+        const proteinCal = proteinG * 4;
+        const fatCal = Math.round((fatPct/100) * target);
+        const fatG = Math.round(fatCal / 9);
+        const carbsCal = target - proteinCal - fatCal;
+        const carbsG = Math.round(Math.max(0, carbsCal) / 4);
+
+        // prepare display
+        const html = `
+          <div><strong>BMR:</strong> ${Math.round(bmr)} kcal/day</div>
+          <div style="margin-top:6px;"><strong>TDEE:</strong> ${tdee} kcal/day (activity x ${activity})</div>
+          <div style="margin-top:6px;"><strong>Target calories:</strong> ${target} kcal/day <span class="muted small">(${adj>0? '+'+adj : adj})</span></div>
+        `;
+        calText.innerHTML = html;
+
+        macrosDiv.innerHTML = `
+          <div><strong>Protein:</strong> ${proteinG} g (${Math.round(proteinCal)} kcal)</div>
+          <div style="margin-top:6px;"><strong>Fats:</strong> ${fatG} g (${fatCal} kcal — ${fatPct}%)</div>
+          <div style="margin-top:6px;"><strong>Carbs:</strong> ${carbsG} g (${Math.max(0, carbsCal)} kcal)</div>
+        `;
+
+         // small pop animation
+        calResult.classList.add('result-pop');
+        setTimeout(()=>calResult.classList.remove('result-pop'), 300);
+
+        // save settings to localStorage (including small photo if present)
+        try{
+          const saveObj = {
+            weight, height, age, gender, activity, goal, speed,
+            proteinPerKg, fatPct
+          };
+
+        // store photo only if present and small-ish (avoid very large localStorage use)
+          if(photoPreview && photoPreview.src && photoPreview.src.startsWith('data:') && photoPreview.src.length < 250000){
+            saveObj.photo = photoPreview.src;
+          }
+          localStorage.setItem(localKey, JSON.stringify(saveObj));
+        }catch(e){
+          console.warn('Could not save calc (storage issue)', e);
+        }
+      }
+
+       // ensure pressing Enter on inputs triggers calculation
+      ['cal_weight','cal_height','cal_age'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.addEventListener('keydown', (e) => { if(e.key === 'Enter') calculateAndShow(); });
+      });
+
+      // load saved photo if present (already handled in loadSaved when page loaded)
+      // safety: if photo was stored earlier but too large, we ignore.
+
+    }); // DOMContentLoaded
+  </script>
+</body>
+</html>                       
