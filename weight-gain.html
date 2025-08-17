@@ -43,7 +43,7 @@
 .menu-btn:active{ transform:translateY(1px); }
 .menu-btn[aria-expanded="true"]{ background: rgba(255,255,255,0.04); }
 
-/* menu panel */
+/* menu panel: hidden by default when [hidden] is present, with fade animation */
 .menu-panel{
   position:absolute;
   right:8px;
@@ -59,7 +59,20 @@
   flex-direction:column;
   gap:6px;
   z-index:110;
+
+  /* animation helpers */
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .18s ease, transform .18s ease;
 }
+
+/* IMPORTANT: force-hide when [hidden] is present (overrides other rules) */
+.menu-panel[hidden]{
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(-6px) !important;
+}
+
 
 /* hide by default — script toggles [hidden] */
 .menu-link{
@@ -594,31 +607,51 @@
         brandLogo.style.maxHeight = maxH + 'px';
       }
     });
-     // --- small menu toggle (insert near the end of your existing script) ---
+     // --- robust menu toggle (replaces previous toggle) ---
 (function(){
   const menuBtn = document.getElementById('menuBtn');
   const menuPanel = document.getElementById('menuPanel');
 
   if(!menuBtn || !menuPanel) return;
 
+  // Ensure panel starts hidden (supports cases where CSS/HTML missed it)
+  menuPanel.hidden = true;
+  menuPanel.setAttribute('aria-hidden','true');
+  menuBtn.setAttribute('aria-expanded','false');
+
   function openMenu(){
+    // unhide -> allow CSS to show it
     menuPanel.hidden = false;
     menuPanel.setAttribute('aria-hidden','false');
     menuBtn.setAttribute('aria-expanded','true');
+    // small entrance animation (handled by CSS transition)
+    menuPanel.style.opacity = '';
+    menuPanel.style.transform = '';
     // focus first link for keyboard users
     const first = menuPanel.querySelector('.menu-link');
     if(first) first.focus();
-    // small animation
-    menuPanel.style.opacity = 0;
-    requestAnimationFrame(()=> menuPanel.style.opacity = 1);
-  }
-  function closeMenu(){
-    menuPanel.hidden = true;
-    menuPanel.setAttribute('aria-hidden','true');
-    menuBtn.setAttribute('aria-expanded','false');
   }
 
-  menuBtn.addEventListener('click', (e)=>{
+  function closeMenu(){
+    // add a short delay for the fade-out by using CSS transitions,
+    // then set hidden to true so layout is unaffected.
+    menuPanel.style.opacity = '0';
+    menuPanel.style.transform = 'translateY(-6px)';
+    menuBtn.setAttribute('aria-expanded','false');
+    menuPanel.setAttribute('aria-hidden','true');
+    // wait for transition to finish then hide (180ms matches CSS)
+    setTimeout(()=> {
+      // double-check not reopened
+      if(menuBtn.getAttribute('aria-expanded') === 'true') return;
+      menuPanel.hidden = true;
+      // clear inline styles so next open uses CSS default
+      menuPanel.style.opacity = '';
+      menuPanel.style.transform = '';
+    }, 190);
+  }
+
+  // toggle on button click
+  menuBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if(menuPanel.hidden) openMenu(); else closeMenu();
   });
@@ -634,10 +667,10 @@
     if(e.key === 'Escape') closeMenu();
   });
 
-  // optionally close on resize (prevents stuck open)
+  // close on resize (prevents stuck open)
   window.addEventListener('resize', ()=> closeMenu());
 
-  // route: example hook to Settings (you can replace this)
+  // Settings hook (placeholder)
   const openSettings = document.getElementById('openSettings');
   if(openSettings) openSettings.addEventListener('click', (ev)=>{
     ev.preventDefault();
@@ -645,7 +678,7 @@
     alert('Settings placeholder — replace with settings panel/page.');
   });
 })();
-
+    
      /* ---------- End of script ---------- */
   </script>
 </body>
@@ -656,4 +689,4 @@
 
 
 
-                    
+          
