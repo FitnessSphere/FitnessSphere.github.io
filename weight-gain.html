@@ -37,13 +37,18 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      padding:8px 16px;         
+      gap:10px;
+      padding:6px 16px;         
       max-width:1100px;
       margin:0 auto;
     }
     .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; }
-    .brand img{ height:68px; width:auto; display:block; } 
+    .brand img{ 
+      height:80px; /* bigger logo */
+      width:auto; 
+      display:block; 
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
+    } 
     .links{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-left:8px; }
     .link{ color:var(--text); text-decoration:none; padding:10px 14px; border-radius:12px; white-space:nowrap; font-weight:600; transition: background .3s, color .3s; }
     .link:hover{ background: rgba(255,255,255,0.08); }
@@ -52,8 +57,8 @@
     .nav.grad-mode{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); border-bottom:1px solid rgba(255,255,255,0.06); }
 
     /* ---------- Hero / page sections ---------- */
-    .main-section{ padding:28px 0 36px; }
-    .hero{ padding:44px 0 10px; background: radial-gradient(ellipse at 50% -80px, #162342 0%, transparent 60%); border-radius:12px; }
+    .main-section{ padding:20px 0 24px; }
+    .hero{ padding:30px 0 8px; background: radial-gradient(ellipse at 50% -80px, #162342 0%, transparent 60%); border-radius:16px; box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
     .hero h1{ font-size:36px; margin:0 0 8px; color:var(--text); letter-spacing:-0.5px; }
     .lead{ color:var(--muted); margin:0 0 18px; font-size:18px; }
 
@@ -61,12 +66,23 @@
     .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer; user-select:none; border:none; transition: transform .2s ease, background .3s ease; }
     .btn:hover{ transform: translateY(-2px); }
     .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:10px 14px; font-weight:700; }
-    .btn.mode-graded{ background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: var(--shadow); min-width:160px; }
+    .btn.mode-graded{ 
+      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); 
+      color:var(--btn-text); 
+      box-shadow: 0 6px 15px rgba(0,0,0,0.35); 
+      min-width:160px; 
+      border-radius:16px;
+      transition: transform .2s ease, background .3s ease, box-shadow .3s ease;
+    }
+    .btn.mode-graded:hover{ 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
 
     .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
 
     /* ---------- Outlined sections when a mode is selected ---------- */
-    .section { margin-bottom:22px; }
+    .section { margin-bottom:18px; }
     .outlined { border:2px solid var(--theme-color); border-radius:12px; padding:14px; background: rgba(255,255,255,0.01); }
 
     /* ---------- Calculator & form ---------- */
@@ -90,8 +106,8 @@
     /* responsive tweaks */
     @media (max-width:720px){
       .nav-inner{ gap:8px; padding:4px 10px; }
-      .brand img{ height:60px; }
-      .hero{ padding:28px 0 10px; }
+      .brand img{ height:70px; }
+      .hero{ padding:28px 0 8px; }
       .hero h1{ font-size:28px; }
       .btn.mode-graded{ min-width:140px; padding:10px 14px; }
     }
@@ -265,90 +281,88 @@
     document.addEventListener('DOMContentLoaded',()=>{
       const savedCalc = localStorage.getItem('wg_calc');
       if(savedCalc){
-        try{ const d=JSON.parse(savedCalc); document.getElementById('wg_weight').value=d.w||''; document.getElementById('wg_height').value=d.h||''; document.getElementById('wg_age').value=d.a||''; document.getElementById('wg_gender').value=d.g||'male'; document.getElementById('wg_activity').value=d.act||'1.2'; }catch(e){}
-      }
+                try{ const d=JSON.parse(savedCalc); 
+          document.getElementById('wg_weight').value=d.weight;
+          document.getElementById('wg_height').value=d.height;
+          document.getElementById('wg_age').value=d.age;
+          document.getElementById('wg_gender').value=d.gender;
+          document.getElementById('wg_activity').value=d.activity;
+          document.getElementById('wg_speed').value=d.speed;
+          calculateSurplus();
+        } catch(e){ console.error('Saved calc parse error', e); }
+
       const savedMode = localStorage.getItem('wg_mode');
-      if(savedMode && MODES[savedMode]) applyModeTheme(savedMode);
-      else revertToDefaultTheme();
+      if(savedMode) applyModeTheme(savedMode);
+
       buildTaskUI();
     });
 
+    // Read more toggle
     readMore.addEventListener('click',()=>{ descLong.style.display='block'; readMore.style.display='none'; });
     readLess.addEventListener('click',()=>{ descLong.style.display='none'; readMore.style.display='inline'; });
 
-    wgCalcBtn.addEventListener('click',()=>{
-      const w = parseFloat(document.getElementById('wg_weight').value);
-      const h = parseFloat(document.getElementById('wg_height').value);
-      const a = parseInt(document.getElementById('wg_age').value);
-      const g = document.getElementById('wg_gender').value;
-      const act = parseFloat(document.getElementById('wg_activity').value);
-      const spd = document.getElementById('wg_speed').value;
-      if(isNaN(w)||isNaN(h)||isNaN(a)) { wgResult.style.display='none'; alert('Fill all fields'); return; }
-      const bmr = (g==='male') ? 10*w + 6.25*h - 5*a +5 : 10*w + 6.25*h - 5*a -161;
-      const tdee = bmr*act;
-      const surplus = (spd==='healthy')?300:600;
-      wgResult.innerHTML=`Daily Calories to gain: <strong>${Math.round(tdee+surplus)}</strong> kcal`;
-      wgResult.style.display='block';
-      localStorage.setItem('wg_calc',JSON.stringify({w,h,a,g,act}));
-    });
+    wgCalcBtn.addEventListener('click',calculateSurplus);
     wgResetBtn.addEventListener('click',()=>{
       document.getElementById('wg_weight').value='';
       document.getElementById('wg_height').value='';
       document.getElementById('wg_age').value='';
       document.getElementById('wg_gender').value='male';
       document.getElementById('wg_activity').value='1.2';
+      document.getElementById('wg_speed').value='healthy';
       wgResult.style.display='none';
       localStorage.removeItem('wg_calc');
     });
 
-    // ---------------- TASK BUILD ----------------
-    const nowISO = ()=>new Date().toISOString();
-    const msSince = (iso)=>new Date()-new Date(iso);
+    function calculateSurplus(){
+      const weight = parseFloat(document.getElementById('wg_weight').value);
+      const height = parseFloat(document.getElementById('wg_height').value);
+      const age = parseFloat(document.getElementById('wg_age').value);
+      const gender = document.getElementById('wg_gender').value;
+      const activity = parseFloat(document.getElementById('wg_activity').value);
+      const speed = document.getElementById('wg_speed').value;
+
+      if(!weight||!height||!age) return alert('Please fill all fields');
+
+      let bmr;
+      if(gender==='male') bmr = 10*weight + 6.25*height - 5*age + 5;
+      else bmr = 10*weight + 6.25*height - 5*age -161;
+
+      const tdee = Math.round(bmr*activity);
+      const surplus = speed==='healthy'? 300 : 600;
+      const totalCal = tdee + surplus;
+
+      wgResult.innerHTML = `<strong>BMR:</strong> ${Math.round(bmr)} kcal/day<br>
+                            <strong>TDEE:</strong> ${tdee} kcal/day<br>
+                            <strong>Calories for weight gain:</strong> ${totalCal} kcal/day (+${surplus} kcal)`;
+      wgResult.style.display='block';
+
+      localStorage.setItem('wg_calc', JSON.stringify({weight,height,age,gender,activity,speed}));
+    }
+
+    // TASK UI
     function buildTaskUI(){
+      const mode = localStorage.getItem('wg_mode');
+      let tasks = TASKS_DEFAULT;
+      if(mode==='healthy') tasks = TASKS_HEALTHY;
+      else if(mode==='fast') tasks = TASKS_FAST;
+
       taskWrap.innerHTML='';
-      const modeKey = localStorage.getItem('wg_mode');
-      const tasks = (modeKey==='healthy') ? TASKS_HEALTHY : (modeKey==='fast') ? TASKS_FAST : TASKS_DEFAULT;
       tasks.forEach(task=>{
-        const key='wg_task_'+task.id;
-        const doneTS = localStorage.getItem(key);
-        const done = doneTS ? (msSince(doneTS)<24*60*60*1000) : false;
-
-        if(done){
-          taskMotivate.textContent = (task.id==='diet')?'Great job on your diet — keep it up!':'Awesome workout — recovery matters!';
-          taskMotivate.style.display='block';
-          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
-          updateCountdown(doneTS);
-          const timer = setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(timer); return; } updateCountdown(doneTS); },1000);
-          return;
-        }
-
-        const box = document.createElement('div'); box.className='task-box'; if(modeKey) box.classList.add('outlined');
-        const cb = document.createElement('input'); cb.type='checkbox'; cb.id='cb-'+task.id; cb.style.width='18px'; cb.style.height='18px';
-        const content=document.createElement('div'); content.style.flex='1';
-        const ttitle=document.createElement('div'); ttitle.className='title'; ttitle.textContent=`Day task — ${task.title}`;
-        const tdesc=document.createElement('div'); tdesc.className='desc'; tdesc.textContent=task.desc;
-        content.appendChild(ttitle); content.appendChild(tdesc); box.appendChild(cb); box.appendChild(content); taskWrap.appendChild(box);
-
-        cb.addEventListener('change',(e)=>{
-          if(!e.target.checked) return;
-          box.classList.add('completed');
-          const ts=nowISO(); localStorage.setItem(key,ts);
-          taskMotivate.textContent = (task.id==='diet')?'Nice! Your meals matter — keep the consistency.':'Nice! You completed your workout — recovery now.';
-          taskMotivate.style.display='block';
-          taskInfo.innerHTML=`<strong>Completed:</strong> ${task.title} — next task in <span id="timeRemain"></span>`;
-          updateCountdown(ts);
-          const tmr=setInterval(()=>{ if(!document.getElementById('timeRemain')) { clearInterval(tmr); return; } updateCountdown(ts); },1000);
-        });
+        const div=document.createElement('div');
+        div.className='task-box';
+        div.id='task_'+task.id;
+        div.innerHTML=`<div><strong class="title">${task.title}</strong><p class="desc">${task.desc}</p></div>`;
+        div.addEventListener('click',()=>completeTask(div));
+        taskWrap.appendChild(div);
       });
+      taskMotivate.style.display='none';
     }
 
-    function updateCountdown(iso){
-      const el=document.getElementById('timeRemain');
-      if(!el) return;
-      const diff=Math.max(0,24*60*60*1000 - msSince(iso));
-      const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-      el.textContent=`${h}h ${m}m ${s}s`;
+    function completeTask(el){
+      el.classList.add('completed');
+      setTimeout(()=>{ el.style.display='none'; taskMotivate.style.display='block'; },350);
     }
+
   </script>
 </body>
 </html>
