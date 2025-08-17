@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fitness Sphere — Exercises (Polished)</title>
+  <meta name="color-scheme" content="dark light">
+  <style>
+    /* ---------- THEME & LAYOUT (consistent with other pages) ---------- */
+    :root{
+      --theme-gradient-start: #7ee8c5;
+      --theme-gradient-end:   #64d6b0;
+      --accent: #10b981;
+      --bg: #071023;
+      --card-bg: #0f1724;
+      --text: #e6f1ff;
+      --muted: #a7c7bf;
+      --glass: rgba(255,255,255,0.03);
+      --shadow: 0 10px 30px rgba(0,0,0,0.45);
+      --maxw:1180px;
+      --btn-text: #071022;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#03121a 0%,#071023 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+
+    /* ---------- Header / Nav (consistent look) ---------- */
+    .nav{
+      position:sticky; top:0; z-index:200;
+      background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end));
+      color: var(--btn-text);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .nav-inner{ display:flex; align-items:center; justify-content:space-between; padding:10px 16px; max-width:var(--maxw); margin:0 auto; gap:12px; }
+    .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; }
+    .brand img{ height:56px; width:auto; border-radius:10px; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45)); }
+    .nav-title{ font-weight:800; letter-spacing:1px; font-size:18px; color:var(--btn-text); pointer-events:none; }
+    .menu-btn{ display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; padding:6px; border-radius:10px; border:none; background: rgba(255,255,255,0.06); color:var(--btn-text); cursor:pointer; transition: transform .12s ease, background .18s; }
+    .menu-panel{ position:absolute; right:12px; top:72px; min-width:220px; background: linear-gradient(180deg, rgba(8,12,16,0.98), rgba(10,14,18,0.98)); border-radius:12px; padding:8px; border:1px solid rgba(255,255,255,0.03); box-shadow: var(--shadow); }
+    .menu-panel[hidden]{ display:none; }
+    .menu-link{ color:var(--text); text-decoration:none; padding:10px; display:block; border-radius:8px; font-weight:700; }
+    .menu-link:hover{ background: rgba(255,255,255,0.02); }
+
+    /* ---------- Page base ---------- */
+    .hero{ margin-top:14px; padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)); border:1px solid rgba(255,255,255,0.02); box-shadow: var(--shadow); }
+    .hero h1{ margin:0; font-size:26px; color:var(--text); }
+    .lead{ color:var(--muted); margin-top:6px; font-size:14px; }
+
+    .main-grid{ display:grid; grid-template-columns: 1fr 360px; gap:18px; margin-top:14px; align-items:start; }
+    @media (max-width:1000px){ .main-grid{ grid-template-columns: 1fr; } }
+
+    .card{ background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); border-radius:10px; padding:12px; border:1px solid rgba(255,255,255,0.02); box-shadow: var(--shadow); }
+    .small{ font-size:13px; color:var(--muted); }
+    .hint{ color:var(--muted); font-size:13px; }
+
+    /* ---------- Controls ---------- */
+    .search-row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .search-input{ flex:1; padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text); box-shadow:none; outline:none; transition: box-shadow .12s, transform .12s; }
+    .search-input:focus{ box-shadow: 0 8px 20px rgba(100,214,176,0.06); transform: translateY(-1px); }
+    .select{ padding:10px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--text); }
+
+    /* ---------- Exercise cards ---------- */
+    .ex-list{ display:grid; gap:10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top:10px; }
+    .ex-card{ display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.02); background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s; will-change: transform; opacity:0; transform: translateY(8px); }
+    .ex-card.visible{ opacity:1; transform: translateY(0); }
+    .ex-card:hover{ transform: translateY(-8px); box-shadow: 0 18px 40px rgba(10,20,20,0.5); }
+
+    .ex-thumb{ width:96px; height:72px; border-radius:10px; background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); display:flex; align-items:center; justify-content:center; font-weight:800; color:#051f1a; flex-shrink:0; box-shadow: inset 0 -8px 30px rgba(0,0,0,0.08); }
+    .ex-meta{ flex:1; display:flex; flex-direction:column; }
+    .ex-title{ font-weight:800; margin:0; font-size:15px; color:var(--text); }
+    .meta-line{ margin-top:6px; color:var(--muted); font-size:13px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+
+    .tag{ font-size:12px; padding:6px 8px; border-radius:999px; background: linear-gradient(90deg, rgba(126,232,197,0.06), rgba(100,214,176,0.04)); color:var(--muted); font-weight:700; }
+
+    /* ---------- Buttons ---------- */
+    .btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; font-weight:800; cursor:pointer; border:none; transition: transform .12s, box-shadow .12s; background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)); color:var(--btn-text); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .btn:hover{ transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
+    .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.04); box-shadow:none; }
+    .btn.ghost{ background:transparent; color:var(--muted); border:none; }
+
+    /* ---------- Routine builder ---------- */
+    .routine-list{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+    .routine-item{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:1px solid rgba(255,255,255,0.02); transition: transform .12s; }
+    .routine-item.pop{ transform: scale(1.02); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+    .drag-handle{ cursor:grab; padding:6px; border-radius:6px; background: rgba(255,255,255,0.02); color:var(--muted); }
+
+    /* animate "added to routine" fly indicator */
+    .fly-anim{
+      position:fixed; width:140px; height:36px; background:linear-gradient(90deg,var(--theme-gradient-start),var(--theme-gradient-end)); color:var(--btn-text); display:flex; align-items:center; justify-content:center; border-radius:18px; z-index:9999; pointer-events:none; transform: translate3d(0,0,0) scale(1);
+      transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .5s ease;
+    }
+
+    /* modal */
+    .modal-bg{ position:fixed;left:0;top:0;right:0;bottom:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:999; }
+    .modal{ width:920px; max-width:95%; background: linear-gradient(180deg, rgba(10,14,20,0.98), rgba(8,12,16,0.95)); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.03); box-shadow: var(--shadow); animation: modalIn .18s ease both; }
+    @keyframes modalIn{ from{ transform: translateY(6px) scale(.995); opacity:0 } to{ transform:none; opacity:1 } }
+    .close{ float:right; background:transparent; border:0; color:var(--muted); cursor:pointer; font-weight:800 }
+
+    /* chart container */
+    .chart-wrap{ margin-top:12px; border-radius:8px; padding:8px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.02) }
+
+    /* small helpers */
+    .muted{ color:var(--muted) }
+    .hidden{ display:none }
+    .center{ text-align:center }
+
+    /* accessibility */
+    .search-input:focus, .btn:focus, .select:focus { outline: 2px solid rgba(126,232,197,0.16); outline-offset:2px; }
+
+    /* printing */
+    @media print{
+      body{ background:#fff; color:#000; }
+      .nav, .btn, .menu-panel { display:none; }
+      .container{ max-width:100%; padding:0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Main Navigation">
+    <div class="nav-inner container">
+      <a class="brand" href="index.html" aria-label="Fitness Sphere home">
+        <img src="logo.png" alt="Fitness Sphere logo" id="brandLogo" />
+        <div style="line-height:1">
+          <div class="nav-title">FITNESSSPHERE</div>
+          <div class="small muted">Exercises — Library & Builder</div>
+        </div>
+      </a>
+
+      <div style="display:flex;align-items:center;gap:8px;position:relative">
+        <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+        <div id="menuPanel" class="menu-panel" role="menu" aria-hidden="true" hidden>
+          <a class="menu-link" role="menuitem" href="index.html">Home</a>
+          <a class="menu-link" role="menuitem" href="weight-gain.html">Weight Gain</a>
+          <a class="menu-link" role="menuitem" href="weight-loss.html">Weight Loss</a>
+          <a class="menu-link" role="menuitem" href="calories.html">Calories</a>
+          <a class="menu-link" role="menuitem" href="exercises.html">Exercises</a>
+          <a class="menu-link" role="menuitem" href="premium.html">Premium</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="container">
+    <section class="hero card">
+      <h1>Exercises — Library & Builder</h1>
+      <p class="lead">Massive library, routine builder, timers, logs and progress — polished, animated and consistent with the site theme.</p>
+    </section>
+
+    <div class="main-grid">
+      <!-- LEFT -->
+      <div>
+        <div class="card">
+          <div class="search-row">
+            <input id="searchInput" class="search-input" placeholder="Search exercises (e.g. squat, press, plank) — Enter to search" aria-label="Search exercises" />
+            <select id="filterMuscle" class="select" aria-label="Filter muscle">
+              <option value="">All muscles</option>
+              <option value="legs">Legs</option><option value="glutes">Glutes</option><option value="quads">Quads</option><option value="hamstrings">Hamstrings</option>
+              <option value="calves">Calves</option><option value="chest">Chest</option><option value="back">Back</option><option value="shoulders">Shoulders</option>
+              <option value="core">Core</option><option value="fullbody">Full body</option>
+            </select>
+
+            <select id="filterEquip" class="select" aria-label="Filter equipment">
+              <option value="">All equipment</option>
+              <option value="bodyweight">Bodyweight</option><option value="dumbbell">Dumbbell</option><option value="barbell">Barbell</option><option value="kettlebell">Kettlebell</option><option value="band">Band</option><option value="machine">Machine</option><option value="cardio">Cardio</option>
+            </select>
+
+            <select id="filterDiff" class="select" aria-label="Filter difficulty">
+              <option value="">Any difficulty</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
+            </select>
+
+            <button id="clearFilters" class="btn secondary">Clear</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Exercise library</h3>
+            <div class="small muted">Showing <span id="exCount">0</span></div>
+          </div>
+
+          <div id="exList" class="ex-list" aria-live="polite"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Create a custom exercise</h3>
+          <div class="hint" style="margin-top:6px">Saved locally and merged into the library.</div>
+          <div style="display:grid;gap:8px;margin-top:10px">
+            <input id="customName" placeholder="Name" />
+            <input id="customEquipment" placeholder="Equipment (e.g. dumbbell, barbell, bodyweight)" />
+            <input id="customPrimary" placeholder="Primary muscle (e.g. chest)" />
+            <textarea id="customDesc" placeholder="Short description" style="min-height:70px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"></textarea>
+            <div style="display:flex;gap:8px">
+              <button id="saveCustom" class="btn">Save custom</button>
+              <button id="clearCustom" class="btn secondary">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Random workout generator</h3>
+          <div class="hint" style="margin-top:6px">Choose focus, style and equipment — instant routine generation.</div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <select id="genFocus" class="select"><option value="fullbody">Full body</option><option value="upper">Upper</option><option value="lower">Lower</option><option value="core">Core</option><option value="cardio">Cardio</option></select>
+            <select id="genStyle" class="select"><option value="circuit">Circuit (AMRAP)</option><option value="emom">EMOM</option><option value="tabata">Tabata</option><option value="sets">Sets/Reps</option></select>
+            <select id="genEquip" class="select"><option value="">Any equipment</option><option value="bodyweight">Bodyweight</option><option value="dumbbell">Dumbbell</option><option value="barbell">Barbell</option></select>
+            <input id="genTime" type="number" min="5" max="120" placeholder="mins" style="width:90px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"/>
+            <button id="genBtn" class="btn">Generate</button>
+          </div>
+          <div id="genOutput" style="margin-top:10px"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Export / Import</h3>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button id="exportAllJson" class="btn secondary">Export library (JSON)</button>
+            <button id="importJsonBtn" class="btn secondary">Import JSON</button>
+            <input id="importJsonFile" type="file" accept="application/json" style="display:none" />
+            <button id="exportRoutinesCSV" class="btn">Export routines (CSV)</button>
+            <button id="exportLogsCSV" class="btn">Export logs (CSV)</button>
+          </div>
+          <div class="hint" style="margin-top:8px">Back up or share routines & custom exercises.</div>
+        </div>
+      </div>
+
+      <!-- RIGHT / Aside -->
+      <aside>
+        <div class="card">
+          <h3 style="margin:0">Workout builder</h3>
+          <div class="hint" style="margin-top:6px">Drag items in the list to reorder, or use the arrows. Save, export or print routines.</div>
+          <input id="routineName" placeholder="Routine name" style="margin-top:10px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"/>
+          <div id="routineList" class="routine-list"></div>
+
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <button id="saveRoutine" class="btn">Save routine</button>
+            <button id="exportRoutine" class="btn secondary">Export JSON</button>
+            <button id="printRoutine" class="btn secondary">Print</button>
+            <button id="clearRoutine" class="btn ghost">Clear</button>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <select id="loadRoutineSelect" class="select" style="flex:1"></select>
+            <button id="loadRoutineBtn" class="btn secondary">Load</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Timers</h3>
+          <div class="timers" style="margin-top:8px">
+            <div class="timer-box">
+              <div><div class="small">Stopwatch</div><div id="stopwatchDisplay" style="font-weight:800">00:00:00</div></div>
+              <div style="display:flex;gap:6px"><button id="swStart" class="btn secondary">Start</button><button id="swStop" class="btn secondary">Stop</button><button id="swReset" class="btn secondary">Reset</button></div>
+            </div>
+
+            <div class="timer-box">
+              <div><div class="small">Interval Timer</div><div id="intervalDisplay" style="font-weight:800">Idle</div></div>
+              <div style="display:flex;gap:6px"><button id="itStart" class="btn">Start Tabata</button><button id="itStop" class="btn secondary">Stop</button></div>
+            </div>
+
+            <div class="timer-box">
+              <div><div class="small">Quick presets</div><div class="muted small">Tabata, 10x20 HIIT</div></div>
+              <div style="display:flex;gap:6px"><button id="presetTabata" class="btn">Tabata</button><button id="preset10x20" class="btn">10x20</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0">Workout logs</h3>
+          <div class="hint" style="margin-top:6px">Log routine or add a manual entry.</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="logFromRoutine" class="btn">Log routine</button>
+            <button id="manualLog" class="btn secondary">Manual log</button>
+          </div>
+          <div id="logsList" style="margin-top:10px"></div>
+
+          <div class="chart-wrap card" style="margin-top:12px">
+            <strong>Progress (duration)</strong>
+            <canvas id="progressChart" width="600" height="160" style="display:block;width:100%"></canvas>
+            <div class="small muted" style="margin-top:8px">Last 12 logs shown</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Modal -->
+    <div id="modalBg" class="modal-bg" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" id="detailModal">
+        <button class="close" id="modalClose" aria-label="Close">✕</button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <div id="flyAnim" class="fly-anim hidden">Added to routine</div>
+
+    <footer style="margin-top:18px;margin-bottom:30px;text-align:center;color:var(--muted)" class="small">Made with ❤️ — Fitness Sphere · All data saved locally.</footer>
+  </main>
+
+  <script>
+  (function(){
+    /* ---------- Utility & state ---------- */
+    const STORAGE = {
+      LIB: 'fs_ex_lib_v3',
+      ROUTINES: 'fs_ex_routines_v3',
+      FAVS: 'fs_ex_favs_v3',
+      LOGS: 'fs_ex_logs_v3'
+    };
+
+    const BASE = [
+      { id:'sq_bwt', name:'Bodyweight Squat', equipment:'bodyweight', primary:'quads', muscles:['quads','glutes'], difficulty:'beginner', duration:60, description:'Stand shoulder-width and sit back into a squat, chest up, knees tracking toes.', steps:['Feet shoulder-width','Hips back','Knees out','Drive up'], tips:'Keep chest up and weight in heels.' },
+      { id:'db_bench', name:'Dumbbell Bench Press', equipment:'dumbbell', primary:'chest', muscles:['chest','triceps'], difficulty:'intermediate', duration:60, description:'Press dumbbells from chest until full extension.' },
+      { id:'push_up', name:'Push-Up', equipment:'bodyweight', primary:'chest', muscles:['chest','triceps','shoulders'], difficulty:'beginner', duration:45, description:'Hands under shoulders, lower chest to ground, press up.' },
+      { id:'row_db', name:'Dumbbell Row', equipment:'dumbbell', primary:'back', muscles:['lats','mid-back'], difficulty:'beginner', duration:60, description:'One-arm row with flat back, pull elbow to hip.' },
+      { id:'plank', name:'Plank', equipment:'bodyweight', primary:'core', muscles:['abs','obliques'], difficulty:'beginner', duration:60, description:'Forearms on floor, body straight, hold.' },
+      { id:'kb_swing', name:'Kettlebell Swing', equipment:'kettlebell', primary:'posterior chain', muscles:['glutes','hamstrings'], difficulty:'intermediate', duration:60, description:'Hinge and snap hips to swing kettlebell.' },
+      { id:'burpee', name:'Burpee', equipment:'bodyweight', primary:'fullbody', muscles:['fullbody','cardio'], difficulty:'intermediate', duration:45, description:'Drop to plank, push-up, jump up.' },
+      { id:'box_jump', name:'Box Jump', equipment:'box', primary:'power', muscles:['quads','glutes'], difficulty:'intermediate', duration:30, description:'Jump onto box and step down safely.' }
+    ];
+
+    let LIB = [];
+    let routines = [];
+    let favorites = [];
+    let logs = [];
+    let currentRoutine = [];
+
+    /* ---------- DOM refs ---------- */
+    const refs = {
+      menuBtn: document.getElementById('menuBtn'),
+      menuPanel: document.getElementById('menuPanel'),
+      searchInput: document.getElementById('searchInput'),
+      filterMuscle: document.getElementById('filterMuscle'),
+      filterEquip: document.getElementById('filterEquip'),
+      filterDiff: document.getElementById('filterDiff'),
+      clearFilters: document.getElementById('clearFilters'),
+      exList: document.getElementById('exList'),
+      exCount: document.getElementById('exCount'),
+      // custom
+      customName: document.getElementById('customName'),
+      customEquipment: document.getElementById('customEquipment'),
+      customPrimary: document.getElementById('customPrimary'),
+      customDesc: document.getElementById('customDesc'),
+      saveCustom: document.getElementById('saveCustom'),
+      clearCustom: document.getElementById('clearCustom'),
+      // generator
+      genFocus: document.getElementById('genFocus'),
+      genStyle: document.getElementById('genStyle'),
+      genEquip: document.getElementById('genEquip'),
+      genTime: document.getElementById('genTime'),
+      genBtn: document.getElementById('genBtn'),
+      genOutput: document.getElementById('genOutput'),
+      // export/import
+      exportAllJson: document.getElementById('exportAllJson'),
+      importJsonBtn: document.getElementById('importJsonBtn'),
+      importJsonFile: document.getElementById('importJsonFile'),
+      exportRoutinesCSV: document.getElementById('exportRoutinesCSV'),
+      exportLogsCSV: document.getElementById('exportLogsCSV'),
+      // routines
+      routineList: document.getElementById('routineList'),
+      routineName: document.getElementById('routineName'),
+      saveRoutine: document.getElementById('saveRoutine'),
+      exportRoutine: document.getElementById('exportRoutine'),
+      printRoutine: document.getElementById('printRoutine'),
+      clearRoutine: document.getElementById('clearRoutine'),
+      loadRoutineSelect: document.getElementById('loadRoutineSelect'),
+      loadRoutineBtn: document.getElementById('loadRoutineBtn'),
+      // timers & logs
+      swDisplay: document.getElementById('stopwatchDisplay'),
+      swStart: document.getElementById('swStart'),
+      swStop: document.getElementById('swStop'),
+      swReset: document.getElementById('swReset'),
+      itStart: document.getElementById('itStart'),
+      itStop: document.getElementById('itStop'),
+      presetTabata: document.getElementById('presetTabata'),
+      preset10x20: document.getElementById('preset10x20'),
+      logFromRoutine: document.getElementById('logFromRoutine'),
+      manualLog: document.getElementById('manualLog'),
+      logsList: document.getElementById('logsList'),
+      progressCanvas: document.getElementById('progressChart'),
+      modalBg: document.getElementById('modalBg'),
+      modalContent: document.getElementById('modalContent'),
+      modalClose: document.getElementById('modalClose'),
+      flyAnim: document.getElementById('flyAnim'),
+      exCount: document.getElementById('exCount')
+    };
+
+    /* ---------- Helpers ---------- */
+    function uuid(prefix='id_'){ return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+    function safeParse(raw, fallback){ try{ return JSON.parse(raw); }catch(e){ return fallback; } }
+    function saveJSONFile(obj, name='data.json'){ const blob = new Blob([JSON.stringify(obj,null,2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+    function csv(rows){ return rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'); }
+    function downloadCSV(text, name='export.csv'){ const blob = new Blob([text], {type:'text/csv'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+
+    /* ---------- Persistence ---------- */
+    function loadState(){
+      LIB = safeParse(localStorage.getItem(STORAGE.LIB), null) || BASE.slice();
+      routines = safeParse(localStorage.getItem(STORAGE.ROUTINES), []);
+      favorites = safeParse(localStorage.getItem(STORAGE.FAVS), []);
+      logs = safeParse(localStorage.getItem(STORAGE.LOGS), []);
+    }
+    function persistLib(){ try{ localStorage.setItem(STORAGE.LIB, JSON.stringify(LIB)); }catch(e){ console.warn(e); } }
+    function persistRoutines(){ try{ localStorage.setItem(STORAGE.ROUTINES, JSON.stringify(routines)); }catch(e){ console.warn(e); } }
+    function persistFavs(){ try{ localStorage.setItem(STORAGE.FAVS, JSON.stringify(favorites)); }catch(e){ console.warn(e); } }
+    function persistLogs(){ try{ localStorage.setItem(STORAGE.LOGS, JSON.stringify(logs)); }catch(e){ console.warn(e); } }
+
+    /* ---------- Render library ---------- */
+    function matchesFilter(ex, q, muscle, equip, diff){
+      if(q){
+        const lq = q.toLowerCase();
+        if(!(ex.name.toLowerCase().includes(lq) || (ex.description && ex.description.toLowerCase().includes(lq)) || (ex.muscles && ex.muscles.join(' ').toLowerCase().includes(lq)))) return false;
+      }
+      if(muscle) {
+        if(!(ex.primary === muscle || (ex.muscles && ex.muscles.includes(muscle)))) return false;
+      }
+      if(equip) if(ex.equipment !== equip) return false;
+      if(diff) if(ex.difficulty !== diff) return false;
+      return true;
+    }
+
+    function createCardElement(ex){
+      const card = document.createElement('div'); card.className='ex-card';
+      const thumb = document.createElement('div'); thumb.className='ex-thumb';
+      // initials
+      thumb.textContent = (ex.name||'').split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
+      const meta = document.createElement('div'); meta.className='ex-meta';
+      const title = document.createElement('div'); title.className='ex-title'; title.textContent = ex.name;
+      const metaLine = document.createElement('div'); metaLine.className='meta-line';
+      metaLine.innerHTML = `<span class="small muted">${ex.primary || ''}</span><span class="small muted">•</span><span class="small muted">${ex.equipment || ''}</span><span class="small muted">•</span><span class="small muted">${ex.difficulty || ''}</span>`;
+      const tags = document.createElement('div'); tags.style.marginTop='8px';
+      (ex.muscles || []).slice(0,3).forEach(m => { const s = document.createElement('span'); s.className='tag'; s.textContent = m; tags.appendChild(s); });
+
+      const actions = document.createElement('div'); actions.style.marginTop='10px'; actions.style.display='flex'; actions.style.gap='8px';
+      const view = document.createElement('button'); view.className='btn secondary'; view.textContent='View'; view.addEventListener('click', ()=> showDetail(ex.id));
+      const add = document.createElement('button'); add.className='btn'; add.textContent='Add'; add.addEventListener('click', (ev)=> { animateAddToRoutine(ev, ex.id); addToRoutine(ex.id); });
+      const fav = document.createElement('button'); fav.className='btn ghost'; fav.textContent = favorites.includes(ex.id) ? '♥ Fav' : '♡ Fav'; fav.addEventListener('click', ()=> { toggleFav(ex.id); fav.textContent = favorites.includes(ex.id) ? '♥ Fav' : '♡ Fav'; });
+
+      actions.appendChild(view); actions.appendChild(add); actions.appendChild(fav);
+
+      meta.appendChild(title); meta.appendChild(metaLine); meta.appendChild(tags); meta.appendChild(actions);
+      card.appendChild(thumb); card.appendChild(meta);
+      return card;
+    }
+
+    // progressive reveal for visual polish
+    function renderList(){
+      const q = refs.searchInput.value.trim();
+      const muscle = refs.filterMuscle.value;
+      const equip = refs.filterEquip.value;
+      const diff = refs.filterDiff.value;
+      refs.exList.innerHTML = '';
+      const visible = LIB.filter(e => matchesFilter(e, q, muscle, equip, diff));
+      refs.exCount.textContent = visible.length;
+      visible.forEach((ex, i) => {
+        const el = createCardElement(ex);
+        refs.exList.appendChild(el);
+        // staggered reveal
+        setTimeout(()=> el.classList.add('visible'), 30 + i * 30);
+      });
+    }
+
+    /* ---------- Modal detail ---------- */
+    function showDetail(id){
+      const ex = LIB.find(x=>x.id===id);
+      if(!ex) return;
+      refs.modalContent.innerHTML = '';
+      const h = document.createElement('h2'); h.textContent = ex.name;
+      const p = document.createElement('p'); p.className='muted'; p.textContent = ex.description || '';
+      const info = document.createElement('div'); info.style.marginTop='10px';
+      info.innerHTML = `<div class="small">Equipment: <strong>${ex.equipment || '—'}</strong></div><div class="small">Primary: <strong>${ex.primary || '—'}</strong></div><div class="small">Difficulty: <strong>${ex.difficulty || '—'}</strong></div><div class="small">Duration: <strong>${ex.duration || '—'}s</strong></div>`;
+      const steps = document.createElement('div'); steps.style.marginTop='10px';
+      if(ex.steps && ex.steps.length){ steps.innerHTML = '<strong>Steps</strong>'; const ol=document.createElement('ol'); ex.steps.forEach(s=> { const li=document.createElement('li'); li.textContent=s; ol.appendChild(li); }); steps.appendChild(ol); }
+      const actions = document.createElement('div'); actions.style.marginTop='12px';
+      const addBtn = document.createElement('button'); addBtn.className='btn'; addBtn.textContent='Add to routine'; addBtn.addEventListener('click', ()=> { addToRoutine(ex.id); hideModal(); });
+      const favBtn = document.createElement('button'); favBtn.className='btn secondary'; favBtn.textContent = favorites.includes(ex.id) ? 'Favorited' : 'Add favorite'; favBtn.addEventListener('click', ()=> { toggleFav(ex.id); favBtn.textContent = favorites.includes(ex.id) ? 'Favorited' : 'Add favorite'; });
+      actions.appendChild(addBtn); actions.appendChild(favBtn);
+
+      refs.modalContent.appendChild(h); refs.modalContent.appendChild(p); refs.modalContent.appendChild(info); refs.modalContent.appendChild(steps); refs.modalContent.appendChild(actions);
+      refs.modalBg.style.display = 'flex'; refs.modalBg.setAttribute('aria-hidden','false');
+    }
+    function hideModal(){ refs.modalBg.style.display='none'; refs.modalBg.setAttribute('aria-hidden','true'); }
+    refs.modalClose.addEventListener('click', hideModal);
+    refs.modalBg.addEventListener('click', (e)=> { if(e.target === refs.modalBg) hideModal(); });
+
+    /* ---------- Favorites ---------- */
+    function toggleFav(id){ const i = favorites.indexOf(id); if(i>=0) favorites.splice(i,1); else favorites.push(id); persistFavs(); renderList(); }
+
+    /* ---------- Add to routine (and animation) ---------- */
+    function addToRoutine(id){
+      currentRoutine.push(id);
+      renderRoutine();
+      // subtle pop on routine container
+      const first = refs.routineList.firstElementChild;
+      if(first) first.classList.add('pop'), setTimeout(()=> first.classList.remove('pop'), 360);
+    }
+
+    function animateAddToRoutine(ev, id){
+      // get bounding rect of clicked button and routine area
+      const btn = ev.currentTarget;
+      const rect = btn.getBoundingClientRect();
+      const fly = refs.flyAnim;
+      fly.style.left = (rect.left + rect.width/2 - 70) + 'px';
+      fly.style.top = (rect.top + rect.height/2 - 18) + 'px';
+      fly.classList.remove('hidden');
+      fly.style.opacity = '1';
+      // target near routineList top
+      const targetRect = refs.routineList.getBoundingClientRect();
+      requestAnimationFrame(()=> {
+        fly.style.transform = `translate3d(${targetRect.left - rect.left + 6}px, ${targetRect.top - rect.top + 6}px) scale(.9)`;
+      });
+      setTimeout(()=> { fly.style.opacity = '0'; fly.style.transform = 'translate3d(0,0,0) scale(1)'; setTimeout(()=> fly.classList.add('hidden'), 500); }, 700);
+    }
+
+    /* ---------- Routine builder render & DnD ---------- */
+    function renderRoutine(){
+      refs.routineList.innerHTML = '';
+      currentRoutine.forEach((id, idx) => {
+        const ex = LIB.find(x=>x.id===id) || { name: id, equipment:'', primary:'' };
+        const item = document.createElement('div'); item.className='routine-item'; item.draggable = true; item.dataset.idx = idx;
+        const left = document.createElement('div'); left.style.display='flex'; left.style.alignItems='center'; left.style.gap='12px';
+        const handle = document.createElement('div'); handle.className='drag-handle'; handle.textContent='⋮';
+        const text = document.createElement('div'); text.innerHTML = `<div style="font-weight:800">${ex.name}</div><div class="small muted">${ex.equipment} • ${ex.primary}</div>`;
+        left.appendChild(handle); left.appendChild(text);
+        const right = document.createElement('div'); right.style.display='flex'; right.style.gap='8px';
+        const up = document.createElement('button'); up.className='btn secondary'; up.textContent='↑'; up.addEventListener('click', ()=> { if(idx>0){ [currentRoutine[idx-1], currentRoutine[idx]]=[currentRoutine[idx], currentRoutine[idx-1]]; renderRoutine(); } });
+        const down = document.createElement('button'); down.className='btn secondary'; down.textContent='↓'; down.addEventListener('click', ()=> { if(idx<currentRoutine.length-1){ [currentRoutine[idx+1], currentRoutine[idx]]=[currentRoutine[idx], currentRoutine[idx+1]]; renderRoutine(); } });
+        const rem = document.createElement('button'); rem.className='btn secondary'; rem.textContent='Remove'; rem.addEventListener('click', ()=> { currentRoutine.splice(idx,1); renderRoutine(); });
+        right.appendChild(up); right.appendChild(down); right.appendChild(rem);
+        item.appendChild(left); item.appendChild(right);
+
+        // DnD handlers
+        item.addEventListener('dragstart', (e)=> { e.dataTransfer.setData('text/plain', idx); item.style.opacity = '0.5'; });
+        item.addEventListener('dragend', ()=> { item.style.opacity = '1'; });
+        item.addEventListener('dragover', (e)=> { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+        item.addEventListener('drop', (e)=> {
+          e.preventDefault();
+          const from = parseInt(e.dataTransfer.getData('text/plain'));
+          const to = parseInt(item.dataset.idx);
+          if(isNaN(from) || isNaN(to)) return;
+          const [moved] = currentRoutine.splice(from,1);
+          currentRoutine.splice(to,0,moved);
+          renderRoutine();
+        });
+
+        refs.routineList.appendChild(item);
+      });
+    }
+
+    /* ---------- Save / Load routines ---------- */
+    function updateRoutinesDropdown(){
+      refs.loadRoutineSelect.innerHTML = '';
+      routines.forEach((r,i)=> {
+        const o = document.createElement('option'); o.value = i; o.textContent = `${r.name} — ${new Date(r.created).toLocaleDateString()}`; refs.loadRoutineSelect.appendChild(o);
+      });
+    }
+
+    refs.saveRoutine.addEventListener('click', ()=> {
+      const name = (refs.routineName.value || 'Routine').trim();
+      if(!name) return alert('Enter a routine name');
+      routines.push({ id: uuid('rt_'), name, exercises: currentRoutine.slice(), created: Date.now() });
+      persistRoutines();
+      updateRoutinesDropdown();
+      currentRoutine = [];
+      renderRoutine();
+      refs.routineName.value = '';
+      alert('Routine saved');
+    });
+
+    refs.loadRoutineBtn.addEventListener('click', ()=> {
+      const idx = parseInt(refs.loadRoutineSelect.value);
+      if(isNaN(idx) || !routines[idx]) return alert('Select a routine');
+      currentRoutine = routines[idx].exercises.slice();
+      renderRoutine();
+    });
+
+    refs.exportRoutine.addEventListener('click', ()=> {
+      const name = (refs.routineName.value || 'routine').replace(/\s+/g,'_');
+      const data = { name: refs.routineName.value || 'Routine', exercises: currentRoutine.map(id => LIB.find(e=>e.id===id) || { id }) };
+      saveJSON(data, `${name}.json`);
+    });
+
+    refs.printRoutine.addEventListener('click', ()=> {
+      const win = window.open('', '_blank', 'width=800,height=900');
+      let html = `<html><head><title>${refs.routineName.value || 'Routine'}</title></head><body style="font-family:Arial;padding:20px">`;
+      html += `<h1>${refs.routineName.value || 'Routine'}</h1><ol>`;
+      currentRoutine.forEach(id => { const ex = LIB.find(x=>x.id===id); html += `<li><strong>${ex ? ex.name : id}</strong><div style="margin-bottom:8px">${ex && ex.description ? ex.description : ''}</div></li>`; });
+      html += '</ol></body></html>';
+      win.document.write(html); win.document.close(); win.print();
+    });
+
+    refs.clearRoutine.addEventListener('click', ()=> { if(confirm('Clear current routine?')) { currentRoutine = []; renderRoutine(); } });
+
+    /* ---------- Export/Import handlers ---------- */
+    function saveJSON(obj, name='data.json'){ const blob = new Blob([JSON.stringify(obj,null,2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+    refs.exportAllJson.addEventListener('click', ()=> saveJSON(LIB, 'exercises-library.json'));
+
+    refs.importJsonBtn.addEventListener('click', ()=> refs.importJsonFile.click());
+    refs.importJsonFile.addEventListener('change', (e)=> {
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      const r = new FileReader();
+      r.onload = (ev)=> {
+        try{
+          const parsed = JSON.parse(ev.target.result);
+          if(!Array.isArray(parsed)) return alert('Invalid JSON: expected an array');
+          parsed.forEach(item => {
+            if(!item.id) item.id = uuid('imp_');
+            if(!LIB.find(x => x.id === item.id || x.name === item.name)) LIB.unshift(item);
+          });
+          persistLib(); renderList();
+          alert('Imported and merged exercises');
+        }catch(err){ alert('Import failed: invalid JSON'); }
+      };
+      r.readAsText(f);
+    });
+
+    refs.exportRoutinesCSV.addEventListener('click', ()=> {
+      const rows = [['name','created','exercise_count','exercise_ids']];
+      routines.forEach(r => rows.push([r.name, new Date(r.created).toISOString(), r.exercises.length, r.exercises.join('|')]));
+      downloadCSV(csv(rows), 'routines.csv');
+    });
+
+    refs.exportLogsCSV.addEventListener('click', ()=> {
+      const rows = [['name','date','duration','exercise_count']];
+      logs.forEach(l => rows.push([l.name, new Date(l.date).toISOString(), l.duration||'', (l.exercises||[]).length]));
+      downloadCSV(csv(rows), 'workout_logs.csv');
+    });
+
+    /* ---------- Custom exercises ---------- */
+    refs.saveCustom.addEventListener('click', ()=> {
+      const name = (refs.customName.value || '').trim();
+      if(!name) return alert('Enter a name');
+      const ex = {
+        id: uuid('ex_'),
+        name,
+        equipment: (refs.customEquipment.value || 'bodyweight').trim(),
+        primary: (refs.customPrimary.value || '').trim(),
+        muscles: (refs.customPrimary.value ? [refs.customPrimary.value.trim()] : []),
+        description: (refs.customDesc.value || '').trim(),
+        difficulty: 'beginner',
+        duration: 60
+      };
+      LIB.unshift(ex); persistLib(); renderList();
+      refs.customName.value = refs.customEquipment.value = refs.customPrimary.value = refs.customDesc.value = '';
+      alert('Custom exercise saved');
+    });
+    refs.clearCustom.addEventListener('click', ()=> { refs.customName.value=''; refs.customEquipment.value=''; refs.customPrimary.value=''; refs.customDesc.value=''; });
+
+    /* ---------- Generator ---------- */
+    refs.genBtn.addEventListener('click', ()=> {
+      const focus = refs.genFocus.value, style = refs.genStyle.value, equip = refs.genEquip.value, time = Math.max(5, parseInt(refs.genTime.value) || 20);
+      let pool = LIB.slice();
+      if(equip) pool = pool.filter(e => e.equipment === equip || e.equipment === 'bodyweight');
+      if(focus === 'upper') pool = pool.filter(e => ['chest','back','shoulders','arms'].includes(e.primary) || (e.muscles && e.muscles.some(m=>['chest','back','shoulders','arms'].includes(m))));
+      if(focus === 'lower') pool = pool.filter(e => ['quads','glutes','hamstrings','calves'].includes(e.primary) || (e.muscles && e.muscles.some(m=>['quads','glutes','hamstrings','calves'].includes(m))));
+      if(focus === 'core') pool = pool.filter(e => e.primary === 'core' || (e.muscles && e.muscles.includes('core')));
+      if(focus === 'cardio') pool = pool.filter(e => e.equipment === 'cardio' || /run|bike|row|cardio/i.test(e.name));
+
+      if(pool.length === 0) pool = LIB.slice();
+      const picked = pool.sort(()=>Math.random()-0.5).slice(0, Math.min(8, pool.length));
+      let out = '';
+      if(style === 'tabata'){
+        out += `<div class="small muted">Tabata — 20s on / 10s off (repeat 4–6 rounds)</div><ol>`; picked.slice(0,6).forEach(p => out += `<li>${p.name}</li>`); out += '</ol>';
+      } else if(style === 'emom'){
+        const minutes = Math.max(5, time), picks = pool.sort(()=>Math.random()-0.5).slice(0, minutes);
+        out += `<div class="small muted">EMOM — ${minutes} minutes</div><ol>`; picks.forEach((p,i)=> out += `<li>Minute ${i+1}: ${p.name}</li>`); out += '</ol>';
+      } else if(style === 'circuit'){
+        out += `<div class="small muted">Circuit / AMRAP — ${time} minutes</div><ol>`; picked.forEach(p => out += `<li>${p.name} — 30–60s</li>`); out += '</ol>';
+      } else {
+        out += `<div class="small muted">Strength set-based — ${time} minutes</div><ol>`; picked.slice(0,5).forEach(p => out += `<li>${p.name} — 3×6–12</li>`); out += '</ol>';
+      }
+      refs.genOutput.innerHTML = out;
+    });
+
+    /* ---------- Timers ---------- */
+    let swTimer = null, swStart = 0, swElapsed = 0;
+    refs.swStart.addEventListener('click', ()=> {
+      if(swTimer) return;
+      swStart = Date.now() - swElapsed;
+      swTimer = setInterval(()=> { swElapsed = Date.now() - swStart; refs.swDisplay.textContent = msToTime(swElapsed); }, 200);
+    });
+    refs.swStop.addEventListener('click', ()=> { if(swTimer) clearInterval(swTimer); swTimer = null; });
+    refs.swReset.addEventListener('click', ()=> { if(swTimer) clearInterval(swTimer); swTimer=null; swElapsed=0; refs.swDisplay.textContent='00:00:00'; });
+
+    function msToTime(ms){ const s = Math.floor(ms/1000)%60; const m = Math.floor(ms/60000)%60; const h = Math.floor(ms/3600000); return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':'); }
+
+    // interval
+    let intervalRunning=false, intervalTimeout=null;
+    function startInterval(work=20, rest=10, rounds=8){
+      if(intervalRunning) return;
+      intervalRunning = true;
+      let r = 0;
+      (function next(){
+        if(!intervalRunning) return;
+        r++;
+        if(r > rounds){ stopInterval(); return; }
+        refs.intervalDisplay.textContent = `Round ${r}/${rounds} — WORK (${work}s)`;
+        beep();
+        intervalTimeout = setTimeout(()=> {
+          refs.intervalDisplay.textContent = `Round ${r}/${rounds} — REST (${rest}s)`;
+          beep();
+          intervalTimeout = setTimeout(next, rest*1000);
+        }, work*1000);
+      })();
+    }
+    function stopInterval(){ intervalRunning=false; if(intervalTimeout) clearTimeout(intervalTimeout); refs.intervalDisplay.textContent = 'Stopped'; }
+    refs.itStart.addEventListener('click', ()=> startInterval(20,10,8)); refs.itStop.addEventListener('click', stopInterval);
+    refs.presetTabata.addEventListener('click', ()=> startInterval(20,10,8)); refs.preset10x20.addEventListener('click', ()=> startInterval(20,10,10));
+
+    function beep(){ try{ const Ctx = window.AudioContext || window.webkitAudioContext; const ctx = new Ctx(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.type='sine'; o.frequency.value = 750; g.gain.value = 0.0001; g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01); o.start(); setTimeout(()=> { g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18); o.stop(ctx.currentTime + 0.19); }, 180); }catch(e){} }
+
+    /* ---------- Logs & chart ---------- */
+    function logFromRoutine(){
+      if(currentRoutine.length === 0) return alert('No exercises to log in current routine');
+      const name = prompt('Name of workout', (refs.routineName.value || 'Routine'));
+      if(!name) return;
+      const entry = { id: uuid('log_'), name, date: Date.now(), exercises: currentRoutine.slice(), duration: Math.max(5, Math.round(currentRoutine.length * 5)) };
+      logs.unshift(entry); persistLogs(); renderLogs(); alert('Logged: ' + name);
+    }
+    refs.logFromRoutine.addEventListener('click', logFromRoutine);
+    refs.manualLog.addEventListener('click', ()=> {
+      const name = prompt('Workout name', 'Manual workout'); if(!name) return;
+      const duration = parseInt(prompt('Duration (minutes)', '30')) || 0;
+      const entry = { id: uuid('log_'), name, date: Date.now(), exercises: [], duration };
+      logs.unshift(entry); persistLogs(); renderLogs(); alert('Manual log saved');
+    });
+
+    function renderLogs(){
+      refs.logsList.innerHTML = '';
+      logs.slice(0,50).forEach(l => {
+        const div = document.createElement('div'); div.className='small muted'; div.style.marginBottom='8px';
+        div.innerHTML = `<strong style="color:var(--text)">${l.name}</strong><div class="small muted">${new Date(l.date).toLocaleString()} • ${l.duration || '—'} min • ${ (l.exercises||[]).length } ex</div>`;
+        refs.logsList.appendChild(div);
+      });
+      drawChart();
+    }
+
+    function drawChart(){
+      const canvas = refs.progressCanvas;
+      const ctx = canvas.getContext('2d');
+      const data = logs.slice(0,12).reverse();
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      const DPR = window.devicePixelRatio || 1;
+      canvas.width = w * DPR; canvas.height = h * DPR; ctx.scale(DPR, DPR);
+      ctx.clearRect(0,0,w,h);
+      if(data.length === 0){ ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.font='14px Inter, Arial'; ctx.fillText('No logs yet', 10, 30); return; }
+      const pad = 28, plotW = w - pad*2, plotH = h - pad*2;
+      const max = Math.max(...data.map(d => d.duration || 0), 30);
+      // axes
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, pad+plotH); ctx.lineTo(pad+plotW, pad+plotH); ctx.stroke();
+      // line
+      ctx.beginPath(); ctx.strokeStyle = 'rgba(126,232,197,0.95)'; ctx.lineWidth = 2;
+      data.forEach((d,i)=> {
+        const x = pad + (i/(data.length-1 || 1))*plotW;
+        const y = pad + (1 - ((d.duration||0)/max)) * plotH;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+      // fill
+      ctx.lineTo(pad+plotW, pad+plotH); ctx.lineTo(pad, pad+plotH); ctx.closePath();
+      ctx.fillStyle = 'rgba(126,232,197,0.06)'; ctx.fill();
+      // x labels
+      ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.font = '11px Inter, Arial';
+      data.forEach((d,i)=> { const x = pad + (i/(data.length-1 || 1))*plotW; const label = new Date(d.date).toLocaleDateString(undefined, {month:'short', day:'numeric'}); ctx.fillText(label, x-20, pad + plotH + 16); });
+    }
+
+    /* ---------- Small helpers & UI wiring ---------- */
+    // menu toggle
+    refs.menuBtn.addEventListener('click', ()=> {
+      const expanded = refs.menuBtn.getAttribute('aria-expanded') === 'true';
+      refs.menuBtn.setAttribute('aria-expanded', String(!expanded));
+      refs.menuPanel.hidden = expanded;
+      refs.menuPanel.setAttribute('aria-hidden', String(expanded));
+    });
+    document.addEventListener('click', (e)=> { if(refs.menuPanel.hidden) return; if(refs.menuBtn.contains(e.target) || refs.menuPanel.contains(e.target)) return; refs.menuPanel.hidden = true; refs.menuBtn.setAttribute('aria-expanded','false'); });
+
+    // search & filters
+    refs.searchInput.addEventListener('input', debounce(renderList, 120));
+    [refs.filterMuscle, refs.filterEquip, refs.filterDiff].forEach(el => el.addEventListener('change', renderList));
+    refs.clearFilters.addEventListener('click', ()=> { refs.searchInput.value=''; refs.filterMuscle.value=''; refs.filterEquip.value=''; refs.filterDiff.value=''; renderList(); });
+
+    // custom & generator wiring already defined
+    refs.genBtn.addEventListener('click', ()=> { /* wired earlier via listener above */ });
+    // but ensure genBtn exists:
+    refs.genBtn && refs.genBtn.addEventListener('click', ()=> { /* event attached during generate setup earlier */ });
+
+    // export/import wired earlier
+    // Save/Load wiring
+    refs.loadRoutineBtn.addEventListener('click', ()=> {
+      const idx = parseInt(refs.loadRoutineSelect.value); if(isNaN(idx) || !routines[idx]) return alert('Select a routine'); currentRoutine = routines[idx].exercises.slice(); renderRoutine();
+    });
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', (e)=> { if(e.ctrlKey && e.key === 'f'){ e.preventDefault(); refs.searchInput.focus(); refs.searchInput.select(); } if(e.ctrlKey && e.key === 'g'){ e.preventDefault(); refs.genBtn.click(); } });
+
+    // Debounce helper
+    function debounce(fn, wait=100){ let t; return function(...args){ clearTimeout(t); t = setTimeout(()=> fn.apply(this,args), wait); }; }
+
+    /* ---------- Startup: load state, wire events, render ---------- */
+    function start(){
+      loadState();
+      renderList();
+      renderRoutine();
+      updateRoutinesDropdown();
+      renderLogs();
+
+      // wire events that needed programmatic functions defined later
+      refs.saveCustom.addEventListener('click', ()=> {
+        const name = (refs.customName.value || '').trim(); if(!name) return alert('Enter a name');
+        const ex = { id: uuid('ex_'), name, equipment: (refs.customEquipment.value || 'bodyweight').trim(), primary: (refs.customPrimary.value || '').trim(), muscles: (refs.customPrimary.value ? [refs.customPrimary.value.trim()] : []), description: (refs.customDesc.value||''), difficulty:'beginner', duration:60 };
+        LIB.unshift(ex); persistLib(); renderList(); refs.customName.value=''; refs.customEquipment.value=''; refs.customPrimary.value=''; refs.customDesc.value=''; alert('Custom exercise saved');
+      });
+
+      refs.clearCustom.addEventListener('click', ()=> { refs.customName.value=''; refs.customEquipment.value=''; refs.customPrimary.value=''; refs.customDesc.value=''; });
+      refs.genBtn.addEventListener('click', generateHandler);
+      refs.exportAllJson.addEventListener('click', ()=> saveJSON(LIB, 'exercises-library.json'));
+      refs.importJsonBtn.addEventListener('click', ()=> refs.importJsonFile.click());
+      refs.importJsonFile.addEventListener('change', importJsonHandler);
+      refs.exportRoutinesCSV.addEventListener('click', exportRoutinesCsvHandler);
+      refs.exportLogsCSV.addEventListener('click', exportLogsCsvHandler);
+
+      refs.saveRoutine.addEventListener('click', ()=> {
+        const name = (refs.routineName.value || 'Routine').trim(); if(!name) return alert('Enter a routine name');
+        routines.push({ id: uuid('rt_'), name, exercises: currentRoutine.slice(), created: Date.now() }); persistRoutines(); updateRoutinesDropdown(); currentRoutine=[]; renderRoutine(); refs.routineName.value=''; alert('Routine saved');
+      });
+      refs.exportRoutine.addEventListener('click', ()=> {
+        const name = (refs.routineName.value || 'routine').replace(/\s+/g,'_');
+        const data = { name: refs.routineName.value || 'Routine', exercises: currentRoutine.map(id => LIB.find(e=>e.id===id) || { id }) };
+        saveJSON(data, `${name}.json`);
+      });
+      refs.printRoutine.addEventListener('click', ()=> {
+        const win = window.open('', '_blank', 'width=800,height=900'); let html = `<html><head><title>${refs.routineName.value || 'Routine'}</title></head><body style="font-family:Arial;padding:20px">`; html += `<h1>${refs.routineName.value || 'Routine'}</h1><ol>`; currentRoutine.forEach(id => { const ex=LIB.find(e=>e.id===id); html += `<li><strong>${ex?ex.name:id}</strong><div style="margin-bottom:8px">${ex && ex.description?ex.description:''}</div></li>`; }); html += '</ol></body></html>'; win.document.write(html); win.document.close(); win.print();
+      });
+      refs.clearRoutine.addEventListener('click', ()=> { if(confirm('Clear routine?')){ currentRoutine = []; renderRoutine(); } });
+
+      refs.importJsonFile.addEventListener('change', importJsonHandler);
+      refs.logFromRoutine.addEventListener('click', logFromRoutine);
+      refs.manualLog.addEventListener('click', ()=> {
+        const name = prompt('Workout name', 'Manual workout'); if(!name) return; const duration = parseInt(prompt('Duration (minutes)', '30')) || 0; const entry = { id: uuid('log_'), name, date: Date.now(), exercises: [], duration }; logs.unshift(entry); persistLogs(); renderLogs(); alert('Manual log saved');
+      });
+
+      refs.itStart.addEventListener('click', ()=> startInterval(20,10,8)); refs.itStop.addEventListener('click', stopInterval);
+      refs.presetTabata.addEventListener('click', ()=> startInterval(20,10,8)); refs.preset10x20.addEventListener('click', ()=> startInterval(20,10,10));
+      refs.modalClose.addEventListener('click', hideModal); refs.modalBg.addEventListener('click', (e)=> { if(e.target === refs.modalBg) hideModal(); });
+
+      // small onboarding
+      if(!localStorage.getItem('fs_ex_onboard_shown')){ setTimeout(()=> { alert('Tip: drag items in the routine to reorder. Use Ctrl+F to focus search. Double-click a card to add it quickly.'); localStorage.setItem('fs_ex_onboard_shown','1'); }, 700); }
+
+      // double-click to quick add
+      refs.exList.addEventListener('dblclick', (e)=> {
+        const card = e.target.closest('.ex-card'); if(!card) return;
+        const title = card.querySelector('.ex-title'); if(!title) return;
+        const ex = LIB.find(x => x.name === title.textContent); if(ex) { addToRoutine(ex.id); animateQuickAdd(card); }
+      });
+
+      // initial UI update
+      renderList();
+      renderRoutine();
+      updateRoutinesDropdown();
+      renderLogs();
+    }
+
+    // small helper animations
+    function animateQuickAdd(card){
+      card.classList.add('pop'); setTimeout(()=> card.classList.remove('pop'), 350);
+    }
+
+    // import JSON handler
+    function importJsonHandler(e){
+      const f = e.target.files && e.target.files[0]; if(!f) return;
+      const r = new FileReader();
+      r.onload = (ev)=> {
+        try{
+          const parsed = JSON.parse(ev.target.result);
+          if(!Array.isArray(parsed)) return alert('Invalid JSON (expected array)');
+          parsed.forEach(item => {
+            if(!item.id) item.id = uuid('imp_');
+            if(!LIB.find(x => x.id === item.id || x.name === item.name)) LIB.unshift(item);
+          });
+          persistLib(); renderList(); alert('Imported exercises (merged)');
+        }catch(err){ alert('Import failed: ' + (err.message || err)); }
+      };
+      r.readAsText(f);
+    }
+
+    // export CSV handlers
+    function exportRoutinesCsvHandler(){
+      const rows = [['name','created','exercise_count','exercise_ids']];
+      routines.forEach(r => rows.push([r.name, new Date(r.created).toISOString(), r.exercises.length, r.exercises.join('|')]));
+      downloadCSV(csv(rows), 'routines.csv');
+    }
+    function exportLogsCsvHandler(){
+      const rows = [['name','date','duration','exercise_count']];
+      logs.forEach(l => rows.push([l.name, new Date(l.date).toISOString(), l.duration||'', (l.exercises||[]).length]));
+      downloadCSV(csv(rows), 'workout_logs.csv');
+    }
+
+    /* ---------- Utility / small fixes ---------- */
+    function persistLogs(){ try{ localStorage.setItem(STORAGE.LOGS, JSON.stringify(logs)); }catch(e){ console.warn(e); } }
+    function persistRoutines(){ try{ localStorage.setItem(STORAGE.ROUTINES, JSON.stringify(routines)); }catch(e){ console.warn(e); } }
+    function persistFavs(){ try{ localStorage.setItem(STORAGE.FAVS, JSON.stringify(favorites)); }catch(e){ console.warn(e); } }
+    function persistLib(){ try{ localStorage.setItem(STORAGE.LIB, JSON.stringify(LIB)); }catch(e){ console.warn(e); } }
+
+    /* ---------- final small functions that were used earlier ---------- */
+    function generateHandler(){ /* direct wrapper to earlier generator implementation */ const evt = new Event('click'); /* use existing listener attached in start */ }
+    function importHandler(){ /* placeholder (attached to file input instead) */ }
+
+    // Start now
+    start();
+
+    // Expose a tiny debug object
+    window.FS_EX = { LIB, routines, favorites, logs, currentRoutine, renderList, renderRoutine };
+
+  })();
+  </script>
+</body>
+</html>
