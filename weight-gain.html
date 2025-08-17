@@ -7,6 +7,85 @@
 
   <style>
     /* ---------- Theme variables & base ---------- */
+    /* ---------- compact center title + menu dropdown ---------- */
+.nav-center{ display:flex; align-items:center; gap:12px; flex:1 1 auto; justify-content:flex-end; position:relative; }
+
+/* center title sits in the middle area */
+.nav-title{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:800;
+  letter-spacing:1px;
+  font-size:18px;
+  color:var(--text);
+  pointer-events:none; /* ensures clicks pass through to menu button */
+}
+
+/* menu button on the right */
+.menu-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  padding:6px;
+  border-radius:10px;
+  border:none;
+  background:rgba(255,255,255,0.02);
+  color:var(--text);
+  cursor:pointer;
+  font-size:20px;
+  box-shadow:none;
+  transition: background .18s, transform .12s;
+  z-index:120;
+}
+.menu-btn:active{ transform:translateY(1px); }
+.menu-btn[aria-expanded="true"]{ background: rgba(255,255,255,0.04); }
+
+/* menu panel */
+.menu-panel{
+  position:absolute;
+  right:8px;
+  top:calc(100% + 8px);
+  min-width:190px;
+  max-width:260px;
+  background: linear-gradient(180deg, rgba(11,16,32,0.98), rgba(14,20,36,0.98));
+  border:1px solid rgba(255,255,255,0.04);
+  border-radius:12px;
+  padding:8px;
+  box-shadow: 0 12px 30px rgba(2,6,23,0.65);
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  z-index:110;
+}
+
+/* hide by default — script toggles [hidden] */
+.menu-link{
+  color:var(--text);
+  text-decoration:none;
+  padding:10px 12px;
+  display:inline-block;
+  border-radius:8px;
+  font-weight:700;
+}
+.menu-link:hover{ background: rgba(255,255,255,0.03); }
+
+.menu-sep{ border:0; height:1px; margin:6px 0; background: rgba(255,255,255,0.03); }
+
+/* small screens: slightly bigger hit area */
+@media (max-width:720px){
+  .nav-title{ font-size:16px; }
+  .menu-panel{ right:6px; left:auto; min-width:160px; }
+}
+
+/* accessibility / safe fallback: if JS fails, show links inline (optional) */
+@media (min-width:0){
+  /* hide any .links fallback if present */
+  .links{ display:none !important; }
+  }
+  
     :root{
       --theme-color: #34d399;
       --theme-gradient-start: #34d399;
@@ -172,13 +251,28 @@
   <nav class="nav" id="mainNav" role="navigation" aria-label="Main Navigation">
     <div class="nav-inner container">
       <a class="brand" href="index.html" aria-label="Fitness Sphere home"><img src="logo.png" alt="Fitness Sphere logo" id="brandLogo" /></a>
-      <div class="links" data-menu>
-        <a class="link" href="index.html">Home</a>
-        <a class="link" href="weight-loss.html">Weight Loss</a>
-        <a class="link" href="calories.html">Calories</a>
-        <a class="link" href="exercises.html">Exercises</a>
-        <a class="link" href="premium.html">Premium</a>
-      </div>
+      <!-- compact centered title + menu button -->
+<div class="nav-center" aria-hidden="false">
+  <div class="nav-title">FITNESSSPHERE</div>
+
+  <!-- menu button -->
+  <button id="menuBtn" class="menu-btn" aria-label="Open site menu" aria-expanded="false" aria-controls="menuPanel">
+    <!-- use simple hamburger icon; you can swap for ••• if you prefer -->
+    <span class="hamburger" aria-hidden="true">☰</span>
+  </button>
+
+  <!-- popup panel (hidden by default) -->
+  <div id="menuPanel" class="menu-panel" role="menu" aria-hidden="true" hidden>
+    <a class="menu-link" role="menuitem" href="index.html">Home</a>
+    <a class="menu-link" role="menuitem" href="weight-loss.html">Weight Loss</a>
+    <a class="menu-link" role="menuitem" href="calories.html">Calories</a>
+    <a class="menu-link" role="menuitem" href="exercises.html">Exercises</a>
+    <a class="menu-link" role="menuitem" href="premium.html">Premium</a>
+    <hr class="menu-sep" />
+    <a class="menu-link" role="menuitem" href="#" id="openSettings">Settings</a>
+  </div>
+</div>
+
     </div>
   </nav>
 
@@ -500,6 +594,57 @@
         brandLogo.style.maxHeight = maxH + 'px';
       }
     });
+     // --- small menu toggle (insert near the end of your existing script) ---
+(function(){
+  const menuBtn = document.getElementById('menuBtn');
+  const menuPanel = document.getElementById('menuPanel');
+
+  if(!menuBtn || !menuPanel) return;
+
+  function openMenu(){
+    menuPanel.hidden = false;
+    menuPanel.setAttribute('aria-hidden','false');
+    menuBtn.setAttribute('aria-expanded','true');
+    // focus first link for keyboard users
+    const first = menuPanel.querySelector('.menu-link');
+    if(first) first.focus();
+    // small animation
+    menuPanel.style.opacity = 0;
+    requestAnimationFrame(()=> menuPanel.style.opacity = 1);
+  }
+  function closeMenu(){
+    menuPanel.hidden = true;
+    menuPanel.setAttribute('aria-hidden','true');
+    menuBtn.setAttribute('aria-expanded','false');
+  }
+
+  menuBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(menuPanel.hidden) openMenu(); else closeMenu();
+  });
+
+  // close when clicking outside
+  document.addEventListener('click', (e)=>{
+    if(menuPanel.hidden) return;
+    if(!menuPanel.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) closeMenu();
+  });
+
+  // close on ESC
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  // optionally close on resize (prevents stuck open)
+  window.addEventListener('resize', ()=> closeMenu());
+
+  // route: example hook to Settings (you can replace this)
+  const openSettings = document.getElementById('openSettings');
+  if(openSettings) openSettings.addEventListener('click', (ev)=>{
+    ev.preventDefault();
+    closeMenu();
+    alert('Settings placeholder — replace with settings panel/page.');
+  });
+})();
 
      /* ---------- End of script ---------- */
   </script>
