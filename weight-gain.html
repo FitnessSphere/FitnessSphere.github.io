@@ -303,10 +303,7 @@
     <a class="menu-link" role="menuitem" href="premium.html">Premium</a>
     <hr class="menu-sep" />
     <a class="menu-link" role="menuitem" href="#" id="openSettings">Settings</a>
- <div id="bulkContent">
-  <!-- Existing Fast Bulk / Slow Bulk content here -->
  </div>
-</div>
 
     </div>
   </nav>
@@ -320,7 +317,10 @@
       <div class="row" style="margin-top:12px;">
         <button id="btnHealthy" class="btn mode-graded" aria-pressed="false">Healthy Bulk</button>
         <button id="btnFast" class="btn mode-graded" aria-pressed="false">Fast Bulk</button>
-        <div style="margin-left:auto;"><span id="modeHint" class="muted">No mode selected</span></div>
+       <div style="margin-left:auto;"><span id="modeHint" class="muted">No mode selected</span></div>
+       <div id="bulkContent">
+  <!-- Existing Fast Bulk / Slow Bulk content here -->
+       </div>
       </div>
 
       <p style="margin-top:10px;" class="muted">
@@ -457,17 +457,39 @@
   const currently = localStorage.getItem('wg_mode');
   const content = document.getElementById('bulkContent'); // container to animate
 
-  if(modeKey===null){ 
+  if(modeKey === null){ 
     localStorage.removeItem('wg_mode'); 
     revertToDefaultTheme(); 
 
+    // Animate content update
     content.classList.add('fade-out');
     setTimeout(() => {
       buildTaskUI(); 
       content.classList.remove('fade-out');
       content.classList.add('fade-in');
       setTimeout(() => content.classList.remove('fade-in'), 400);
-    }, 300);
+    }, 50); // very short delay, so the logic isn’t broken
+
+    return; 
+  }
+
+  if(currently === modeKey){ 
+    setMode(null); 
+    return; 
+  }
+
+  localStorage.setItem('wg_mode', modeKey); 
+  applyModeTheme(modeKey);
+
+  // Animate content update
+  content.classList.add('fade-out');
+  setTimeout(() => {
+    buildTaskUI();
+    content.classList.remove('fade-out');
+    content.classList.add('fade-in');
+    setTimeout(() => content.classList.remove('fade-in'), 400);
+  }, 50); // very short delay
+}
 
     return; 
   }
