@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Calories — FitnessSphere</title>
+<meta name="theme-color" content="#2ed3a8" />
+<link rel="preload" href="fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+<!-- If you have Font Awesome local CSS, include it here. Otherwise icons use emoji fallbacks. -->
+<!-- <link rel="stylesheet" href="all.min.css"> -->
+
+<style>
+  :root{
+    --mint-400:#5ce7bd; --mint-500:#2ed3a8;
+    --bg:#09121d; --card: rgba(15,23,42,.75);
+    --text:#e6f6f0; --muted:#a7c3bb; --radius:18px; --shadow:0 12px 30px rgba(0,0,0,.35);
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; background:
+    radial-gradient(1000px 500px at 0% 0%, rgba(46,211,168,.09), transparent 60%),
+    radial-gradient(900px 400px at 100% 10%, rgba(16,147,122,.06), transparent 60%),
+    linear-gradient(180deg,#0a1220 0%,#09121d 100%);
+    color:var(--text);
+  }
+  .container{width:min(1160px,94vw); margin:0 auto; padding:18px}
+  header{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+  .brand{display:flex;align-items:center;gap:.6rem}
+  .brand img{width:36px;height:36px;border-radius:10px;object-fit:cover}
+  h1{margin:.15rem 0 .6rem;font-size:1.7rem;font-weight:900}
+  p.lead{color:var(--muted);margin:0 0 12px}
+  .tabs{display:flex;gap:.5rem;margin:10px 0}
+  .tab{padding:.6rem .9rem;border-radius:999px;background:rgba(255,255,255,.03);cursor:pointer;font-weight:700}
+  .tab.active{background:linear-gradient(180deg,var(--mint-400),var(--mint-500)); color:#05261e}
+  .grid{display:grid;gap:12px}
+  @media(min-width:1000px){ .cols{grid-template-columns:1.2fr .8fr} }
+
+  .card{background:linear-gradient(180deg, rgba(16,23,42,.66), rgba(16,23,42,.45)); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.04)}
+  .input, select{width:100%;padding:.8rem .9rem;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:var(--text);outline:none}
+  .row{display:flex;gap:8px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem .95rem;border-radius:999px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,var(--mint-400),var(--mint-500));color:#05261e;font-weight:800;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--text)}
+  .photo-wrap{display:grid;gap:8px}
+  .cam{aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#07111a;border:1px solid rgba(255,255,255,.04);display:grid;place-items:center;position:relative}
+  video, canvas{width:100%;height:100%;object-fit:cover}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .loader{display:none;align-items:center;gap:.6rem}
+  .loader.show{display:inline-flex}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--mint-400);animation:b 1.2s infinite ease-in-out}
+  @keyframes b{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+  .detections{display:grid;gap:8px;margin-top:10px}
+  .det{display:grid;grid-template-columns: 1fr auto;gap:8px;align-items:center;padding:8px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03)}
+  .det .meta{display:flex;flex-direction:column;gap:4px}
+  .slider{width:220px}
+  .table{width:100%;border-collapse:collapse;margin-top:12px}
+  .table th,.table td{padding:.5rem;text-align:left;border-bottom:1px dashed rgba(255,255,255,.06)}
+  .helper{color:var(--muted);font-size:.92rem}
+  .toast{position:fixed;right:16px;bottom:18px;background:rgba(8,12,16,.95);padding:10px 14px;border-radius:10px;display:none}
+  .toast.show{display:block}
+  .skeleton{background:linear-gradient(90deg, rgba(255,255,255,.04), rgba(255,255,255,.08), rgba(255,255,255,.04));background-size:200% 100%;animation:sk 1.2s linear infinite; width:96px;height:96px;border-radius:10px}
+  @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .small{font-size:.92rem;color:var(--muted)}
+  .badge{padding:.25rem .5rem;border-radius:8px;background:rgba(255,255,255,.03);font-weight:800}
+  /* responsiveness */
+  @media(max-width:1000px){ .cols{grid-template-columns:1fr} .slider{width:140px} }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header style="display:flex;align-items:center;justify-content:space-between">
+      <div class="brand">
+        <img src="logo.png" alt="FitnessSphere logo" />
+        <div>
+          <div style="font-weight:900">FitnessSphere</div>
+          <div class="small">Calories & Food — Photo & Manual</div>
+        </div>
+      </div>
+      <div>
+        <a href="index.html" class="small" style="color:var(--muted);text-decoration:none">Home</a>
+      </div>
+    </header>
+
+    <main style="margin-top:10px">
+      <h1>Calories — Photo to Calories (Improved)</h1>
+      <p class="lead">Use the camera to capture your plate. The system will detect items, estimate portions, and fetch nutrition. Adjust portions if needed. For best results: place the plate on a contrasting background, avoid multiple plates, and optionally include a reference object (coin, card) for scale.</p>
+
+      <div class="tabs" role="tablist">
+        <div class="tab active" data-tab="manual">Manual</div>
+        <div class="tab" data-tab="photo">Photo</div>
+      </div>
+
+      <div class="grid cols" style="margin-top:12px">
+        <!-- LEFT: MAIN PANEL -->
+        <section class="card">
+          <!-- MANUAL -->
+          <div id="manualPane">
+            <h3>Add ingredients / manual</h3>
+            <div class="row" style="margin-top:8px">
+              <input id="foodSearch" class="input" placeholder="Type food (autocomplete finds global foods)"/>
+              <input id="qtyInput" class="input" style="width:120px" placeholder="grams" type="number" value="100"/>
+              <button class="btn" id="addManual">Add</button>
+            </div>
+            <div id="manualList" style="margin-top:10px"></div>
+            <table class="table" id="manualTable" style="margin-top:10px">
+              <thead><tr><th>Item</th><th>Qty (g)</th><th>kcal</th><th>P</th><th>C</th><th>F</th></tr></thead>
+              <tbody id="manualTableBody"><tr><td colspan="6" class="helper">Add some items.</td></tr></tbody>
+            </table>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn" id="saveMeal">Save Meal</button>
+              <button class="btn ghost" id="exportCSV">Export CSV</button>
+              <button class="btn ghost" id="clearManual">Clear</button>
+            </div>
+          </div>
+
+          <!-- PHOTO -->
+          <div id="photoPane" style="display:none">
+            <h3>Photo mode</h3>
+            <div class="photo-wrap">
+              <div class="cam" id="cam">
+                <video id="video" autoplay playsinline muted style="display:none"></video>
+                <canvas id="canvas" style="display:none"></canvas>
+                <div id="photoPreview" style="width:100%;height:100%;display:grid;place-items:center;">
+                  <div class="small helper">No photo yet</div>
+                </div>
+              </div>
+
+              <div class="controls">
+                <button class="btn" id="openCam">Open Camera</button>
+                <button class="btn" id="snap">Capture</button>
+                <label class="btn ghost" for="filePick">Upload</label>
+                <input id="filePick" type="file" accept="image/*" style="display:none">
+                <div class="loader" id="loader"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="small helper">Analyzing…</span></div>
+              </div>
+
+              <div id="photoInfo" class="small" style="margin-top:6px">Tip: If detection is wrong, adjust portion sliders or delete items you don't want.</div>
+
+              <div class="detections" id="detections"></div>
+
+              <div style="margin-top:10px; display:flex; gap:8px">
+                <button class="btn" id="addAllToMeal">Add all to meal</button>
+                <button class="btn ghost" id="clearPhoto">Clear photo</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: Summary -->
+        <aside class="card">
+          <h3>Totals & quick actions</h3>
+          <div class="small helper" id="summaryInfo">No items yet</div>
+
+          <div style="margin-top:8px">
+            <table class="table">
+              <thead><tr><th>Item</th><th class="small">Qty</th><th class="small">kcal</th></tr></thead>
+              <tbody id="summaryBody"><tr><td colspan="3" class="helper">Add items from manual or photo mode.</td></tr></tbody>
+              <tfoot><tr class="badge"><td><b>Total</b></td><td id="totalQty">—</td><td id="totalKcal">0</td></tr></tfoot>
+            </table>
+          </div>
+
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="exportMeal">Export CSV</button>
+            <button class="btn ghost" id="saveHistory">Save to History</button>
+            <button class="btn ghost" id="viewHistory">View History</button>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4>History</h4>
+            <div id="history" class="small helper">No saved meals.</div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+<script>
+/* ================== CONFIG - PASTE YOUR KEYS HERE ==================
+ - CALORIEMAMA_KEY: image -> food recognition (best if available)
+ - GOOGLE_VISION_KEY: Google Cloud Vision REST key (alternative for object detection)
+ - EDAMAM_APP_ID & EDAMAM_APP_KEY: nutrition search (preferred)
+ - If EDAMAM not provided, we use OpenFoodFacts (no key) for wide coverage.
+ - NOTE: For Vision/CalorieMama you might need a server proxy to hide API keys for production (CORS).
+*/
+const CONFIG = {
+  CALORIEMAMA_KEY: "",       // e.g. "Bearer <KEY>" or API key per provider docs
+  GOOGLE_VISION_KEY: "",     // e.g. "AIza...." (REST API key)
+  EDAMAM_APP_ID: "",         // Edamam Nutrition API
+  EDAMAM_APP_KEY: "",
+};
+
+/* ================== UTILITIES ================== */
+const $ = (s, r=document)=> r.querySelector(s);
+const $$ = (s, r=document)=> Array.from(r.querySelectorAll(s));
+const toast = (msg)=> { const t=$('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=> t.classList.remove('show'), 1800); };
+const debounce = (fn, ms=250)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
+
+/* ================== STATE ================== */
+let MODE = 'manual'; // or 'photo'
+let manualItems = []; // {name, grams, kcal, p,c,f, source}
+let detections = []; // {name, confidence, estGrams, kcal100, p100, c100, f100}
+let history = JSON.parse(localStorage.getItem('fs_cal_history') || "[]");
+
+/* ================== UI HOOKS ================== */
+$$('.tab').forEach(t=>{
+  t.addEventListener('click', ()=> {
+    $$('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    MODE = t.dataset.tab;
+    $('#manualPane').style.display = MODE==='manual' ? '' : 'none';
+    $('#photoPane').style.display = MODE==='photo' ? '' : 'none';
+  });
+});
+
+/* ================== MANUAL MODE: autocomplete & add ================== */
+/* We provide dynamic autocomplete backed by Edamam/OpenFoodFacts (fallback) */
+let localSeed = [
+  // compact seed - extended via search
+  {name:"Boiled rice", kcal100:130, p:2.7, c:28, f:0.3},
+  {name:"Paneer", kcal100:296, p:18, c:6.1, f:22},
+  {name:"Banana", kcal100:89, p:1.1, c:23, f:0.3},
+  {name:"Apple", kcal100:52, p:0.3, c:14, f:0.2},
+  {name:"Egg (boiled)", kcal100:155, p:13, c:1.1, f:11}
+];
+function formatNut(obj){ return {kcal: Math.round(obj.calories||obj.kcal100||0), p: +(obj.protein_g||obj.p||0), c: +(obj.carbohydrates_total_g||obj.c||0), f: +(obj.fat_total_g||obj.f||0)}; }
+
+$('#foodSearch').addEventListener('input', debounce(async (e)=>{
+  const q = e.target.value.trim();
+  if(!q) return;
+  // Try Edamam first if keys present
+  let results = [];
+  try{
+    if(CONFIG.EDAMAM_APP_ID && CONFIG.EDAMAM_APP_KEY){
+      const url = new URL('https://api.edamam.com/api/food-database/v2/parser');
+      url.searchParams.set('app_id', CONFIG.EDAMAM_APP_ID);
+      url.searchParams.set('app_key', CONFIG.EDAMAM_APP_KEY);
+      url.searchParams.set('ingr', q);
+      const r = await fetch(url);
+      const j = await r.json();
+      results = (j.hints||[]).slice(0,8).map(h => ({
+        name: h.food.label,
+        kcal100: h.food.nutrients.ENERC_KCAL || 0,
+        p: h.food.nutrients.PROCNT || 0,
+        c: h.food.nutrients.CHOCDF || 0,
+        f: h.food.nutrients.FAT || 0
+      }));
+    } else {
+      // fallback to OpenFoodFacts search
+      const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=12&fields=product_name,nutriments`;
+      const r = await fetch(url);
+      const j = await r.json();
+      results = (j.products||[]).slice(0,10).map(p=>{
+        const nut = p.nutriments || {};
+        return { name: p.product_name || q, kcal100: +(nut['energy-kcal_100g']||nut.energy_100g||0), p: +(nut.proteins_100g||0), c: +(nut.carbohydrates_100g||0), f: +(nut.fat_100g||0) };
+      });
+    }
+  }catch(err){
+    console.warn('autocomplete search failed', err);
+  }
+  // show simple suggestion list
+  const dd = document.createElement('div'); dd.style.position='absolute'; dd.style.zIndex=9; dd.style.background='rgba(15,23,42,.95)'; dd.style.border='1px solid rgba(255,255,255,.06)'; dd.style.width='100%';
+  dd.style.maxHeight='240px'; dd.style.overflow='auto'; dd.style.borderRadius='8px';
+  dd.innerHTML = results.length ? results.map(r=>`<div style="padding:.6rem;cursor:pointer" data-json='${JSON.stringify(r)}'>${r.name} <span style="float:right" class="small helper">${Math.round(r.kcal100)} kcal/100g</span></div>`).join('') : '<div style="padding:.6rem" class="small helper">No matches</div>';
+  // remove old dd
+  const old = document.querySelector('.sugg-box'); if(old) old.remove();
+  dd.className='sugg-box';
+  $('#foodSearch').parentElement.style.position='relative';
+  $('#foodSearch').parentElement.appendChild(dd);
+  $$('.sugg-box div').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const d = JSON.parse(el.dataset.json || '{}');
+      $('#foodSearch').value = d.name;
+      $('#qtyInput').value = 100;
+      dd.remove();
+    });
+  });
+}));
+
+$('#addManual').addEventListener('click', async ()=>{
+  const name = $('#foodSearch').value.trim();
+  const grams = Math.max(1, Math.round( +$('#qtyInput').value || 100 ));
+  if(!name) return toast('Type a food name');
+  // lookup nutrition
+  const nut = await fetchNutritionByName(name);
+  const p = nut.p || 0, c = nut.c || 0, f = nut.f || 0, kcal100 = nut.kcal || nut.kcal100 || 0;
+  const item = { name, grams, kcal: (kcal100 * grams / 100), p: p*grams/100, c: c*grams/100, f: f*grams/100, source: nut.source||'search' };
+  manualItems.push(item);
+  renderManual();
+  $('#foodSearch').value=''; $('#qtyInput').value=100;
+});
+
+function renderManual(){
+  const body = $('#manualTableBody');
+  if(manualItems.length===0){ body.innerHTML = '<tr><td colspan="6" class="helper">Add some items.</td></tr>'; updateSummary(); return; }
+  body.innerHTML = manualItems.map((it,idx)=> `<tr>
+    <td>${it.name}</td>
+    <td>${it.grams}g</td>
+    <td>${Math.round(it.kcal)}</td>
+    <td>${Math.round(it.p)}g</td>
+    <td>${Math.round(it.c)}g</td>
+    <td>${Math.round(it.f)}g</td>
+  </tr>`).join('');
+  updateSummary();
+}
+$('#clearManual').addEventListener('click', ()=>{ manualItems=[]; renderManual(); });
+
+/* ================== SUMMARY ================== */
+function updateSummary(){
+  const body = $('#summaryBody');
+  if(manualItems.length===0 && detections.length===0){ body.innerHTML = '<tr><td colspan="3" class="helper">Add items from manual or photo mode.</td></tr>'; $('#summaryInfo').textContent='No items yet'; $('#totalQty').textContent='—'; $('#totalKcal').textContent='0'; return; }
+  const rows = [...manualItems.map(it=> ({name:it.name, grams:it.grams, kcal:it.kcal})),
+                ...detections.map(d=> ({name:d.name, grams: Math.round(d.estGrams||0), kcal: Math.round((d.kcal100||0) * (d.estGrams||0)/100)}))];
+  body.innerHTML = rows.map(r=> `<tr><td>${r.name}</td><td>${r.grams}g</td><td>${Math.round(r.kcal)}</td></tr>`).join('');
+  const totalK = rows.reduce((s,r)=> s + (+r.kcal||0), 0);
+  const totalQ = rows.reduce((s,r)=> s + (+r.grams||0), 0);
+  $('#totalQty').textContent = totalQ + 'g';
+  $('#totalKcal').textContent = Math.round(totalK);
+  $('#summaryInfo').textContent = `${rows.length} item(s). Click 'Save to History' to keep this meal.`;
+}
+
+/* ================== HISTORY ================== */
+$('#saveHistory').addEventListener('click', ()=>{
+  const entries = [...manualItems.map(it=>({name:it.name, grams:it.grams, kcal:Math.round(it.kcal)})),
+                   ...detections.map(d=>({name:d.name, grams:Math.round(d.estGrams||0), kcal: Math.round((d.kcal100||0)*(d.estGrams||0)/100)}))];
+  if(entries.length===0) return toast('No items to save');
+  const record = {id:crypto.randomUUID(), at: (new Date()).toISOString(), items: entries};
+  history.unshift(record); history = history.slice(0,30); localStorage.setItem('fs_cal_history', JSON.stringify(history));
+  toast('Saved to history');
+  renderHistory();
+});
+$('#viewHistory').addEventListener('click', ()=> renderHistory());
+function renderHistory(){
+  $('#history').innerHTML = history.length ? history.map(h=> {
+    return `<div style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.04); margin-bottom:6px"><b>${new Date(h.at).toLocaleString()}</b><div class="small">${h.items.length} items — ${h.items.reduce((s,i)=> s+i.kcal,0)} kcal</div></div>`;
+  }).join('') : '<div class="helper small">No saved meals yet.</div>';
+}
+
+/* ================== EXPORT CSV ================== */
+$('#exportCSV').addEventListener('click', ()=>{
+  const rows = [['Name','Grams','kcal']];
+  manualItems.forEach(it=> rows.push([it.name,it.grams, Math.round(it.kcal)]));
+  detections.forEach(d=> rows.push([d.name, Math.round(d.estGrams||0), Math.round((d.kcal100||0)*(d.estGrams||0)/100)]));
+  const csv = rows.map(r=> r.map(c=> `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'}); const a=document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='meal.csv'; a.click();
+});
+$('#exportMeal').addEventListener('click', ()=> $('#exportCSV').click());
+
+/* ================== PHOTO MODE: CAMERA & UPLOAD ================== */
+const video = $('#video'), canvas = $('#canvas'), photoPreview = $('#photoPreview'), loader = $('#loader');
+let stream = null;
+
+$('#openCam').addEventListener('click', async ()=>{
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    video.srcObject = stream;
+    video.style.display = 'block';
+    photoPreview.style.display = 'none';
+    canvas.style.display = 'none';
+  }catch(e){ console.error(e); toast('Camera blocked — use upload'); }
+});
+
+$('#filePick').addEventListener('change', async (e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  const url = URL.createObjectURL(f);
+  await showPreviewFromURL(url);
+  await analyzeBlob(f);
+});
+
+$('#snap').addEventListener('click', ()=>{
+  if(!stream){ toast('Open camera first or Upload'); return; }
+  const w = video.videoWidth, h = video.videoHeight;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d'); ctx.drawImage(video, 0, 0, w, h);
+  canvas.toBlob(async (blob)=> {
+    const url = URL.createObjectURL(blob);
+    await showPreviewFromURL(url);
+    await analyzeBlob(blob);
+  }, 'image/jpeg', 0.92);
+});
+
+async function showPreviewFromURL(url){
+  photoPreview.innerHTML = '';
+  const img = document.createElement('img'); img.src = url; img.style.maxWidth='100%'; img.style.maxHeight='100%'; img.style.objectFit='cover';
+  photoPreview.appendChild(img); photoPreview.style.display='grid';
+  video.style.display='none';
+}
+
+/* ================== ANALYSIS PIPELINE ================== */
+
+/** analyzeBlob(blob)
+ * 1) Try CalorieMama (if key)
+ * 2) Else try Google Vision (if key)
+ * 3) Else run client-side segmentation + label detection
+ * For each detected item we attempt to resolve nutrition via Edamam or OpenFoodFacts.
+ */
+async function analyzeBlob(blob){
+  loader.classList.add('show');
+  detections = [];
+  $('#detections').innerHTML = '';
+  try{
+    if(CONFIG.CALORIEMAMA_KEY){
+      console.log('Using CalorieMama pipeline');
+      await analyzeViaCalorieMama(blob);
+    } else if(CONFIG.GOOGLE_VISION_KEY){
+      console.log('Using Google Vision pipeline');
+      await analyzeViaGoogleVision(blob);
+    } else {
+      console.log('Using client-side segmentation pipeline');
+      await analyzeViaSegmentation(blob);
+    }
+    // render detections UI
+    renderDetections();
+  }catch(err){
+    console.error(err);
+    toast('Error analyzing photo');
+  }finally{
+    loader.classList.remove('show');
+    updateSummary();
+  }
+}
+
+/* --------- Provider: CalorieMama (recommended commercial API) ---------
+  This block assumes CalorieMama-like API that accepts image and returns
+  detected foods with calories and (ideally) portion/serving info.
+  Replace endpoint and parsing with provider docs.
+--------------------------------------------------------------------- */
+async function analyzeViaCalorieMama(blob){
+  // Example pseudo-code; adapt to your provider.
+  const fd = new FormData(); fd.append('image', blob, 'photo.jpg');
+  const res = await fetch('https://api.caloriemama.ai/food_recognition', {
+    method:'POST',
+    headers: { 'Authorization': CONFIG.CALORIEMAMA_KEY }, // per provider
+    body: fd
+  });
+  if(!res.ok) throw new Error('CalorieMama API failed: ' + res.status);
+  const j = await res.json();
+  // Expected: j.results = [{name, confidence, servings: [{qty,unit,grams}], nutrition:{cal_per_100g,protein,fat,carbs} }, ...]
+  (j.results || []).forEach(r => {
+    const nutrition = r.nutrition || {};
+    const kcal100 = nutrition.calories_per_100g || nutrition.cal_per_100g || nutrition.calories || 0;
+    const p100 = nutrition.protein_g_per_100g || nutrition.protein_g || 0;
+    const c100 = nutrition.carbs_g_per_100g || nutrition.carbs_g || 0;
+    const f100 = nutrition.fat_g_per_100g || nutrition.fat_g || 0;
+    // estimate grams: prefer returned serving grams else default to 150g.
+    const estGrams = (r.servings && r.servings[0] && r.servings[0].grams) ? r.servings[0].grams : (r.area_fraction ? r.area_fraction * 400 : 150);
+    detections.push({ name: r.name || 'Detected item', confidence: r.confidence || 0.6, estGrams, kcal100, p100, c100, f100, source:'caloriemama' });
+  });
+}
+
+/* --------- Provider: Google Cloud Vision (labels + object localization) ---------
+   - We send base64 image to Vision API (REST).
+   - Vision may return localizedObjectAnnotations with boundingBoxes.
+   - Use bounding boxes to measure pixel area -> relative size.
+------------------------------------------------------------------------- */
+async function analyzeViaGoogleVision(blob){
+  // read as base64
+  const b64 = await blobToBase64(blob);
+  const body = {
+    requests: [
+      { image: { content: b64.split(',')[1] },
+        features: [
+          { type: 'OBJECT_LOCALIZATION', maxResults: 10 },
+          { type: 'LABEL_DETECTION', maxResults: 10 },
+          { type: 'WEB_DETECTION', maxResults: 5 }
+        ]
+      }
+    ]
+  };
+  const url = `https://vision.googleapis.com/v1/images:annotate?key=${CONFIG.GOOGLE_VISION_KEY}`;
+  const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  if(!res.ok) throw new Error('Vision API failed: ' + res.status);
+  const j = await res.json();
+  const resp = j.responses && j.responses[0];
+  const objs = (resp.localizedObjectAnnotations || []).filter(o => o.name && isFoodLabel(o.name));
+  if(objs.length===0){
+    // fallback: try labels to guess foods
+    const labels = (resp.labelAnnotations || []).map(l=> l.description).filter(isFoodLabel);
+    for(const label of labels.slice(0,5)){
+      await tryResolveLabel(label, 0.6, null);
+    }
+    return;
+  }
+  // compute area fraction for each object
+  for(const o of objs){
+    // boundingPoly has normalized vertices -> compute area roughly
+    const bbox = o.boundingPoly?.normalizedVertices || [];
+    const area = polygonArea(bbox);
+    await tryResolveLabel(o.name, o.score || 0.65, area);
+  }
+}
+
+/* --------- Client-side segmentation fallback ----------
+   - K-means color clustering to find largest non-background cluster.
+   - Compute pixel-area fraction -> estimate grams.
+   - Use a simple edge: if no sizable cluster found -> no detection.
+------------------------------------------------------- */
+async function analyzeViaSegmentation(blob){
+  // load image into canvas
+  const img = await createImageBitmap(blob);
+  const W = Math.min(800, img.width);
+  const scale = W / img.width;
+  const H = Math.round(img.height * scale);
+  const c = document.createElement('canvas'); c.width=W; c.height=H;
+  const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, W, H);
+  const imgd = ctx.getImageData(0,0,W,H);
+  // downsample pixels for clustering
+  const pixels = [];
+  for(let y=0;y<H;y+=2){
+    for(let x=0;x<W;x+=2){
+      const i=(y*W + x)*4;
+      pixels.push([imgd.data[i], imgd.data[i+1], imgd.data[i+2]]);
+    }
+  }
+  // simple kmeans k=3
+  const k = 3;
+  const centers = [];
+  for(let i=0;i<k;i++) centers.push(pixels[Math.floor(Math.random()*pixels.length)]);
+  for(let iter=0; iter<8; iter++){
+    const buckets = Array.from({length:k}, ()=>[]);
+    for(const p of pixels){
+      let best=0, bestd=Infinity;
+      for(let i=0;i<k;i++){
+        const c=centers[i]; const d=((p[0]-c[0])**2+(p[1]-c[1])**2+(p[2]-c[2])**2);
+        if(d<bestd){ best=i; bestd=d; }
+      }
+      buckets[best].push(p);
+    }
+    for(let i=0;i<k;i++){
+      if(buckets[i].length===0) continue;
+      const mean = buckets[i].reduce((s,p)=> [s[0]+p[0], s[1]+p[1], s[2]+p[2]], [0,0,0]).map(v=>v/buckets[i].length);
+      centers[i]=mean;
+    }
+  }
+  // classify full image to buckets, but skip near-white cluster (background)
+  const counts = new Array(k).fill(0);
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      const idx=(y*W + x)*4;
+      const p = [imgd.data[idx], imgd.data[idx+1], imgd.data[idx+2]];
+      let best=0,bestd=Infinity;
+      for(let i=0;i<k;i++){
+        const c=centers[i]; const d=((p[0]-c[0])**2+(p[1]-c[1])**2+(p[2]-c[2])**2);
+        if(d<bestd){ best=i; bestd=d; }
+      }
+      counts[best]++;
+    }
+  }
+  // choose largest non-white cluster
+  const whiteness = centers.map(c => (c[0]+c[1]+c[2]) / (3*255));
+  let candidateIndex = -1;
+  let candidateCount = 0;
+  for(let i=0;i<k;i++){
+    if(whiteness[i] > 0.92) continue;
+    if(counts[i] > candidateCount){ candidateCount = counts[i]; candidateIndex = i; }
+  }
+  if(candidateIndex===-1 || candidateCount < (W*H*0.02)){ // too small
+    // nothing detected
+    toast('No distinct food region detected.');
+    return;
+  }
+  const fraction = candidateCount / (W*H);
+  // heuristic: plate area ~ occupies 40% of image; food fraction -> grams
+  const plateEquivalentGrams = 400; // default plate full = 400g
+  const estGrams = Math.max(20, Math.round(fraction * plateEquivalentGrams * 2.2)); // scale factor
+  // Try to guess food name by sampling center pixel and calling a label search via OpenFoodFacts by color? fallback to "Food item"
+  // We'll attempt a label guess via simple OCR-free: ask OpenFoodFacts for common items found in query - but we have no query; so propose "Food item" and let user change.
+  detections.push({ name: 'Detected food', confidence: 0.55, estGrams, kcal100: 150, p100:5, c100:20, f100:6, source: 'segmentation' });
+  // note: we still attempt a label guess from google/language? skipping here - user can adjust name manually.
+}
+
+/* -------------- helpers used by Vision flow -------------- */
+function polygonArea(vertices){
+  if(!vertices || vertices.length<3) return 0;
+  // vertices are normalized {x,y}
+  let area = 0;
+  for(let i=0;i<vertices.length;i++){
+    const a = vertices[i], b = vertices[(i+1)%vertices.length];
+    const ax = (a.x||0), ay = (a.y||0), bx=(b.x||0), by=(b.y||0);
+    area += (ax*by - bx*ay);
+  }
+  return Math.abs(area)/2; // normalized fraction of image
+}
+function isFoodLabel(name){
+  const foodWords = ['rice','burger','pizza','salad','noodle','soup','cake','bread','cookie','pasta','chicken','egg','fish','steak','apple','banana','sandwich','wrap','curry','sushi','taco','burrito','omelette','pancake','cereal','yogurt','cheese'];
+  const n = String(name).toLowerCase();
+  return foodWords.some(w=> n.includes(w));
+}
+async function tryResolveLabel(label, score, areaFraction){
+  // search nutrition for label and push detection
+  const nut = await fetchNutritionByName(label);
+  const estGrams = Math.round( (areaFraction || 0.1) * 400 );
+  const kcal100 = nut.kcal || nut.kcal100 || 150;
+  detections.push({ name: label, confidence: score, estGrams, kcal100, p100: nut.p||0, c100: nut.c||0, f100: nut.f||0, source: nut.source||'search' });
+}
+
+/* ================== NUTRITION LOOKUP: Edamam -> OpenFoodFacts fallback ================== */
+async function fetchNutritionByName(query){
+  query = String(query).trim();
+  // Edamam: Food Database (parser) returns food with nutrients per 100g
+  try{
+    if(CONFIG.EDAMAM_APP_ID && CONFIG.EDAMAM_APP_KEY){
+      const url = new URL('https://api.edamam.com/api/food-database/v2/parser');
+      url.searchParams.set('app_id', CONFIG.EDAMAM_APP_ID);
+      url.searchParams.set('app_key', CONFIG.EDAMAM_APP_KEY);
+      url.searchParams.set('ingr', query);
+      const res = await fetch(url);
+      if(res.ok){
+        const j = await res.json();
+        const h = (j.hints || [])[0] || j.parsed?.[0];
+        if(h && h.food){
+          const nut = h.food.nutrients || {};
+          return { kcal: nut.ENERC_KCAL || 0, p: nut.PROCNT||0, c: nut.CHOCDF||0, f: nut.FAT||0, source:'edamam' };
+        }
+      }
+    }
+  }catch(e){ console.warn('Edamam search failed', e); }
+
+  // fallback: OpenFoodFacts search (no key)
+  try{
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=6&fields=product_name,nutriments,serving_size`;
+    const r = await fetch(url);
+    if(r.ok){
+      const j = await r.json();
+      const p = (j.products||[]).find(x => x.nutriments && (x.nutriments['energy-kcal_100g'] || x.nutriments.energy_100g));
+      if(p){
+        const n = p.nutriments || {};
+        return { kcal: +(n['energy-kcal_100g'] || n.energy_100g || 0), p: +(n.proteins_100g || 0), c: +(n.carbohydrates_100g || 0), f: +(n.fat_100g || 0), source:'openfoodfacts' };
+      } else {
+        // If no products found, return approximate using localSeed lookup
+        const s = localSeed.find(x => x.name.toLowerCase().includes(query.toLowerCase()));
+        if(s) return { kcal: s.kcal100, p: s.p, c: s.c, f: s.f, source:'local' };
+      }
+    }
+  }catch(e){ console.warn('OpenFoodFacts lookup failed', e); }
+
+  // default fallback (generic)
+  return { kcal:150, p:5, c:20, f:7, source:'fallback' };
+}
+
+/* ================== render detections UI (with portion sliders) ================== */
+function renderDetections(){
+  const root = $('#detections'); root.innerHTML='';
+  if(detections.length===0){ root.innerHTML = '<div class="helper">No items detected. Try a clearer photo or include a reference object (card/coin) for scale.</div>'; return; }
+  detections.forEach((d, idx)=>{
+    const div = document.createElement('div'); div.className='det';
+    const grams = Math.round(d.estGrams || 150);
+    div.innerHTML = `<div class="meta">
+      <b contenteditable="true" class="det-name" data-idx="${idx}">${d.name}</b>
+      <div class="small helper">Confidence: ${Math.round((d.confidence||0)*100)}% • Source: ${d.source||'auto'}</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+        <div class="small">Portion:</div>
+        <input type="range" min="10" max="1500" step="5" class="slider" value="${grams}" data-idx="${idx}" />
+        <div class="small badge" id="g${idx}">${grams} g</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+      <div class="small helper">kcal/100g: ${Math.round(d.kcal100 || 0)}</div>
+      <div class="small helper">Est kcal: <b id="ek${idx}">${Math.round((d.kcal100||0) * (grams/100))}</b></div>
+      <button class="btn" data-add="${idx}">Add</button>
+    </div>`;
+    root.appendChild(div);
+  });
+  // bind events
+  $$('.slider').forEach(sl=>{
+    sl.addEventListener('input', (e)=>{
+      const i = +e.target.dataset.idx; const v = +e.target.value;
+      detections[i].estGrams = v;
+      $('#g'+i).textContent = v + ' g';
+      $('#ek'+i).textContent = Math.round((detections[i].kcal100||0)*(v/100));
+      updateSummary();
+    });
+  });
+  $$('#detections button[data-add]').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      const idx = +e.target.dataset.add;
+      const d = detections[idx];
+      const item = { name: d.name, grams: Math.round(d.estGrams||150), kcal: Math.round((d.kcal100||0)*(d.estGrams||0)/100), p: Math.round((d.p100||0)*(d.estGrams||0)/100), c: Math.round((d.c100||0)*(d.estGrams||0)/100), f: Math.round((d.f100||0)*(d.estGrams||0)/100), source:d.source };
+      manualItems.push(item);
+      renderManual();
+      toast('Added ' + d.name);
+    });
+  });
+  $$('.det-name').forEach(el=>{
+    el.addEventListener('input', (e)=> {
+      const idx = +e.target.dataset.idx;
+      detections[idx].name = e.target.textContent.trim();
+    });
+  });
+}
+
+/* Add all detected items to meal */
+$('#addAllToMeal').addEventListener('click', ()=>{
+  detections.forEach(d=>{
+    const grams = Math.round(d.estGrams||150);
+    const item = { name: d.name, grams, kcal: Math.round((d.kcal100||0) * grams / 100), p: Math.round((d.p100||0) * grams / 100), c: Math.round((d.c100||0) * grams / 100), f: Math.round((d.f100||0)*grams/100), source:d.source };
+    manualItems.push(item);
+  });
+  renderManual(); detections=[]; $('#detections').innerHTML=''; updateSummary(); toast('Added all detections');
+});
+
+/* Clear photo / detections */
+$('#clearPhoto').addEventListener('click', ()=> {detections=[]; $('#detections').innerHTML=''; photoPreview.innerHTML='<div class="small helper">No photo yet</div>'; updateSummary(); });
+
+/* ================== Helper: blob -> base64 ---------------- */
+function blobToBase64(blob){
+  return new Promise((res, rej)=>{
+    const r = new FileReader();
+    r.onload = ()=> res(r.result);
+    r.onerror = ()=> rej(new Error('convert fail'));
+    r.readAsDataURL(blob);
+  });
+}
+
+/* ================== Simple serverless: analyzeViaCalorieMama placeholder
+   If you have a working CalorieMama or similar API, the analyzeViaCalorieMama function above
+   will send the image and expect a JSON with nutrition per 100g and optionally serving grams.
+   If the provider returns values in different fields, adapt the parsing there.
+======================================================================= */
+
+/* ================== INITIALIZE small UI state and history ================== */
+renderManual();
+renderHistory();
+
+/* ================== Notes for you (setup & improvements) ==================
+  1) For best accuracy (food recognition + portion size), get a commercial image-recognition API:
+     - CalorieMama (or similar), Spoonacular image APIs, Clarifai food model, or Google AutoML custom model.
+     - These typically return detected items and often an estimated serving.
+     - Paste the API key in CONFIG.CALORIEMAMA_KEY and update the endpoint in analyzeViaCalorieMama().
+
+  2) For nutrition database (very large coverage):
+     - Edamam Nutrition API (id/key) is accurate and easy: add EDAMAM_APP_ID and EDAMAM_APP_KEY to CONFIG.
+     - If Edamam not available, the script uses OpenFoodFacts (no key) which has massive global coverage (often product-level).
+     - If you want guaranteed 1000s of common foods offline, you can import a JSON dataset and replace localSeed or cache search results.
+
+  3) Portion estimation improvements:
+     - Asking the user to include a reference object (coin, card) in one corner dramatically improves accuracy (you can auto-detect its size).
+     - Better: use stereo/depth camera or a server-side ML model trained on food segmentation. On-device segmentation here is heuristic and won't always be perfect.
+
+  4) CORS & keys:
+     - If an API requires server-side secrets, create a tiny server/proxy that holds your key (recommended for Google Vision). For testing you can use direct client-side keys but beware of exposure.
+
+  5) If you want, I can:
+     - Wire this page to a CalorieMama account (I'll show exact payload and parse).
+     - Add a "reference object" detector (card detection) to scale pixels -> grams.
+     - Build a downloadable offline JSON with 500+ common foods and ship it as a file to drop into the project (you asked for 500+ — I can prepare that list next).
+*/
+
+/* ================== Done ================== */
+console.log('Calories page loaded. CONFIG keys present:', {caloriemama: !!CONFIG.CALORIEMAMA_KEY, googlevision: !!CONFIG.GOOGLE_VISION_KEY, edamam: !!(CONFIG.EDAMAM_APP_ID && CONFIG.EDAMAM_APP_KEY)});
+</script>
+</body>
+</html>
