@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Exercises — FitnessSphere</title>
+<meta name="theme-color" content="#2ed3a8"/>
+
+<!-- USE LOCAL FONT AWESOME CSS (place all.min.css in same folder or adjust path) -->
+<link rel="preload" href="fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="all.min.css">
+
+<style>
+:root{
+  --mint-400:#5ce7bd; --mint-500:#2ed3a8; --bg:#09121d; --card: rgba(15,23,42,.75);
+  --text:#e6f6f0; --muted:#a7c3bb; --radius:18px; --shadow:0 12px 30px rgba(0,0,0,.35);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html,body{height:100%; margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:
+ radial-gradient(1000px 500px at 0% 0%, rgba(46,211,168,.09), transparent 60%),
+ radial-gradient(900px 400px at 100% 10%, rgba(16,147,122,.06), transparent 60%),
+ linear-gradient(180deg,#0a1220 0%,#09121d 100%); color:var(--text); }
+a{color:inherit}
+.container{width:min(1220px,94vw); margin:0 auto; padding:18px}
+
+.nav{position:sticky; top:0; z-index:60; backdrop-filter:blur(12px);
+ background:linear-gradient(180deg, rgba(15,23,42,.78), rgba(15,23,42,.4));
+ border-bottom:1px solid rgba(255,255,255,.04); }
+.nav__in{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:900}
+.brand img{width:36px; height:36px; border-radius:10px; object-fit:cover; box-shadow:0 8px 26px rgba(46,211,168,.14)}
+.nav__links{display:flex; gap:10px}
+.nav__links a{padding:8px 10px; border-radius:10px; color:var(--muted); text-decoration:none}
+.nav__links a.active, .nav__links a:hover{background:rgba(255,255,255,.03); color:var(--text)}
+
+.header{padding:28px 0 16px}
+.header .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(180deg,var(--mint-400),var(--mint-500)); color:#042f28; font-weight:800}
+.header h1{font-size:28px; margin:12px 0 6px; font-weight:900}
+.header p{color:var(--muted); margin:0 0 14px; max-width:76ch}
+
+.grid{display:grid; gap:12px}
+@media(min-width:1000px){ .grid-2{grid-template-columns:1.05fr .95fr} }
+
+.card{
+  background: linear-gradient(180deg, rgba(16,23,42,.66), rgba(16,23,42,.45));
+  border-radius:var(--radius); padding:12px; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.04);
+}
+
+.filters{display:grid; gap:10px; grid-template-columns: 1fr 1fr 1fr 1fr; margin-top:10px}
+@media(max-width:980px){ .filters{grid-template-columns:1fr 1fr} }
+
+.pills{display:flex; gap:8px; flex-wrap:wrap}
+.pill{padding:7px 10px; border-radius:999px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.04); cursor:pointer; font-weight:700}
+.pill.active{background:linear-gradient(180deg,var(--mint-400),var(--mint-500)); color:#05261e; border-color:transparent}
+
+.results{display:grid; gap:10px; margin-top:12px}
+@media(min-width:700px){ .results{grid-template-columns: 1fr 1fr} }
+
+.card--exercise{display:grid; grid-template-columns:96px 1fr; gap:10px; align-items:center; padding:10px; border-radius:14px; background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border:1px solid rgba(255,255,255,.03)}
+.thumb{width:96px;height:96px;border-radius:12px; background:#07111a; display:grid; place-items:center; overflow:hidden; position:relative}
+.thumb img{width:100%;height:100%;object-fit:cover; display:block; transition:transform .35s var(--ease)}
+.card--exercise:hover .thumb img{transform:scale(1.06)}
+.card--exercise b{display:block}
+.ex-meta{margin-top:6px; display:flex; gap:6px; flex-wrap:wrap}
+.ex-cta{margin-top:8px; display:flex; gap:6px; flex-wrap:wrap}
+.btn{display:inline-flex; align-items:center; gap:.5rem; padding:.6rem .8rem; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:linear-gradient(180deg,var(--mint-400),var(--mint-500)); color:#05261e; font-weight:800}
+.btn--ghost{background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.06)}
+
+.skeleton{background:linear-gradient(90deg, rgba(255,255,255,.04), rgba(255,255,255,.08), rgba(255,255,255,.04)); background-size:200% 100%; animation:sk 1.2s linear infinite; width:96px;height:96px;border-radius:12px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.rightRail{position:sticky; top:84px; height:calc(100vh - 100px); overflow:auto; display:flex; flex-direction:column; gap:12px}
+
+.builder-item{display:flex; align-items:center; gap:8px; padding:8px; border-radius:10px; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.03)}
+
+.toast{position:fixed; right:16px; bottom:18px; background:rgba(8,12,16,.95); padding:10px 14px; border-radius:10px; display:none}
+.toast.show{display:block}
+.kbd{font-family:ui-monospace,SFMono-Regular, Menlo, Monaco, Consolas, monospace; padding:4px 6px; border-radius:6px; background:rgba(255,255,255,.04)}
+
+small.helper{color:var(--muted); display:block; margin-top:8px}
+
+/* tiny helpers for icons fallback */
+.icon-fallback{width:40px;height:40px;display:grid;place-items:center;border-radius:8px;background:linear-gradient(180deg,var(--mint-400),var(--mint-500)); color:#042f28; font-weight:800}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="container nav__in">
+    <a class="brand" href="index.html"><img src="logo.png" alt="FitnessSphere logo"><span>FitnessSphere</span></a>
+    <nav class="nav__links">
+      <a href="weight-loss.html">Weight Loss</a>
+      <a href="weight-gain.html">Weight Gain</a>
+      <a href="calories.html">Calories</a>
+      <a href="exercises.html" class="active">Exercises</a>
+      <a href="premium.html">Premium</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="header">
+    <span class="chip">Massive library + Workout Builder</span>
+    <h1>Exercise Explorer</h1>
+    <p>Search, filter and preview hundreds of exercises by muscle, equipment and difficulty. Build workouts, save favourites — everything is responsive and optimized.</p>
+  </div>
+
+  <div class="grid grid-2">
+    <!-- LEFT -->
+    <section class="card">
+      <h3>Browse & filter</h3>
+
+      <div class="filters" style="margin-top:8px">
+        <div><label class="small">Search</label><input id="q" class="input" placeholder="e.g., push-up, squat, plank" /></div>
+        <div><label class="small">Primary muscle</label><select id="muscle" class="input"><option value="">Any</option></select></div>
+        <div><label class="small">Equipment</label><select id="equipment" class="input"><option value="">Any</option><option>Bodyweight</option><option>Dumbbell</option><option>Barbell</option><option>Kettlebell</option><option>Machine</option><option>Band</option></select></div>
+        <div><label class="small">Difficulty</label><select id="level" class="input"><option value="">Any</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+      </div>
+
+      <div style="margin-top:10px" class="pills" id="typePills">
+        <div class="pill active" data-type="">All</div>
+        <div class="pill" data-type="Strength">Strength</div>
+        <div class="pill" data-type="Cardio">Cardio</div>
+        <div class="pill" data-type="Mobility">Mobility</div>
+        <div class="pill" data-type="Stretch">Stretch</div>
+        <div class="pill" data-type="Yoga">Yoga</div>
+      </div>
+
+      <div class="hr" style="height:1px;background:rgba(255,255,255,.04); margin:10px 0"></div>
+      <small class="helper">Tip: click an exercise for details, press <span class="kbd">A</span> to add to builder and <span class="kbd">F</span> to favourite.</small>
+
+      <div class="results" id="results" aria-live="polite"></div>
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button class="btn btn--ghost" id="clearFilters">Clear</button>
+        <button class="btn btn--ghost" id="loadMore">Load more</button>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="rightRail">
+      <div class="card">
+        <h3>Workout builder</h3>
+        <div id="builder"></div>
+        <div class="hr" style="height:1px;background:rgba(255,255,255,.04); margin:10px 0"></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" id="startWorkout">Start workout</button>
+          <button class="btn btn--ghost" id="savePlan">Save</button>
+          <button class="btn btn--ghost" id="exportPlan">Export</button>
+          <button class="btn btn--ghost" id="clearPlan">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Favorites</h3>
+        <div id="faves" class="results"></div>
+      </div>
+
+      <div class="card">
+        <h3>Timer</h3>
+        <div style="display:flex; gap:10px; align-items:center">
+          <div style="font-weight:900; font-size:1.6rem" id="time">00:00</div>
+          <div style="flex:1">
+            <div style="height:10px; background:#0f1a26; border-radius:999px; overflow:hidden"><div id="timeBar" style="width:0%; height:100%; background:linear-gradient(90deg,var(--mint-400),var(--mint-500)); transition:width .25s var(--ease)"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:8px">
+          <input id="timerSec" class="input" type="number" min="5" step="5" value="60" style="width:110px"/>
+          <button class="btn btn--flat" id="timerStart">Start</button>
+          <button class="btn btn--ghost" id="timerPause">Pause</button>
+          <button class="btn btn--ghost" id="timerReset">Reset</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== Utilities ================== */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const toast = (msg)=>{ const t=$("#toast"); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1600); };
+
+/* ================== Local DB & State ================== */
+const MUSCLES = ["chest","back","shoulders","biceps","triceps","forearms","core","abs","obliques","glutes","quads","hamstrings","calves","full body","cardio","rear delts","traps","upper chest"];
+let DB = []; // will be seeded with LOCAL (see below)
+let page = 1, PAGE_SIZE = 24;
+let builder = JSON.parse(localStorage.getItem('fs_plan')||"[]");
+let favorites = JSON.parse(localStorage.getItem('fs_faves')||"[]");
+
+/* ================== Small curated local seed ================== */
+const LOCAL = [
+  {id:"push-up",name:"Push-Up",type:"Strength",level:"Beginner",equipment:"Bodyweight",primaryMuscles:["chest"],secondaryMuscles:["triceps","shoulders"],gif:"",instructions:["Hands under shoulders, body straight. Lower chest to near floor. Drive up."]},
+  {id:"squat-bw",name:"Bodyweight Squat",type:"Strength",level:"Beginner",equipment:"Bodyweight",primaryMuscles:["quads","glutes"],secondaryMuscles:["hamstrings"],gif:"",instructions:["Feet shoulder width, sit back and down, drive through heels."]},
+  {id:"plank",name:"Plank",type:"Mobility",level:"Beginner",equipment:"Bodyweight",primaryMuscles:["core"],secondaryMuscles:["glutes","shoulders"],gif:"",instructions:["Elbows under shoulders, body straight, hold."]},
+  {id:"deadlift-db",name:"Dumbbell Romanian Deadlift",type:"Strength",level:"Intermediate",equipment:"Dumbbell",primaryMuscles:["hamstrings","glutes"],secondaryMuscles:["back"],gif:"",instructions:["Hinge from hips, lower dumbbells to mid-shin, return."]},
+  {id:"burpee",name:"Burpee",type:"Cardio",level:"Intermediate",equipment:"Bodyweight",primaryMuscles:["full body"],secondaryMuscles:["cardio"],gif:"",instructions:["Squat, kick to plank, (push-up), jump up."]}
+  // ... expand as needed
+];
+
+/* ================== Populate muscle select ================== */
+MUSCLES.forEach(m=>{
+  const opt=document.createElement('option'); opt.value=m; opt.textContent=m[0].toUpperCase()+m.slice(1); $("#muscle").append(opt);
+});
+
+/* ================== Lazy image loader (IntersectionObserver) ================== */
+const imgObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting) return;
+    const img = entry.target;
+    const src = img.dataset.src;
+    if(!src){ img.classList.remove('skeleton'); img.innerHTML = '<div class="icon-fallback">🏋️</div>'; imgObserver.unobserve(img); return; }
+    // attach timeout for slow / failing images
+    let timedOut=false;
+    const to = setTimeout(()=>{
+      timedOut=true;
+      img.classList.remove('skeleton');
+      img.innerHTML = '<div class="icon-fallback">🏋️</div>';
+      imgObserver.unobserve(img);
+    }, 5000); // 5s fallback
+    const i = new Image();
+    i.loading = "eager";
+    i.src = src;
+    i.onload = ()=>{ if(timedOut) return; clearTimeout(to); img.classList.remove('skeleton'); img.innerHTML = ''; i.setAttribute('alt', img.dataset.alt||'preview'); i.style.width='100%'; i.style.height='100%'; i.style.objectFit='cover'; i.onerror = ()=> { img.classList.remove('skeleton'); img.innerHTML = '<div class="icon-fallback">🏋️</div>'; };
+      img.appendChild(i); imgObserver.unobserve(img);
+    };
+    i.onerror = ()=>{ if(timedOut) return; clearTimeout(to); img.classList.remove('skeleton'); img.innerHTML = '<div class="icon-fallback">🏋️</div>'; imgObserver.unobserve(img); };
+  });
+}, {rootMargin:'200px 0px 400px 0px', threshold:0.01});
+
+/* ================== Rendering helpers ================== */
+function cardHTML(ex){
+  // Use data-src for lazy loading; if ex.gif empty -> skeleton fallback
+  const gif = ex.gif || "";
+  const safeGif = gif ? gif : "";
+  const primary = ex.primaryMuscles ? ex.primaryMuscles.join(", ") : "";
+  const badges = `<span class="badge">${ex.type||'Type'}</span> ${ex.level?`<span class="badge">${ex.level}</span>`:''} ${ex.equipment?`<span class="badge">${ex.equipment}</span>`:''}`;
+  return `
+    <div class="card--exercise" data-id="${ex.id}">
+      <div class="thumb">
+        <div class="skeleton" data-alt="${ex.name}" data-src="${safeGif}"></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <b>${ex.name}</b>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn--flat fav">${isFav(ex.id) ? '★' : '☆'}</button>
+          </div>
+        </div>
+        <div class="ex-meta" style="margin-top:6px">${badges} <small style="opacity:.9">${primary}</small></div>
+        <div class="ex-cta">
+          <button class="btn add">Add</button>
+          <button class="btn btn--ghost details">Details</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function bindCardEvents(root=document){
+  $$('.card--exercise', root).forEach(card=>{
+    const id = card.dataset.id;
+    const ex = DB.find(x=> x.id === id);
+    if(!ex) return;
+    const add = card.querySelector('.add'); const details = card.querySelector('.details'); const fav = card.querySelector('.fav');
+    add?.addEventListener('click', ()=> addToBuilder(ex));
+    details?.addEventListener('click', ()=> showDetails(ex));
+    fav?.addEventListener('click', ()=>{ toggleFav(id); fav.textContent = isFav(id) ? '★' : '☆'; });
+    // lazy init thumb
+    const thumb = card.querySelector('.thumb .skeleton');
+    if(thumb){ thumb.dataset.src = ex.gif || ""; thumb.dataset.alt = ex.name; imgObserver.observe(thumb); }
+    card.tabIndex = 0;
+  });
+}
+
+/* ================== Faves & Builder ================== */
+function isFav(id){ return favorites.includes(id); }
+function toggleFav(id){
+  if(isFav(id)) favorites = favorites.filter(x=>x!==id);
+  else favorites.unshift(id);
+  favorites = Array.from(new Set(favorites)).slice(0,200);
+  localStorage.setItem('fs_faves', JSON.stringify(favorites));
+  render();
+  renderFaves();
+}
+function renderFaves(){
+  const root = $("#faves");
+  if(favorites.length===0){ root.innerHTML = `<div class="helper small">No favorites yet.</div>`; return; }
+  const list = DB.filter(x=> favorites.includes(x.id)).slice(0,12);
+  root.innerHTML = list.map(l => `<div class="card card--exercise" style="grid-template-columns:60px 1fr"><div class="thumb"><div class="skeleton" data-src="${l.gif||''}" data-alt="${l.name}"></div></div><div><b>${l.name}</b><div class="ex-meta small">${l.primaryMuscles?.join(',')||''}</div></div></div>`).join('');
+  bindCardEvents(root);
+}
+
+function addToBuilder(ex){
+  if(builder.find(b=>b.id===ex.id)){ toast("Already in builder"); return; }
+  builder.push({id:ex.id, name:ex.name, sets:3, reps:10, duration:0, rest:60});
+  localStorage.setItem('fs_plan', JSON.stringify(builder));
+  renderBuilder(); toast("Added to builder");
+}
+function renderBuilder(){
+  const root = $("#builder");
+  if(!builder.length){ root.innerHTML = `<div class="helper small">No exercises yet.</div>`; return; }
+  root.innerHTML = builder.map(b => `<div class="builder-item" data-id="${b.id}"><div style="flex:1"><b>${b.name}</b></div><div><input class="input sets" type="number" value="${b.sets}" style="width:64px"/></div><div><input class="input reps" type="number" value="${b.reps}" style="width:64px"/></div><div><button class="btn btn--ghost del">Remove</button></div></div>`).join('');
+  // bind controls
+  $$('.builder-item').forEach(el=>{
+    const id = el.dataset.id; const b = builder.find(x=>x.id===id);
+    el.querySelector('.del')?.addEventListener('click', ()=>{ builder = builder.filter(x=>x.id!==id); localStorage.setItem('fs_plan', JSON.stringify(builder)); renderBuilder(); });
+    el.querySelector('.sets')?.addEventListener('change', (e)=>{ b.sets = +e.target.value || 1; localStorage.setItem('fs_plan', JSON.stringify(builder)); });
+    el.querySelector('.reps')?.addEventListener('change', (e)=>{ b.reps = +e.target.value || 0; localStorage.setItem('fs_plan', JSON.stringify(builder)); });
+  });
+}
+
+/* ================== Details & Utilities ================== */
+function showDetails(ex){
+  const lines = (ex.instructions||[]).map(s=>`• ${s}`).join('\n');
+  const muscles = (ex.primaryMuscles||[]).concat(ex.secondaryMuscles||[]).join(', ');
+  alert(`${ex.name}\n\nType: ${ex.type || '—'}  Level: ${ex.level || '—'}  Equipment: ${ex.equipment || '—'}\nMuscles: ${muscles || '—'}\n\nForm:\n${lines || '—'}`);
+}
+
+/* ================== Render list based on filters ================== */
+function render(){
+  const query = ($("#q").value || "").toLowerCase().trim();
+  const muscle = $("#muscle").value;
+  const equip = $("#equipment").value;
+  const level = $("#level").value;
+  const type = ($('.pill.active', "#typePills")?.dataset?.type) || "";
+  const filtered = DB.filter(ex=>{
+    const qok = !query || ex.name.toLowerCase().includes(query) || (ex.instructions||[]).join(' ').toLowerCase().includes(query);
+    const mok = !muscle || (ex.primaryMuscles||[]).includes(muscle) || (ex.secondaryMuscles||[]).includes(muscle);
+    const eok = !equip || (ex.equipment||"").toLowerCase() === equip.toLowerCase();
+    const lok = !level || (ex.level||"").toLowerCase() === level.toLowerCase();
+    const tok = !type || (ex.type||"").toLowerCase() === type.toLowerCase();
+    return qok && mok && eok && lok && tok;
+  });
+  const slice = filtered.slice(0, PAGE_SIZE * page);
+  $("#results").innerHTML = slice.length ? slice.map(cardHTML).join('') : `<div class="helper">No matches. Try clearing filters.</div>`;
+  bindCardEvents($("#results"));
+  $("#loadMore").style.display = (filtered.length > slice.length) ? "inline-flex" : "none";
+}
+
+/* ================== Events & controls ================== */
+$("#q").addEventListener('input', debounce(()=>{ page = 1; render(); }, 200));
+$("#muscle").addEventListener('change', ()=>{ page=1; render(); });
+$("#equipment").addEventListener('change', ()=>{ page=1; render(); });
+$("#level").addEventListener('change', ()=>{ page=1; render(); });
+$("#typePills").addEventListener('click', (e)=>{ const p = e.target.closest('.pill'); if(!p) return; $$('.pill', "#typePills").forEach(x=>x.classList.remove('active')); p.classList.add('active'); page=1; render(); });
+$("#clearFilters").addEventListener('click', ()=>{ $("#q").value=''; $("#muscle").value=''; $("#equipment").value=''; $("#level").value=''; $$('.pill', "#typePills").forEach((x,i)=> x.classList.toggle('active', i===0)); page=1; render(); });
+$("#loadMore").addEventListener('click', ()=>{ page++; render(); });
+$("#startWorkout").addEventListener('click', ()=>{ if(!builder.length) return toast('Add exercises first'); toast('Workout started (simple flow)'); });
+$("#savePlan").addEventListener('click', ()=>{ localStorage.setItem('fs_plan', JSON.stringify(builder)); toast('Plan saved'); });
+$("#exportPlan").addEventListener('click', ()=>{ const csv = builder.map(b=> [b.name,b.sets,b.reps].join(',')).join('\n'); const blob = new Blob([csv], {type:'text/csv'}); const a=document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'workout.csv'; a.click(); });
+$("#clearPlan").addEventListener('click', ()=>{ builder=[]; localStorage.removeItem('fs_plan'); renderBuilder(); toast('Cleared'); });
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key.toLowerCase()==='a' && document.activeElement?.closest('.card--exercise')) {
+    const id = document.activeElement.closest('.card--exercise').dataset.id; const ex = DB.find(x=>x.id===id); if(ex) addToBuilder(ex);
+  }
+  if(e.key.toLowerCase()==='f' && document.activeElement?.closest('.card--exercise')) {
+    const id = document.activeElement.closest('.card--exercise').dataset.id; toggleFav(id); renderFaves();
+  }
+});
+
+/* ================== Boot: seed DB and render ================== */
+(function boot(){
+  DB = LOCAL.slice(); // if you later fetch APIs, merge here
+  // ensure minimal fields exist
+  DB = DB.map(x=>({
+    id: x.id || slug(x.name),
+    name: x.name,
+    type: x.type || 'Strength',
+    level: x.level || '',
+    equipment: x.equipment || '',
+    primaryMuscles: x.primaryMuscles || x.primary || [],
+    secondaryMuscles: x.secondaryMuscles || [],
+    instructions: x.instructions || [],
+    gif: x.gif || '' // leave blank if none
+  }));
+  renderBuilder(); render(); renderFaves();
+})();
+
+/* small slug util */
+function slug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+function debounce(fn,ms=250){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+
+</script>
+</body>
+</html>
