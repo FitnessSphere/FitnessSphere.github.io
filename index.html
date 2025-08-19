@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>FitnessSphere — Home</title>
 <meta name="theme-color" content="#2ed3a8"/>
-<meta name="description" content="FitnessSphere — workouts, calories, exercises and personalised plans">
 <style>
-  /* ---------------- Theme ---------------- */
   :root{
     --bg-900:#07121a; --bg-800:#0b1b22;
     --text:#eafaf5; --muted:#9fcfbe;
@@ -15,40 +13,33 @@
     --mint-grad: linear-gradient(135deg,var(--mint-a) 0%,var(--mint-b) 100%);
     --glass: rgba(255,255,255,0.02);
     --card-shadow: 0 18px 40px rgba(2,12,10,0.45);
-    --radius:16px; --ease:cubic-bezier(.2,.7,.2,1);
+    --radius:14px; --ease:cubic-bezier(.2,.7,.2,1);
     --maxw:1200px;
   }
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:var(--text);background:
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:var(--text);background:
     radial-gradient(900px 420px at 10% 0%, rgba(46,211,168,0.06), transparent 20%),
-    linear-gradient(180deg,var(--bg-900),var(--bg-800)); -webkit-font-smoothing:antialiased}
+    linear-gradient(180deg,var(--bg-900),var(--bg-800));-webkit-font-smoothing:antialiased}
   img{display:block;max-width:100%}
   a{color:inherit;text-decoration:none}
-  .container{max-width:var(--maxw);margin:0 auto;padding:18px}
+  .container{max-width:var(--maxw);margin:0 auto;padding:14px}
 
-  /* ---------------- Preloader ---------------- */
+  /* preloader */
   #preloader{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,rgba(7,17,22,0.95),rgba(7,17,22,0.9));z-index:9999}
-  .pre-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-  .spinner{width:80px;height:80px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));display:grid;place-items:center;animation:spin 2.4s linear infinite}
-  .spinner svg{width:44px;height:44px;transform-origin:center;animation:pop 2s ease-in-out infinite}
+  .spinner{width:72px;height:72px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));display:grid;place-items:center;animation:spin 2s linear infinite}
   @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-  @keyframes pop{0%{transform:scale(.96)}50%{transform:scale(1.08)}100%{transform:scale(.96)}}
-  .pre-title{font-weight:900;letter-spacing:-0.02em}
 
-  /* ---------------- Header ---------------- */
+  /* header */
   header.site{position:sticky;top:0;z-index:90;background:linear-gradient(180deg,rgba(6,16,19,0.68),rgba(6,16,19,0.36));backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.03)}
-  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 18px;max-width:var(--maxw);margin:0 auto}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;max-width:var(--maxw);margin:0 auto}
   .brand{display:flex;align-items:center;gap:12px}
-  .brand .logo{width:48px;height:48px;border-radius:12px;overflow:hidden;display:grid;place-items:center;box-shadow:0 10px 30px rgba(46,211,168,0.12)}
+  .brand .logo{width:44px;height:44px;border-radius:10px;overflow:hidden;display:grid;place-items:center;box-shadow:0 10px 30px rgba(46,211,168,0.12)}
   .brand img{width:100%;height:100%;object-fit:cover}
-  .brand .title{font-weight:900;font-size:1.05rem;line-height:1;letter-spacing:-0.02em}
+  .brand .title{font-weight:900;font-size:1.02rem;line-height:1}
 
-  /* nav-right */
-  .nav-right{display:flex;align-items:center;gap:10px}
-  .nav-links{display:flex;gap:8px;align-items:center}
-  .nav-links a{padding:8px 12px;border-radius:10px;font-weight:700;color:var(--muted);transition:all .18s var(--ease)}
-  .nav-links a:hover{background:rgba(255,255,255,0.02);color:var(--text)}
-  .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.6rem .9rem;border-radius:999px;font-weight:800;cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
+  .nav-right{display:flex;align-items:center;gap:8px}
+  /* NOTE: no inline nav links here - only hamburger + login/signup */
+  .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.56rem .85rem;border-radius:999px;font-weight:800;cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
   .btn.primary{background:var(--mint-grad);color:#052f27;box-shadow:0 10px 30px rgba(46,211,168,0.12)}
   .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.06)}
   .hamburger{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,0.02);cursor:pointer}
@@ -61,71 +52,81 @@
   .hamburger.open .lines span:nth-child(2){opacity:0}
   .hamburger.open .lines span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 
-  /* ---------------- Mobile offcanvas ---------------- */
-  .offcanvas{position:fixed;top:0;right:0;height:100vh;width:320px;background:linear-gradient(180deg,rgba(8,18,21,0.98),rgba(8,18,21,0.96));box-shadow:-20px 0 40px rgba(0,0,0,0.6);transform:translateX(110%);transition:transform .36s var(--ease);z-index:98;padding:18px;overflow:auto}
+  /* offcanvas menu (only place with site links) */
+  .offcanvas{position:fixed;top:0;right:0;height:100vh;width:84vw;max-width:360px;background:linear-gradient(180deg,rgba(8,18,21,0.98),rgba(8,18,21,0.96));box-shadow:-20px 0 40px rgba(0,0,0,0.6);transform:translateX(110%);transition:transform .36s var(--ease);z-index:98;padding:18px;overflow:auto}
   .offcanvas.open{transform:translateX(0)}
-  .offcanvas h3{margin:0 0 12px}
-  .offcanvas a{display:block;padding:10px;border-radius:10px;color:var(--muted);margin-bottom:6px}
+  .offcanvas h3{margin:0 0 12px;color:var(--text)}
+  .offcanvas a{display:block;padding:12px;border-radius:10px;color:var(--muted);margin-bottom:6px}
   .offcanvas .close{display:inline-flex;padding:8px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer}
+  .offcanvas .auth{display:flex;gap:8px;margin-top:12px}
 
-  /* ---------------- Hero ---------------- */
-  .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;padding:28px 0}
+  /* hero layout - responsive sizing fixes */
+  .hero{display:grid;grid-template-columns:1fr min(360px,40vw);gap:18px;align-items:start;padding:22px 0}
   @media(max-width:980px){ .hero{grid-template-columns:1fr} .hero-right{order:2} }
-  .hero-left{padding-right:12px}
-  .kicker{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--mint-grad);color:#052f27;font-weight:900}
-  .hero-title{font-size:2.3rem;margin:12px 0 8px;line-height:1.02;font-weight:900}
-  .hero-sub{color:var(--muted);max-width:60ch;margin:0 0 18px}
+  .hero-left{padding-right:6px}
+  .kicker{display:inline-block;padding:7px 10px;border-radius:999px;background:var(--mint-grad);color:#052f27;font-weight:900;font-size:0.86rem}
+  .hero-title{font-size:clamp(1.35rem,5.6vw,1.9rem);margin:12px 0 8px;line-height:1.02;font-weight:900}
+  .hero-sub{color:var(--muted);max-width:56ch;margin:0 0 12px;font-size:0.95rem}
+
   .search-row{display:flex;gap:10px;align-items:center}
-  .search-row input{flex:1;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);height:48px;box-sizing:border-box;font-weight:700}
-  .hero-cta{display:flex;gap:10px;margin-top:12px}
-  .card-graphic{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:16px;box-shadow:var(--card-shadow);border:1px solid rgba(255,255,255,0.04)}
-  .card-graphic .stat{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;background:rgba(255,255,255,0.01);margin-bottom:8px}
-  .card-graphic .big{font-size:1.45rem;font-weight:900}
+  .search-row input{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);height:44px;box-sizing:border-box;font-weight:700}
+  .hero-cta{display:flex;gap:10px;margin-top:10px}
 
-  /* ---------------- Features ---------------- */
-  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+  /* hero right card: make it responsive & avoid fixed huge heights on mobile */
+  .card-graphic{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:12px;box-shadow:var(--card-shadow);border:1px solid rgba(255,255,255,0.04)}
+  .card-graphic .stat{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px}
+
+  /* feature grid - smaller spacing for mobile */
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
   @media(max-width:980px){ .features{grid-template-columns:repeat(2,1fr)} }
-  .feature{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.008));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center;transition:transform .22s var(--ease), box-shadow .22s var(--ease)}
-  .feature:hover{transform:translateY(-6px);box-shadow:0 18px 38px rgba(2,12,10,0.35)}
-  .feature .ico{width:54px;height:54;border-radius:10px;display:grid;place-items:center;background:var(--glass);font-weight:900;color:var(--mint-b)}
+  .feature{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.008));padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:8px;align-items:center}
+  .feature .ico{width:46px;height:46;border-radius:10px;display:grid;place-items:center;background:var(--glass);font-weight:900;color:var(--mint-b)}
 
-  /* ---------------- Stats counters ---------------- */
-  .stats{display:flex;gap:12px;margin-top:22px;align-items:stretch}
-  .stat-card{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));display:flex;flex-direction:column;align-items:flex-start;gap:8px;border:1px solid rgba(255,255,255,0.03)}
-  .stat-card .num{font-size:1.55rem;font-weight:900;color:var(--mint-b)}
+  /* stats cards: make numbers responsive and prevent overflow */
+  .stats{display:flex;gap:10px;margin-top:14px;align-items:stretch}
+  .stat-card{flex:1;padding:10px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:1px solid rgba(255,255,255,0.03)}
+  .stat-card .num{font-size:clamp(1.05rem,6.2vw,1.45rem);font-weight:900;color:var(--mint-b)}
 
-  /* ---------------- Testimonials carousel ---------------- */
-  .carousel{margin-top:22px;position:relative;overflow:hidden;border-radius:12px}
-  .carousel-track{display:flex;gap:12px;transition:transform .6s var(--ease)}
-  .testimonial{min-width:320px;padding:18px;background:var(--glass);border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-  .carousel-nav{display:flex;gap:8px;margin-top:10px}
+  /* testimonials */
+  .carousel{margin-top:16px;position:relative;overflow:hidden;border-radius:10px}
+  .carousel-track{display:flex;gap:10px;transition:transform .6s var(--ease)}
+  .testimonial{min-width:280px;padding:12px;background:var(--glass);border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
 
-  /* ---------------- Footer ---------------- */
-  footer{margin-top:32px;padding:18px 0;border-top:1px solid rgba(255,255,255,0.02);color:var(--muted)}
+  footer{margin-top:28px;padding:14px 0;border-top:1px solid rgba(255,255,255,0.02);color:var(--muted)}
 
-  /* ---------------- Accessibility focus ---------------- */
-  a:focus, button:focus, input:focus{outline:3px solid rgba(46,211,168,0.14);outline-offset:2px;border-radius:10px}
+  /* make all buttons/inputs vertically centered */
+  input[type="text"], input[type="search"], input[type="email"], input[type="password"], button { line-height:1; font-family:inherit; }
 
-  /* scroll reveal helper */
-  .reveal{opacity:0;transform:translateY(18px);transition:all .6s var(--ease)}
+  /* small screens adjustments (the screenshot shows a phone, so apply tighter mobile rules) */
+  @media(max-width:420px){
+    .container{padding:10px}
+    .nav{padding:8px 10px}
+    .brand .title{font-size:0.98rem}
+    .hamburger{width:44px;height:44px}
+    .hero{gap:12px;padding:16px 0}
+    .hero-sub{font-size:0.92rem}
+    .search-row input{height:40px;padding:10px}
+    .card-graphic{padding:10px;border-radius:12px}
+    .features{gap:10px}
+    .stat-card{padding:8px}
+    .testimonial{min-width:240px;padding:10px}
+  }
+
+  /* focus */
+  a:focus, button:focus, input:focus{outline:3px solid rgba(46,211,168,0.14);outline-offset:2px;border-radius:8px}
+
+  /* reveal helper */
+  .reveal{opacity:0;transform:translateY(10px);transition:all .5s var(--ease)}
   .reveal.show{opacity:1;transform:none}
 </style>
 </head>
 <body>
-  <!-- Preloader -->
+  <!-- preloader -->
   <div id="preloader" role="status" aria-hidden="false">
-    <div class="pre-wrap" aria-hidden="true">
-      <div class="spinner" aria-hidden="true">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7ff0d0"/><stop offset="1" stop-color="#2ed3a8"/></linearGradient></defs>
-          <rect x="12" y="12" width="76" height="76" rx="16" fill="url(#g)"></rect>
-        </svg>
-      </div>
-      <div class="pre-title">FitnessSphere</div>
-    </div>
+    <div class="spinner" aria-hidden="true"><svg viewBox="0 0 100 100" width="36" height="36"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7ff0d0"/><stop offset="1" stop-color="#2ed3a8"/></linearGradient></defs><rect x="12" y="12" width="76" height="76" rx="12" fill="url(#g)"/></svg></div>
   </div>
 
-  <!-- Header -->
+  <!-- header (only logo + title + hamburger + login/signup) -->
   <header class="site" role="banner">
     <div class="nav" role="navigation">
       <div class="brand" aria-label="FitnessSphere">
@@ -134,52 +135,51 @@
       </div>
 
       <div class="nav-right">
-        <!-- show nav when not logged in -->
-        <nav class="nav-links" id="mainNav">
-          <a href="weight-loss.html">Weight Loss</a>
-          <a href="weight-gain.html">Weight Gain</a>
-          <a href="calories.html">Calories</a>
-          <a href="exercises.html">Exercises</a>
-        </nav>
-
-        <div id="authControls" style="display:flex;align-items:center;gap:8px;">
+        <div id="authControls" style="display:flex;align-items:center;gap:8px">
           <button class="btn ghost" id="loginBtn">Login</button>
-          <button class="btn" id="signupBtn">Sign up</button>
+          <button class="btn primary" id="signupBtn">Sign up</button>
         </div>
 
         <div class="hamburger" id="hamb" aria-label="Open menu" role="button">
-          <div class="lines">
-            <span></span><span></span><span></span>
-          </div>
+          <div class="lines"><span></span><span></span><span></span></div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Mobile offcanvas -->
+  <!-- offcanvas containing all navigation (the ONLY place with site links now) -->
   <aside class="offcanvas" id="offcanvas" aria-hidden="true">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h3 style="margin:0">Menu</h3>
-      <div class="close" id="offClose">✕</div>
+      <div class="close" id="offClose" aria-label="Close menu">✕</div>
     </div>
+
+    <!-- site links -->
+    <a href="index.html">Home</a>
     <a href="weight-loss.html">Weight Loss</a>
     <a href="weight-gain.html">Weight Gain</a>
     <a href="calories.html">Calories</a>
     <a href="exercises.html">Exercises</a>
-    <div style="height:12px"></div>
-    <div id="offAuth">
+    <a href="workouts.html">Workouts</a>
+
+    <div style="height:8px"></div>
+    <div class="auth">
       <button class="btn ghost" id="offLogin">Login</button>
-      <button class="btn" id="offSignup">Sign up</button>
+      <button class="btn primary" id="offSignup">Sign up</button>
+    </div>
+
+    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.03);padding-top:10px;color:var(--muted);font-size:0.92rem">
+      <div style="margin-bottom:6px"><strong>Tip</strong></div>
+      <div>Include a card or coin in meal photos for best portion estimates.</div>
     </div>
   </aside>
 
-  <!-- Main -->
   <main class="container" role="main">
     <section class="hero" aria-label="Intro">
       <div class="hero-left">
         <div class="kicker reveal">Premium • Local-first</div>
         <h1 class="hero-title reveal">Train smarter with FitnessSphere</h1>
-        <p class="hero-sub reveal">All your workouts, foods and progress in one place. Capture meals with your camera, build workouts, and track progress—fast and private.</p>
+        <p class="hero-sub reveal">All your workouts, foods and progress in one place. Capture meals with camera, build workouts, and track progress—fast and private.</p>
 
         <div class="search-row reveal" style="margin-top:10px">
           <input id="siteSearch" placeholder="Search foods, exercises or plans..." aria-label="Search" />
@@ -191,62 +191,24 @@
           <button class="btn ghost" id="openExercises">Explore Exercises</button>
         </div>
 
-        <div class="features reveal" style="margin-top:18px">
-          <div class="feature">
-            <div class="ico">📸</div>
-            <div>
-              <div style="font-weight:800">Photo → Calories</div>
-              <div class="small muted">Snap or upload and get instant nutrition estimates</div>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="ico">🏋️</div>
-            <div>
-              <div style="font-weight:800">Exercise Library</div>
-              <div class="small muted">Curated movements, GIF previews, builder</div>
-            </div>
-          </div>
-
-          <div class="feature">
-            <div class="ico">🔒</div>
-            <div>
-              <div style="font-weight:800">Privacy-first</div>
-              <div class="small muted">Local DB; use API keys only if you add them</div>
-            </div>
-          </div>
+        <div class="features reveal" style="margin-top:14px">
+          <div class="feature"><div class="ico">📸</div><div><div style="font-weight:800">Photo → Calories</div><div class="small muted">Snap meals and get nutrition</div></div></div>
+          <div class="feature"><div class="ico">🏋️</div><div><div style="font-weight:800">Exercise Library</div><div class="small muted">Curated movements & GIFs</div></div></div>
+          <div class="feature"><div class="ico">🔒</div><div><div style="font-weight:800">Privacy-first</div><div class="small muted">Local DB; API keys optional</div></div></div>
         </div>
 
         <div class="stats reveal">
-          <div class="stat-card">
-            <div class="small muted">Foods</div>
-            <div class="num" data-target="1100">0</div>
-            <div class="small muted">Local DB items</div>
-          </div>
-          <div class="stat-card">
-            <div class="small muted">Exercises</div>
-            <div class="num" data-target="500">0</div>
-            <div class="small muted">Curated movements</div>
-          </div>
-          <div class="stat-card">
-            <div class="small muted">Workouts</div>
-            <div class="num" data-target="12000">0</div>
-            <div class="small muted">Combinations possible</div>
-          </div>
+          <div class="stat-card"><div class="small muted">Foods</div><div class="num" data-target="1100">0</div><div class="small muted">Local DB items</div></div>
+          <div class="stat-card"><div class="small muted">Exercises</div><div class="num" data-target="500">0</div><div class="small muted">Curated movements</div></div>
+          <div class="stat-card"><div class="small muted">Workouts</div><div class="num" data-target="12000">0</div><div class="small muted">Combinations possible</div></div>
         </div>
       </div>
 
       <aside class="hero-right card-graphic reveal">
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div class="small muted">Welcome</div>
-              <div style="font-weight:900;font-size:1.15rem">FitnessSphere</div>
-            </div>
-            <div style="text-align:right">
-              <div class="small muted">Version</div>
-              <div style="font-weight:900">Beta 1.2</div>
-            </div>
+            <div><div class="small muted">Welcome</div><div style="font-weight:900;font-size:1.05rem">FitnessSphere</div></div>
+            <div style="text-align:right"><div class="small muted">Version</div><div style="font-weight:900">Beta 1.2</div></div>
           </div>
 
           <div class="stat" role="status" aria-live="polite">
@@ -267,9 +229,9 @@
             <div style="flex:1">
               <div class="small muted">Featured</div>
               <div style="font-weight:900">Photo Calorie Scanner</div>
-              <div class="small muted" style="margin-top:6px">Try the camera on the calories page for best results.</div>
+              <div class="small muted" style="margin-top:6px">Use camera on the calories page for best results.</div>
             </div>
-            <div style="width:100px">
+            <div style="width:80px">
               <svg viewBox="0 0 100 100" style="width:100%;height:auto"><defs><linearGradient id="mg" x1="0" x2="1"><stop offset="0" stop-color="#7ff0d0"/><stop offset="1" stop-color="#2ed3a8"/></linearGradient></defs><rect x="8" y="8" width="84" height="84" rx="12" fill="url(#mg)"></rect></svg>
             </div>
           </div>
@@ -277,44 +239,30 @@
       </aside>
     </section>
 
-    <!-- Testimonials Carousel -->
+    <!-- testimonials -->
     <section aria-label="Testimonials" style="margin-top:18px">
       <h3 style="margin:0 0 8px">What people say</h3>
       <div class="carousel reveal" id="carousel">
         <div class="carousel-track" id="carouselTrack">
-          <div class="testimonial"><strong>Jane D.</strong><div class="small muted">— Lost 12kg in 4 months</div><p style="margin-top:8px;color:var(--muted)">“The photo calorie feature changed the way I track meals. Super fast and private.”</p></div>
-          <div class="testimonial"><strong>Omar R.</strong><div class="small muted">— Built custom workouts</div><p style="margin-top:8px;color:var(--muted)">“Great exercise library. I mixed cardio with strength and saw real results.”</p></div>
-          <div class="testimonial"><strong>Lina M.</strong><div class="small muted">— Uses locally</div><p style="margin-top:8px;color:var(--muted)">“I love that the food DB works offline — fast and reliable.”</p></div>
+          <div class="testimonial"><strong>Jane D.</strong><div class="small muted">— Lost 12kg</div><p style="margin-top:8px;color:var(--muted)">“The photo calorie feature changed the way I track meals.”</p></div>
+          <div class="testimonial"><strong>Omar R.</strong><div class="small muted">— Custom workouts</div><p style="margin-top:8px;color:var(--muted)">“Great exercise library.”</p></div>
+          <div class="testimonial"><strong>Lina M.</strong><div class="small muted">— Offline DB</div><p style="margin-top:8px;color:var(--muted)">“Love the local DB — fast & private.”</p></div>
         </div>
       </div>
-      <div class="carousel-nav reveal" style="margin-top:8px">
-        <button class="btn ghost" id="prevTest">Prev</button>
-        <button class="btn" id="nextTest">Next</button>
-      </div>
+      <div style="margin-top:8px;display:flex;gap:8px"><button class="btn ghost" id="prevTest">Prev</button><button class="btn" id="nextTest">Next</button></div>
     </section>
 
-    <footer role="contentinfo">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-        <div class="small muted">© FitnessSphere</div>
-        <div style="display:flex;gap:8px">
-          <a class="small muted" href="privacy.html">Privacy</a>
-          <a class="small muted" href="terms.html">Terms</a>
-        </div>
-      </div>
-    </footer>
+    <footer role="contentinfo" style="margin-top:26px"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div class="small muted">© FitnessSphere</div><div style="display:flex;gap:8px"><a class="small muted" href="privacy.html">Privacy</a><a class="small muted" href="terms.html">Terms</a></div></div></footer>
   </main>
 
-  <!-- Login / Signup Modal -->
+  <!-- login/signup modal -->
   <div id="modalWrap" style="position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,0.5);z-index:999">
-    <div style="background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:14px;width:min(520px,94vw);box-shadow:0 20px 60px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <strong id="modalTitle">Login</strong>
-        <button class="btn ghost" id="modalClose">Close</button>
-      </div>
+    <div style="background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:12px;width:min(520px,94vw);box-shadow:0 20px 60px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><strong id="modalTitle">Login</strong><button class="btn ghost" id="modalClose">Close</button></div>
       <div id="modalBody">
         <div style="display:grid;gap:10px">
-          <input id="email" class="input" placeholder="Email" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:var(--text);height:46px" />
-          <input id="password" type="password" class="input" placeholder="Password" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:var(--text);height:46px" />
+          <input id="email" class="input" placeholder="Email" style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:var(--text);height:44px" />
+          <input id="password" type="password" class="input" placeholder="Password" style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:var(--text);height:44px" />
           <div style="display:flex;justify-content:space-between;align-items:center">
             <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="remember"/> Remember</label>
             <button class="btn primary" id="modalAction">Login</button>
@@ -329,216 +277,128 @@
     </div>
   </div>
 
-  <!-- Toast -->
-  <div id="toast" style="position:fixed;right:18px;bottom:18px;background:rgba(6,12,12,0.96);padding:10px 12px;border-radius:10px;color:var(--text);display:none;z-index:9999"></div>
+  <div id="toast" style="position:fixed;right:14px;bottom:14px;background:rgba(6,12,12,0.96);padding:10px 12px;border-radius:10px;color:var(--text);display:none;z-index:9999"></div>
 
 <script>
-/* ---------------- Helpers ---------------- */
-const $ = (s)=> document.querySelector(s);
-const $$ = (s)=> Array.from(document.querySelectorAll(s));
-const toast = (msg, t=1600)=>{ const el = $('#toast'); el.textContent = msg; el.style.display = 'block'; setTimeout(()=> el.style.display='none', t); };
+/* small helper selectors */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const toast = (m,t=1600)=> { const el=$('#toast'); el.textContent=m; el.style.display='block'; setTimeout(()=> el.style.display='none', t); };
 
-/* ---------------- Preloader ---------------- */
+/* preloader fade */
 window.addEventListener('load', ()=> {
-  // small fade-out with delay for smoothness
-  setTimeout(()=> {
-    const pre = document.getElementById('preloader');
-    if(pre){
-      pre.style.transition = 'opacity 380ms ease';
-      pre.style.opacity = '0';
-      setTimeout(()=> pre.style.display='none', 420);
-    }
-  }, 400);
+  setTimeout(()=> { const p = document.getElementById('preloader'); if(p){ p.style.transition='opacity 300ms'; p.style.opacity='0'; setTimeout(()=> p.style.display='none', 350); } }, 360);
 });
 
-/* ---------------- bfcache / back button blank fix ---------------- */
+/* bfcache/back button blank mitigation */
 window.addEventListener('pageshow', (ev)=> {
   if(ev.persisted){
-    // if page restored from bfcache, re-init
-    if(!sessionStorage.getItem('fs_reloaded')){
-      sessionStorage.setItem('fs_reloaded','1');
-      setTimeout(()=> location.reload(), 80);
-    } else {
-      sessionStorage.removeItem('fs_reloaded');
-    }
+    if(!sessionStorage.getItem('fs_reloaded')){ sessionStorage.setItem('fs_reloaded','1'); setTimeout(()=> location.reload(), 80); }
+    else sessionStorage.removeItem('fs_reloaded');
   }
 });
-window.addEventListener('popstate', ()=> {
-  // if very small content (blank), reload
-  try{
-    const main = document.querySelector('main');
-    if(!main || main.innerHTML.trim().length < 40) location.reload();
-  }catch(e){ location.reload(); }
-});
-// cleanup marker on unload
+window.addEventListener('popstate', ()=> { try{ const main=document.querySelector('main'); if(!main || main.innerHTML.trim().length < 40) location.reload(); } catch(e){ location.reload(); } });
 window.addEventListener('unload', ()=> { try{ sessionStorage.removeItem('fs_reloaded'); }catch(e){} });
 
-/* ---------------- Header interactions ---------------- */
+/* offcanvas + hamburger */
 const hamb = $('#hamb'), off = $('#offcanvas'), offClose = $('#offClose');
-const mainNav = $('#mainNav'), authControls = $('#authControls'), offAuth = $('#offAuth');
 hamb.addEventListener('click', ()=> {
-  hamb.classList.toggle('open');
-  const open = hamb.classList.contains('open');
+  const open = !off.classList.contains('open');
   off.classList.toggle('open', open);
+  hamb.classList.toggle('open', open);
   off.setAttribute('aria-hidden', open ? 'false' : 'true');
 });
-offClose.addEventListener('click', ()=> { hamb.classList.remove('open'); off.classList.remove('open'); off.setAttribute('aria-hidden','true'); });
+offClose.addEventListener('click', ()=> { off.classList.remove('open'); hamb.classList.remove('open'); off.setAttribute('aria-hidden','true'); });
+document.addEventListener('click', e => {
+  if(off.classList.contains('open') && !off.contains(e.target) && !hamb.contains(e.target)){ off.classList.remove('open'); hamb.classList.remove('open'); }
+});
 
-/* ---------------- Login / Signup logic ---------------- */
-const modalWrap = document.getElementById('modalWrap'), modalTitle = document.getElementById('modalTitle');
-const modalAction = document.getElementById('modalAction'), modalClose = document.getElementById('modalClose');
+/* login/signup modal (client-only stub) */
 const loginBtn = $('#loginBtn'), signupBtn = $('#signupBtn'), offLogin = $('#offLogin'), offSignup = $('#offSignup');
+const modalWrap = $('#modalWrap'), modalTitle = $('#modalTitle'), modalAction = $('#modalAction'), modalClose = $('#modalClose');
 
-function showModal(mode='login'){
-  modalWrap.style.display='grid';
-  modalTitle.textContent = mode === 'login' ? 'Login' : 'Sign up';
-  modalAction.textContent = mode === 'login' ? 'Login' : 'Sign up';
-  modalAction.dataset.mode = mode;
-}
+function showModal(mode='login'){ modalWrap.style.display='grid'; modalTitle.textContent = mode==='login' ? 'Login' : 'Sign up'; modalAction.textContent = mode==='login' ? 'Login' : 'Sign up'; modalAction.dataset.mode = mode; }
 function hideModal(){ modalWrap.style.display='none'; }
-
 loginBtn.addEventListener('click', ()=> showModal('login'));
 signupBtn.addEventListener('click', ()=> showModal('signup'));
-offLogin.addEventListener('click', ()=> { hamb.classList.remove('open'); off.classList.remove('open'); showModal('login'); });
-offSignup.addEventListener('click', ()=> { hamb.classList.remove('open'); off.classList.remove('open'); showModal('signup'); });
+offLogin.addEventListener('click', ()=> { off.classList.remove('open'); hamb.classList.remove('open'); showModal('login'); });
+offSignup.addEventListener('click', ()=> { off.classList.remove('open'); hamb.classList.remove('open'); showModal('signup'); });
 modalClose.addEventListener('click', hideModal);
-
-// very simple pseudo auth (client-side only). Replace with real auth for production.
-function performAuth(mode, email, pass){
-  // basic validation
-  if(!email || !pass) { toast('Enter email & password'); return; }
-  // we'll "create" a fake user and store it
-  const user = { email, name: email.split('@')[0], created: new Date().toISOString() };
+modalAction.addEventListener('click', ()=> {
+  const mode = modalAction.dataset.mode || 'login';
+  const email = $('#email').value.trim(), pass = $('#password').value.trim();
+  if(!email || !pass) { toast('Enter email and password'); return; }
+  // fake "auth" - store user and apply logged-in UI
+  const user = { email, name: email.split('@')[0] };
   localStorage.setItem('fs_user', JSON.stringify(user));
-  // hide nav & auth controls as requested
   applyLoggedInUI(user);
   hideModal();
   toast(mode === 'login' ? 'Logged in' : 'Signed up');
-}
-
-modalAction.addEventListener('click', ()=>{
-  const mode = modalAction.dataset.mode || 'login';
-  const email = $('#email').value.trim();
-  const pass = $('#password').value.trim();
-  performAuth(mode, email, pass);
 });
 
-// if user exists, apply logged-in view
+/* show/hide header items after login (you wanted header to reduce to logo+title) */
 function applyLoggedInUI(user){
   try{
-    // hide hamburger and auth controls per your request (header shows only logo + site name after login)
-    if(hamb) hamb.style.display = 'none';
-    if(authControls) authControls.style.display = 'none';
-    if(mainNav) mainNav.style.display = 'none';
-    // optionally show small greeting (we'll show a temporary toast)
-    toast('Welcome, ' + (user.name || 'User'), 2000);
+    if($('#hamb')) $('#hamb').style.display='none';
+    if($('#authControls')) $('#authControls').style.display='none';
+    // offcanvas still accessible via nothing (hamb hidden) - but that's fine since you wanted only logo/title visible
+    // remove offcanvas login buttons
+    if($('#offLogin')) $('#offLogin').style.display='none';
+    if($('#offSignup')) $('#offSignup').style.display='none';
   }catch(e){}
 }
 function applyLoggedOutUI(){
-  if(hamb) hamb.style.display = '';
-  if(authControls) authControls.style.display = '';
-  if(mainNav) mainNav.style.display = '';
+  if($('#hamb')) $('#hamb').style.display='';
+  if($('#authControls')) $('#authControls').style.display='';
+  if($('#offLogin')) $('#offLogin').style.display='';
+  if($('#offSignup')) $('#offSignup').style.display='';
 }
-
-// on load check user
 (function initAuth(){
   const u = localStorage.getItem('fs_user');
-  if(u){
-    const user = JSON.parse(u);
-    applyLoggedInUI(user);
-  } else {
-    applyLoggedOutUI();
-  }
+  if(u) applyLoggedInUI(JSON.parse(u)); else applyLoggedOutUI();
 })();
 
-/* ---------------- Offcanvas close when clicking outside ---------------- */
-document.addEventListener('click', (e)=>{
-  if(off.classList.contains('open') && !off.contains(e.target) && !hamb.contains(e.target)){
-    off.classList.remove('open'); hamb.classList.remove('open');
-  }
-});
+/* small reveal & counters */
+const revealEls = Array.from(document.querySelectorAll('.reveal'));
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('show'); if(e.target.querySelector && e.target.querySelector('.num')) animateCounters(); io.unobserve(e.target); }
+  });
+},{threshold:0.12});
+revealEls.forEach(el=> io.observe(el));
 
-/* ---------------- Counters animation ---------------- */
 function animateCounters(){
   $$('.num').forEach(el=>{
-    const target = +el.dataset.target || 0;
-    let cur = 0; const step = Math.max(1, Math.round(target / 40));
-    const id = setInterval(()=> {
-      cur += step;
-      if(cur >= target){ el.textContent = String(target); clearInterval(id); }
-      else el.textContent = String(cur);
-    }, 24);
+    const target = +el.dataset.target || 0; let cur = 0; const step = Math.max(1, Math.round(target / 40));
+    const id = setInterval(()=> { cur += step; if(cur >= target){ el.textContent = String(target); clearInterval(id); } else el.textContent = String(cur); }, 24);
   });
 }
 
-/* ---------------- Scroll reveal ---------------- */
-const revealEls = Array.from(document.querySelectorAll('.reveal'));
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(ent=>{
-    if(ent.isIntersecting){
-      ent.target.classList.add('show');
-      // trigger counters when stats come into view
-      if(ent.target.querySelector && ent.target.querySelector('.num')) animateCounters();
-      io.unobserve(ent.target);
-    }
-  });
-}, {threshold: 0.12});
-revealEls.forEach(el=> io.observe(el));
-
-/* ---------------- Carousel tests ---------------- */
-const track = $('#carouselTrack');
-let idx = 0;
+/* carousel basic */
+const track = $('#carouselTrack'); let idx = 0;
 function showSlide(i){
-  const items = track.children.length;
-  if(i < 0) i = items - 1;
-  if(i >= items) i = 0;
-  idx = i;
-  const w = track.children[0].getBoundingClientRect().width + 12;
+  const items = track.children.length; if(items===0) return;
+  if(i < 0) i = items-1; if(i >= items) i = 0; idx = i;
+  const w = track.children[0].getBoundingClientRect().width + 10;
   track.style.transform = `translateX(-${i * w}px)`;
 }
 $('#prevTest').addEventListener('click', ()=> showSlide(idx-1));
 $('#nextTest').addEventListener('click', ()=> showSlide(idx+1));
-setInterval(()=> showSlide(idx+1), 5000);
+setInterval(()=> showSlide(idx+1), 5500);
 
-/* ---------------- Keyboard shortcuts & quick actions ---------------- */
-document.addEventListener('keydown', (e)=>{
-  if(e.key === '/' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); $('#siteSearch').focus(); }
-  if(e.key === 'c' && e.ctrlKey) { e.preventDefault(); location.href = 'calories.html'; }
-});
-
-/* ---------------- Utilities ---------------- */
+/* search quick redirect */
 $('#searchGo').addEventListener('click', ()=> {
   const q = $('#siteSearch').value.trim();
   if(!q) { toast('Search something'); return; }
-  // naive search redirect to calories page with query param (calories page should read it)
   location.href = `calories.html?q=${encodeURIComponent(q)}`;
 });
-// quick action buttons
 $('#openCalories').addEventListener('click', ()=> location.href='calories.html');
 $('#openExercises').addEventListener('click', ()=> location.href='exercises.html');
 $('#quick1').addEventListener('click', ()=> location.href='exercises.html');
 $('#quick2').addEventListener('click', ()=> location.href='calories.html');
 
-/* ---------------- Modal dismissal on Escape ---------------- */
-window.addEventListener('keydown', (e)=> {
-  if(e.key === 'Escape') {
-    modalWrap.style.display = 'none';
-    // also close offcanvas if open
-    if(off.classList.contains('open')) { off.classList.remove('open'); hamb.classList.remove('open'); }
-  }
-});
-
-/* ---------------- Small accessibility tweak on focus-visible ---------------- */
-document.addEventListener('mousedown', ()=> document.documentElement.classList.add('using-mouse'));
-document.addEventListener('keydown', ()=> document.documentElement.classList.remove('using-mouse'));
-
-/* ---------------- On first load show small welcome toast ---------------- */
-window.addEventListener('load', ()=> {
-  setTimeout(()=> toast('Welcome to FitnessSphere — try camera on the calories page!'), 800);
-});
-
-// ensure the offcanvas is hidden on orientation change or resize
-window.addEventListener('resize', ()=> { if(window.innerWidth > 980){ off.classList.remove('open'); hamb.classList.remove('open'); } });
+/* keyboard shortcut to focus search */
+document.addEventListener('keydown', (e)=> { if(e.key === '/' && document.activeElement.tagName !== 'INPUT'){ e.preventDefault(); $('#siteSearch').focus(); } });
 
 </script>
 </body>
