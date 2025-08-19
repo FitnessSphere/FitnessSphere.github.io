@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FitnessSphere — Home</title>
+<meta name="theme-color" content="#2ed3a8" />
+<meta name="description" content="FitnessSphere — workouts, calories, exercises and personalised plans" />
+
+<style>
+  /* ---------- Theme & variables ---------- */
+  :root{
+    --bg-900: #07111a;
+    --bg-800: #0a1720;
+    --card: rgba(255,255,255,0.03);
+    --text: #e7f7f3;
+    --muted: #a8dcd0;
+    --mint-1: #8af3d0;
+    --mint-2: #2ed3a8;
+    --mint-gradient: linear-gradient(135deg, var(--mint-1) 0%, var(--mint-2) 100%);
+    --radius: 14px;
+    --shadow: 0 14px 36px rgba(3,20,18,0.45);
+    --glass: rgba(255,255,255,0.02);
+    --ease: cubic-bezier(.2,.7,.2,1);
+    --max-width: 1200px;
+  }
+
+  /* ---------- Reset / Base ---------- */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:var(--text);background:
+    radial-gradient(800px 400px at 10% 0%, rgba(46,211,168,0.05), transparent 20%),
+    linear-gradient(180deg,var(--bg-900),var(--bg-800));-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+
+  .container{max-width:var(--max-width);margin:0 auto;padding:20px}
+
+  /* ---------- Header ---------- */
+  header.site {
+    position: sticky; top: 0; z-index: 80;
+    padding:12px 0; backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, rgba(7,17,22,0.70), rgba(7,17,22,0.35));
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .nav {
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand .logo {
+    width:44px; height:44px; border-radius:10px; overflow:hidden; flex:0 0 44px; display:inline-grid; place-items:center;
+    box-shadow: 0 8px 22px rgba(46,211,168,0.12);
+  }
+  .brand img { width:100%; height:100%; object-fit:cover; display:block; }
+  .brand h1 { font-size:1.05rem; margin:0; font-weight:900; letter-spacing: -0.02em; color:var(--text); }
+  .brand p { margin:0; font-size:0.78rem; color:var(--muted); line-height:1; }
+
+  nav.links { display:flex; gap:10px; align-items:center; }
+  nav.links a { padding:8px 12px; border-radius:10px; font-weight:700; color:var(--muted); }
+  nav.links a:hover, nav.links a.active { background: rgba(255,255,255,0.02); color: var(--text); box-shadow: none; }
+
+  .cta { display:flex; gap:8px; align-items:center }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; font-weight:800; cursor:pointer; border:1px solid rgba(0,0,0,0.08); }
+  .btn.primary { background: var(--mint-gradient); color:#042f27; box-shadow: 0 8px 24px rgba(46,211,168,0.12); }
+  .btn.ghost { background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.06); }
+
+  /* ---------- Hero ---------- */
+  .hero { display:grid; grid-template-columns: 1fr 420px; gap:28px; align-items:center; margin:36px 0; }
+  @media(max-width:980px){ .hero{ grid-template-columns:1fr; } .hero .card-aside { order:2 } }
+
+  .hero-left { padding:18px; }
+  .kicker { display:inline-block; padding:8px 12px; font-weight:900; border-radius:999px; background:var(--mint-gradient); color:#042f27; }
+  .title { margin:14px 0 6px; font-size:2rem; line-height:1.02; font-weight:900; letter-spacing:-0.02em; }
+  .subtitle { color:var(--muted); margin:0 0 16px; max-width:60ch; }
+
+  .feature-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; margin-top:18px; }
+  .feature { background:var(--glass); padding:12px; border-radius:12px; display:flex; gap:12px; align-items:center; border:1px solid rgba(255,255,255,0.03) }
+  .feature .icon { width:44px; height:44px; border-radius:10px; display:grid;place-items:center; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:var(--mint-2); font-weight:900; }
+  .feature h4 { margin:0; font-size:0.95rem }
+  .feature p { margin:0; color:var(--muted); font-size:0.88rem }
+
+  /* ---------- Card aside (cta, quick links) ---------- */
+  .card-aside { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px; border-radius:16px; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,0.04); }
+  .stat { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px; border-radius:12px; background: rgba(255,255,255,0.01); margin-bottom:8px; }
+  .stat strong { font-size:1.05rem }
+  .stat p { margin:0; font-size:.85rem; color:var(--muted) }
+
+  /* ---------- Inputs, centered text fixes ---------- */
+  .search { display:flex; gap:10px; align-items:center; }
+  .search input[type="search"], .search input[type="text"], .search select {
+    width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02); color:var(--text); font-weight:600; font-size:0.95rem;
+    display:block; outline:none; line-height:1;
+    /* ensure vertical centering for all browsers */
+    height:46px; box-sizing:border-box;
+  }
+  .search button { min-width:120px; padding:12px 14px; height:46px; display:inline-flex; align-items:center; justify-content:center; }
+
+  /* box text centering for small card elements */
+  .box { padding:14px; border-radius:12px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); display:flex; align-items:center; gap:12px; }
+  .box .text { display:flex; flex-direction:column; justify-content:center; }
+  .box h3 { margin:0; font-size:1rem }
+  .box p { margin:0; color:var(--muted); font-size:.88rem }
+
+  /* ---------- Footer ---------- */
+  footer { margin-top:40px; padding:18px 0; color:var(--muted); border-top:1px solid rgba(255,255,255,0.02) }
+
+  /* small helpers */
+  .muted { color:var(--muted) }
+  .center { text-align:center }
+
+  /* accessibility focus outlines */
+  a:focus, button:focus, input:focus { outline:3px solid rgba(46,211,168,0.14); outline-offset:2px; border-radius:10px; }
+
+</style>
+</head>
+<body>
+  <header class="site">
+    <div class="container nav">
+      <div class="brand" aria-label="FitnessSphere home">
+        <div class="logo"><img src="logo.png" alt="FitnessSphere logo" /></div>
+        <div>
+          <h1>FitnessSphere</h1>
+          <p class="small muted">Train smarter — calories, workouts & guidance</p>
+        </div>
+      </div>
+
+      <nav class="links" aria-label="Main navigation">
+        <a href="weight-loss.html">Weight Loss</a>
+        <a href="weight-gain.html">Weight Gain</a>
+        <a href="calories.html">Calories</a>
+        <a href="exercises.html">Exercises</a>
+        <a href="login.html" class="ghost">Login</a>
+        <a href="premium.html" class="btn primary" style="text-decoration:none">Get Premium</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" role="region" aria-label="Intro">
+      <div class="hero-left">
+        <div class="kicker">All-in-one • Personal</div>
+        <h2 class="title">FitnessSphere — your smart fitness hub</h2>
+        <p class="subtitle">Personalized workout builder, global food database, photo-to-calories and an ever-growing exercise library — all in one clean, fast interface.</p>
+
+        <div class="search" style="margin-top:12px;">
+          <input aria-label="Search the site" id="siteSearch" placeholder="Search exercises, foods, plans..." type="search" />
+          <button class="btn primary" id="searchBtn">Search</button>
+        </div>
+
+        <div class="feature-grid" style="margin-top:20px;">
+          <div class="feature">
+            <div class="icon">⚡</div>
+            <div>
+              <h4>Fast & reliable</h4>
+              <p>Local-first assets and optimised images — minimal lag.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="icon">📸</div>
+            <div>
+              <h4>Photo to calories</h4>
+              <p>Capture a meal and get instant portion estimates and nutrition.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="icon">🏋️‍♀️</div>
+            <div>
+              <h4>Exercise library</h4>
+              <p>Hundreds of exercises with GIF previews and builder tools.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="icon">🔒</div>
+            <div>
+              <h4>Private by default</h4>
+              <p>Your local DB works offline — optional API keys only if you add them.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card-aside">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="stat">
+            <div>
+              <strong>1100+</strong>
+              <p>Foods in DB</p>
+            </div>
+            <div class="badge">Local</div>
+          </div>
+
+          <div class="stat">
+            <div>
+              <strong>500+</strong>
+              <p>Exercises</p>
+            </div>
+            <div class="badge">Curated</div>
+          </div>
+
+          <div class="stat">
+            <div>
+              <strong>Custom</strong>
+              <p>Workout Builder</p>
+            </div>
+            <div class="badge">Save & Export</div>
+          </div>
+
+          <div style="margin-top:6px; display:flex; gap:8px;">
+            <a class="btn primary" href="calories.html">Open Calories</a>
+            <a class="btn ghost" href="exercises.html">Explore Exercises</a>
+          </div>
+
+          <div style="margin-top:10px; font-size:0.92rem; color:var(--muted)">
+            Tip: For better photo portions, include a common object (card / coin) for scale.
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Additional content blocks that are correctly centered and sized -->
+    <section style="display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin-top:6px;">
+      <div class="box">
+        <div style="width:48px;height:48px;border-radius:10px;background:var(--mint-gradient); display:grid; place-items:center; color:#042f27; font-weight:900;">A</div>
+        <div class="text">
+          <h3>Premium design</h3>
+          <p>Polished UI with motion & micro-interactions.</p>
+        </div>
+      </div>
+
+      <div class="box">
+        <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));display:grid;place-items:center;">⚙️</div>
+        <div class="text">
+          <h3>Fully configurable</h3>
+          <p>Local or API-driven nutrition sources — you choose.</p>
+        </div>
+      </div>
+
+      <div class="box">
+        <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));display:grid;place-items:center;">🔁</div>
+        <div class="text">
+          <h3>Reliable navigation</h3>
+          <p>Native links; back button & bfcache issues handled.</p>
+        </div>
+      </div>
+
+      <div class="box">
+        <div style="width:48px;height:48px;border-radius:10px;background:var(--mint-gradient); display:grid; place-items:center; color:#042f27; font-weight:900;">💾</div>
+        <div class="text">
+          <h3>Offline-first assets</h3>
+          <p>Preloaded local food DB and icon assets for speed.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+        <div class="small muted">© <strong>FitnessSphere</strong> — Built for you</div>
+        <div style="display:flex;gap:8px;">
+          <a href="privacy.html" class="small muted">Privacy</a>
+          <a href="terms.html" class="small muted">Terms</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+<script>
+/*
+  Fixes implemented (client-side):
+  1) pageshow: browsers use bfcache which can restore page without running JS; if page is restored from bfcache (persisted),
+     we reload to ensure dynamic content and event handlers initialize correctly (prevents blank page symptom).
+  2) popstate fallback: if navigation leaves DOM in odd state, we reload page to restore UI.
+  3) All links are normal anchor tags (no history hijack), so Back button should behave normally across pages.
+  4) Input / boxes use fixed heights and flexbox centering to ensure letters and boxes are vertically centered.
+*/
+
+(function(){
+  // If the page is restored from back-forward cache, reload to ensure JS-run initialization
+  window.addEventListener('pageshow', function(event){
+    // If persisted flag true, reload to re-run scripts and avoid blank UI (handles Safari bfcache issues)
+    if (event.persisted) {
+      // small safety: reload but avoid infinite loops by using replaceState marker
+      if (!sessionStorage.getItem('fs_reloaded')) {
+        sessionStorage.setItem('fs_reloaded', '1');
+        // short timeout to allow history to settle then reload
+        setTimeout(()=> location.reload(), 60);
+      } else {
+        // clear marker after successful restore
+        sessionStorage.removeItem('fs_reloaded');
+      }
+    }
+  }, false);
+
+  // popstate fallback — if user navigates back and we detect document.body is empty or critical elements missing,
+  // reload page to re-render content. This mitigates some weird blank states on mobile browsers.
+  window.addEventListener('popstate', function(e){
+    try {
+      // if main content is absent or very small, reload
+      const main = document.querySelector('main');
+      if (!main || main.innerHTML.trim().length < 30) {
+        location.reload();
+      }
+    } catch(err) { console.warn('popstate handler err', err); location.reload(); }
+  });
+
+  // Extra precaution: when unloading, clear reload marker so future restores can reload again if necessary
+  window.addEventListener('unload', function(){ try { sessionStorage.removeItem('fs_reloaded'); } catch(e){} });
+
+  // Improve visual centering for inputs across platforms (ensure consistent height)
+  // Nothing to do here; CSS provides fixed heights for inputs/buttons to maintain center alignment.
+
+  // Small enhancement: add "active" class to nav link matching current page
+  (function markActiveNav(){
+    const path = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('nav.links a').forEach(a=>{
+      try {
+        const href = a.getAttribute('href') || '';
+        if (href === path || (href === 'index.html' && path === '')) {
+          a.classList.add('active');
+        } else {
+          a.classList.remove('active');
+        }
+      } catch(e){}
+    });
+  })();
+
+})();
+</script>
+</body>
+</html>
