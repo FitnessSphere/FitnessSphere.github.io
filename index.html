@@ -4,236 +4,212 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FitnessSphere — Home</title>
-  <meta name="description" content="FitnessSphere — clean fitness resources, trackers, and plans with a mint + sage premium theme." />
+  <meta name="description" content="FitnessSphere — clean fitness resources, trackers, and plans. Mint + sage theme." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <meta name="color-scheme" content="dark light">
 
   <style>
-  /* ===================================================================
-     FitnessSphere — Final homepage
-     - Strict header: only logo + site-name + three-line burger (works)
-     - Fixed burger/menu focus trap + smooth centered menu
-     - Hero heading fully visible and perfectly aligned
-     - Section spacing and separators between each section
-     - Alternate subtle backgrounds, sage + darker green accents alongside mint
-     - No underlines on clickable elements, strong focus-visible styling
-     - Prevent horizontal overflow (min-width:0 where needed, body overflow-x:hidden)
-     - Working testimonials persisted to localStorage
-     - Animated charts implemented in canvas (line + dough + bar)
-     - Many animations: reveal-on-scroll, parallax background elements, subtle float & micro interactions
-     - All page links preserved; heavy tools remain on their pages (but reachable)
-     =================================================================== */
+  /* ====================================================================
+     FitnessSphere — Index (Mobile/desktop responsive polish)
+     - Bigger animated hero headline (gradient + scale + reveal)
+     - Fixed spacing between sections + subtle divider
+     - No horizontal overflow; inputs/cards shrink properly (min-width:0)
+     - Canvas scaled to devicePixelRatio for sharpness
+     - Working testimonials and testimonial form layout fixed
+     - Preserve strict header (logo + site name + burger)
+     ==================================================================== */
 
   :root{
-    /* Primary palette */
-    --bg-900: #071018;
-    --bg-850: #08121b;
-
-    --mint-100: #e8fff8;
-    --mint-200: #bff7ea;
-    --mint-300: #86f4d0;
-    --mint-400: #39e0b0;
-    --mint-500: #10c08f;
-
-    /* Complementary greens */
-    --sage-300: #b8d9c8;
-    --sage-400: #92c6b0;
-    --sage-600: #6aa989;
-    --deep-green: #084d3d;
-
-    --muted: #9fbfb0;
-    --text: #e7fff6;
+    --bg-900:#071018;
+    --bg-850:#08121b;
+    --mint-300:#86f4d0;
+    --mint-400:#39e0b0;
+    --mint-500:#10c08f;
+    --sage-400:#92c6b0;
+    --deep-green:#083f34;
+    --muted:#9fbfb0;
+    --text:#e7fff6;
     --glass: rgba(255,255,255,0.03);
-    --soft-white: rgba(255,255,255,0.02);
-
-    --radius: 14px;
-    --radius-lg: 20px;
+    --radius:14px;
     --shadow-1: 0 8px 24px rgba(2,6,10,0.6);
     --shadow-2: 0 20px 40px rgba(2,6,10,0.75);
-
     --ease: cubic-bezier(.2,.9,.25,1);
-    --speed: 420ms;
-    --max-width: 1180px;
+    --max-width:1120px;
   }
 
-  /* Reset / base */
   *{box-sizing:border-box}
   html,body{height:100%; margin:0; padding:0; font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; background:
     radial-gradient(900px 500px at 8% 10%, rgba(16,193,138,0.04), transparent 30%),
-    linear-gradient(180deg,var(--bg-900),var(--bg-850));
-    color:var(--text);
-    scroll-behavior:smooth;
-    -webkit-font-kerning: normal;
-  }
+    linear-gradient(180deg,var(--bg-900),var(--bg-850)); color:var(--text); scroll-behavior:smooth; }
 
-  /* Prevent horizontal tilt/overflow */
-  body{overflow-x:hidden; min-width:0}
+  /* Prevent horizontal overflow */
+  body { overflow-x: hidden; min-width:0; }
 
-  /* Remove underlines and default link/button decorations */
-  a, button { text-decoration: none; border: none; background: none; color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; }
-  a:focus, button:focus { outline: 4px solid rgba(16,193,138,0.12); outline-offset: 4px; border-radius: 8px; }
+  a, button { text-decoration:none; border: none; background:none; color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; }
+  a:focus, button:focus { outline: 4px solid rgba(16,193,138,0.12); outline-offset: 4px; border-radius:8px; }
 
   .container{width:min(var(--max-width),94%); margin:0 auto}
   .center{display:flex; align-items:center; justify-content:center}
   .row{display:flex; gap:16px; align-items:center; flex-wrap:wrap}
   .col{flex:1; min-width:0}
   .muted{color:var(--muted)}
+  .mb-6{margin-bottom:24px}
+  .mt-6{margin-top:24px}
 
-  /* ---------------- Header (STRICT) ---------------- */
-  header.site-header{
+  /* Header (strict: logo + site name + burger only) */
+  header.site-header {
     position: sticky; top:0; z-index:1400; backdrop-filter: blur(8px) saturate(120%);
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     border-bottom: 1px solid rgba(255,255,255,0.03);
   }
-  .site-header .container{display:flex; align-items:center; justify-content:space-between; padding:12px 6px}
-  .brand{display:flex; gap:12px; align-items:center; text-decoration:none}
-  .brand img{height:44px; width:auto; display:block; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6))}
-  .brand .site-name{font-weight:800; color:var(--mint-300); letter-spacing:0.2px; font-size:1.05rem}
+  .site-header .container{display:flex;align-items:center;justify-content:space-between;padding:12px 6px}
+  .brand{display:flex;gap:12px;align-items:center;text-decoration:none}
+  .brand img{height:44px;width:auto;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6))}
+  .brand .site-name{font-weight:800;color:var(--mint-300);letter-spacing:0.2px;font-size:1.04rem}
 
-  /* Three-line burger */
-  .burger{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);cursor:pointer;transition:transform 160ms var(--ease)}
-  .burger:active{transform:scale(.98)}
-  .burger .lines{width:22px;height:16px;position:relative;display:block}
-  .burger .lines span{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--mint-300),var(--mint-500));border-radius:2px;transition:transform 260ms var(--ease),opacity 240ms var(--ease)}
+  .burger{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+  .burger .lines{width:22px;height:16px;position:relative}
+  .burger .lines span{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--mint-300),var(--mint-500));border-radius:2px;transition:transform 240ms var(--ease),opacity 200ms var(--ease)}
   .burger .lines span:nth-child(1){top:0} .burger .lines span:nth-child(2){top:7px} .burger .lines span:nth-child(3){top:14px}
   .burger.open .lines span:nth-child(1){transform:translateY(7px) rotate(45deg)}
   .burger.open .lines span:nth-child(2){opacity:0}
   .burger.open .lines span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-  /* ---------------- Centered Fullscreen Menu (robust) ---------------- */
-  .fullmenu{
-    position:fixed; inset:0; z-index:1600; display:none; align-items:center; justify-content:center; padding:28px;
-    background: linear-gradient(180deg, rgba(3,7,10,0.92), rgba(3,7,10,0.96)); transition:opacity 280ms var(--ease), transform 320ms var(--ease);
-  }
-  .fullmenu.show{display:flex; opacity:1}
-  .menu-panel{
-    width:min(820px,96%); border-radius:18px; padding:20px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.03); box-shadow:var(--shadow-2); transform:translateY(-10px); transition: transform 320ms var(--ease), opacity 280ms var(--ease);
-  }
-  .fullmenu.show .menu-panel{transform:translateY(0)}
+  /* Menu */
+  .fullmenu{position:fixed; inset:0; z-index:1600; display:none; align-items:center; justify-content:center; padding:28px; background: linear-gradient(180deg, rgba(3,7,10,0.92), rgba(3,7,10,0.96)); transition: opacity 260ms var(--ease) }
+  .fullmenu.show{display:flex}
+  .menu-panel{width:min(760px,96%); border-radius:18px; padding:20px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); box-shadow:var(--shadow-2)}
   .menu-grid{display:grid; grid-template-columns: 1fr 1fr; gap:8px}
   .menu-grid a{display:block;padding:12px 14px;border-radius:10px;font-weight:700;color:var(--mint-300)}
   .menu-grid a:hover{background:rgba(16,193,138,0.03)}
 
-  /* ---------------- Hero (careful placement) ---------------- */
-  .hero{padding:92px 0 30px; position:relative}
-  .hero-inner{max-width:980px; margin:0 auto; text-align:left; padding:0 12px}
-  .hero-row{display:flex; align-items:center; gap:28px; justify-content:space-between; flex-wrap:wrap}
-  .hero-left{flex:1; min-width:280px}
-  .hero-right{width:420px; max-width:45%; min-width:200px; display:flex; align-items:center; justify-content:center}
-
-  .chip{
-    display:inline-block; padding:9px 14px; border-radius:999px; font-weight:800; color:#04221b;
-    background: linear-gradient(90deg,var(--mint-300),var(--mint-500)); box-shadow:0 10px 28px rgba(16,193,138,0.12);
-    animation:chipFloat 3600ms infinite ease-in-out;
-  }
-  @keyframes chipFloat{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-
-  /* Large headline: left-aligned for clarity (fixing placement issues) */
-  .hero h1{
-    margin:18px 0 12px; font-weight:900; font-size:clamp(2.2rem, 6.5vw, 3.8rem); line-height:1.02;
-    background: linear-gradient(180deg,var(--sage-300),var(--mint-400)); -webkit-background-clip:text; color:transparent;
-    filter: drop-shadow(0 14px 30px rgba(6,55,46,0.25));
-    transform-origin:left; opacity:0; transform:translateY(12px); transition:opacity 520ms var(--ease), transform 520ms var(--ease);
-  }
-  .hero h1.in-view{opacity:1; transform:translateY(0)}
-
-  .hero p.lead{margin:0;color:var(--muted); font-size:1rem; max-width:640px; opacity:0; transform:translateY(8px); transition:opacity 520ms var(--ease) 80ms, transform 520ms var(--ease) 80ms}
-  .hero p.lead.in-view{opacity:1; transform:translateY(0)}
-
-  .cta-row{display:flex; gap:12px; margin-top:18px}
-  .btn{padding:12px 18px; border-radius:12px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition: transform 200ms var(--ease), box-shadow 200ms var(--ease }
-  .btn.primary{background:linear-gradient(90deg,var(--mint-400),var(--sage-400)); color:#04221b; box-shadow:0 12px 30px rgba(16,193,138,0.12)}
-  .btn.ghost{background:transparent;color:var(--mint-300); border:1px solid rgba(255,255,255,0.03)}
-
-  /* Hero right: decorative card with floating ring and small chart preview */
-  .hero-card{width:100%;max-width:420px;padding:18px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); box-shadow:var(--shadow-1)}
-  .hero-card h3{margin:0 0 8px;color:var(--sage-400)}
-  .hero-card p{margin:0;color:var(--muted)}
-
-  /* ---------------- Section separators & alternate BGs ---------------- */
+  /* SECTION spacing & divider */
   .section{padding:46px 0}
   .section + .section{padding-top:34px}
-  .section--alt{background: linear-gradient(180deg, rgba(16,193,138,0.02), rgba(255,255,255,0.00));}
-  .section-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px}
-  .section-divider{height:4px; border-radius:999px; background: linear-gradient(90deg,var(--mint-300),var(--sage-400)); box-shadow: 0 6px 24px rgba(10,130,100,0.06); margin:18px 0}
+  .section--alt{background: linear-gradient(180deg, rgba(16,193,138,0.02), rgba(255,255,255,0.00))}
+  .section-divider{height:4px;border-radius:999px;background: linear-gradient(90deg,var(--mint-300),var(--sage-400)); box-shadow: 0 6px 24px rgba(10,130,100,0.05); margin:20px 0}
 
-  /* ---------------- Feature cards ---------------- */
-  .features-grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:18px; align-items:stretch}
-  .feature-card{padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); box-shadow:var(--shadow-1);transition:transform 360ms var(--ease), box-shadow 360ms var(--ease),opacity 420ms var(--ease); opacity:0; transform:translateY(10px)}
-  .feature-card.in-view{opacity:1; transform:translateY(0)}
-  .feature-card:hover{transform:translateY(-8px); box-shadow:0 30px 60px rgba(0,0,0,0.55)}
-  .feature-card h3{margin:0 0 8px;color:var(--sage-600)}
+  /* HERO layout: left content, right preview card; stacks cleanly on mobile */
+  .hero{padding:84px 0 30px; position:relative}
+  .hero-inner{max-width:1100px;margin:0 auto;padding:0 12px}
+  .hero-row{display:flex;align-items:flex-start;gap:28px;justify-content:space-between;flex-wrap:wrap}
+  .hero-left{flex:1;min-width:280px}
+  .hero-right{width:420px;max-width:45%;min-width:220px}
 
-  /* ---------------- Charts ---------------- */
-  .chart-grid{display:grid; grid-template-columns: 1fr 420px; gap:18px; align-items:start}
-  .chart-card{padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03); background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); display:flex; gap:12px; align-items:stretch}
-  canvas{width:100%; height:220px; display:block; border-radius:8px}
+  .chip{display:inline-block;padding:9px 14px;border-radius:999px;font-weight:800;color:#04221b;background:linear-gradient(90deg,var(--mint-300),var(--mint-500));box-shadow:0 10px 28px rgba(16,193,138,0.12); animation:chipFloat 3600ms infinite ease-in-out}
+  @keyframes chipFloat{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
 
-  /* ---------------- Testimonials & user comments ---------------- */
-  .test-section{display:grid; gap:12px}
-  .testimonial-wrapper{display:flex; gap:12px; align-items:center; overflow:hidden; border-radius:12px}
-  .testimonial-track{display:flex; gap:12px; transition:transform 600ms var(--ease); will-change: transform}
-  .testimonial{min-width:260px;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01),transparent); opacity:0; transform:translateY(8px); transition:opacity 520ms var(--ease), transform 520ms var(--ease)}
-  .testimonial.in-view{opacity:1; transform:translateY(0)}
-  .testimonial h4{margin:0 0 8px;color:var(--mint-300)}
-  .testimonial p{margin:0;color:var(--muted)}
-  .test-form{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-  .test-form input{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text); min-width:0; flex:1}
+  /* BIG animated hero headline (clamped, scales on reveal) */
+  .hero h1{
+    margin:18px 0 12px; font-weight:900;
+    font-size: clamp(2.4rem, 8.5vw, 4.2rem); line-height:1.02;
+    background: linear-gradient(90deg,var(--mint-300),var(--sage-400)); -webkit-background-clip:text; color:transparent;
+    filter: drop-shadow(0 18px 36px rgba(6,55,46,0.22));
+    transform-origin:left center; opacity:0; transform: scale(0.96) translateY(12px);
+    transition: transform 620ms var(--ease), opacity 540ms var(--ease);
+  }
+  .hero h1.in-view{opacity:1; transform: scale(1) translateY(0);}
 
-  /* ---------------- Contact (no overflow) ---------------- */
-  .contact-panel{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
-  .contact-panel form{display:flex; gap:8px; align-items:center; flex:1; min-width:0}
-  .contact-panel input[type="email"], .contact-panel input[type="text"]{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03); background:transparent;color:var(--text); min-width:0; flex:1}
+  /* add a subtle animated gradient shift */
+  .hero h1.animatedGradient{
+    background-size:200% 100%;
+    animation: gradientShift 4.2s ease-in-out infinite;
+  }
+  @keyframes gradientShift{
+    0%{ background-position:0% 50% }
+    50%{ background-position:100% 50% }
+    100%{ background-position:0% 50% }
+  }
 
-  /* Footer spacing so it doesn't touch bottom */
-  footer{padding:40px 0; border-top:1px solid rgba(255,255,255,0.02); margin-top:24px}
+  .hero p.lead{margin:0;color:var(--muted);font-size:1rem;max-width:680px;opacity:0;transform:translateY(6px);transition:opacity 520ms var(--ease) 100ms, transform 520ms var(--ease) 100ms}
+  .hero p.lead.in-view{opacity:1;transform:translateY(0)}
 
-  /* ---------------- Visual micro-interactions ---------------- */
-  .floaty { animation: floaty 4s ease-in-out infinite; }
-  @keyframes floaty { 0% { transform: translateY(0) } 50% { transform: translateY(-8px) } 100% { transform: translateY(0) } }
+  .cta-row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .btn{padding:12px 18px;border-radius:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform 200ms var(--ease),box-shadow 200ms var(--ease}
+  .btn.primary{background:linear-gradient(90deg,var(--mint-400),var(--sage-400)); color:#04221b; box-shadow:0 12px 30px rgba(16,193,138,0.12)}
+  .btn.ghost{background:transparent;color:var(--mint-300);border:1px solid rgba(255,255,255,0.03)}
+  .btn:active{transform:translateY(1px)}
 
-  .glow-on-hover:hover { box-shadow: 0 18px 40px rgba(16,193,138,0.12); transform: translateY(-6px) }
+  /* hero preview card */
+  .hero-card{padding:18px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-1)}
+  .hero-card h3{margin:0 0 8px;color:var(--sage-400)} .hero-card p{margin:0;color:var(--muted)}
 
-  /* responsive tweaks */
+  /* features */
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+  .feature-card{padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01),transparent);box-shadow:var(--shadow-1);transition:transform 320ms var(--ease),opacity 420ms var(--ease);opacity:0;transform:translateY(10px)}
+  .feature-card.in-view{opacity:1;transform:translateY(0)}
+  .feature-card:hover{transform:translateY(-8px);box-shadow:0 28px 56px rgba(0,0,0,0.6)}
+  .feature-card h3{margin:0 0 8px;color:var(--deep-green)}
+
+  /* charts */
+  .chart-grid{display:grid;grid-template-columns:1fr 420px;gap:18px;align-items:start}
+  .chart-card{padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01),transparent);display:flex;gap:12px;align-items:stretch}
+  .chart-card canvas{width:100%;height:220px; display:block;border-radius:8px}
+
+  /* testimonials */
+  .testimonial-wrapper{display:flex;gap:12px;align-items:center;overflow:hidden;border-radius:12px}
+  .testimonial-track{display:flex;gap:12px;transition:transform 600ms var(--ease);will-change:transform}
+  .testimonial{min-width:260px;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01),transparent);opacity:0;transform:translateY(8px);transition:opacity 520ms var(--ease),transform 520ms var(--ease)}
+  .testimonial.in-view{opacity:1;transform:translateY(0)}
+  .test-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .test-form input{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text);min-width:0;flex:1}
+
+  /* contact */
+  .contact-panel{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .contact-panel form{display:flex;gap:8px;align-items:center;flex:1;min-width:0}
+  .contact-panel input[type="email"], .contact-panel input[type="text"]{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text);min-width:0;flex:1}
+
+  footer{padding:40px 0;border-top:1px solid rgba(255,255,255,0.02);margin-top:18px}
+
+  /* micro-interactions */
+  .floaty{animation:floaty 4s ease-in-out infinite}
+  @keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+  .glow-on-hover:hover{box-shadow:0 18px 40px rgba(16,193,138,0.12);transform:translateY(-6px)}
+
+  /* Responsive adjustments */
   @media (max-width:980px){
-    .hero-right{width:100%; max-width:100%}
-    .hero-left{text-align:left}
-    .hero-inner{text-align:left}
+    .hero-right{width:100%;max-width:100%}
+    .hero-row{align-items:flex-start}
     .chart-grid{grid-template-columns:1fr}
   }
   @media (max-width:640px){
-    .hero{padding:36px 0 20px}
-    .hero h1{font-size: clamp(1.8rem, 9vw, 2.4rem)}
+    .hero{padding:36px 0 18px}
+    .hero h1{font-size: clamp(1.9rem,9.8vw,3.2rem); text-align:center}
+    .hero-left{width:100%; text-align:center}
+    .hero-right{order:2}
+    .hero-card{margin-top:18px}
+    .features-grid{grid-template-columns:1fr}
+    .testimonial{min-width:220px}
+    .menu-panel{padding:14px}
+    .menu-grid{grid-template-columns:1fr}
+    .test-form{display:flex;flex-direction:column}
+    .contact-panel form{flex-direction:column}
+    .cta-row{justify-content:center}
   }
-
-  /* tiny helpers */
-  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-  .mb-8{margin-bottom:32px} .mt-6{margin-top:24px} .muted-small{color:var(--muted);font-size:0.92rem}
 
   </style>
 </head>
 <body>
 
-  <!-- HEADER: Logo + Name + 3-line burger only -->
+  <!-- Header -->
   <header class="site-header" role="banner" aria-label="Main header">
-    <div class="container" style="display:flex; align-items:center; justify-content:space-between;">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between">
       <a class="brand" href="index.html" aria-label="FitnessSphere home">
-        <img src="logo.png" alt="FitnessSphere logo">
+        <img src="logo.png" alt="FitnessSphere logo" />
         <div class="site-name">FitnessSphere</div>
       </a>
-      <button id="burger" class="burger" aria-controls="mainMenu" aria-expanded="false" aria-label="Open navigation menu">
-        <span class="lines"><span></span><span></span><span></span></span>
+
+      <button id="burger" class="burger" aria-controls="mainMenu" aria-expanded="false" aria-label="Open menu">
+        <div class="lines" aria-hidden="true"><span></span><span></span><span></span></div>
       </button>
     </div>
   </header>
 
-  <!-- FULLSCREEN MENU -->
+  <!-- Fullscreen menu -->
   <div id="mainMenu" class="fullmenu" aria-hidden="true" role="dialog" aria-label="Main menu">
     <div class="menu-panel container" role="document" aria-modal="true">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <div style="display:flex;gap:12px;align-items:center">
-          <img src="logo.png" alt="" style="height:36px">
+          <img src="logo.png" alt="" style="height:36px"/>
           <div style="font-weight:800;color:var(--mint-300)">FitnessSphere</div>
         </div>
         <div>
@@ -241,7 +217,7 @@
         </div>
       </div>
 
-      <div class="menu-grid" role="navigation" aria-label="Site main navigation">
+      <nav class="menu-grid" aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="exercises.html">Exercises</a>
         <a href="calories.html">Calories</a>
@@ -250,12 +226,12 @@
         <a href="premium.html">Premium</a>
         <a href="#contact">Contact</a>
         <a href="#testTitle">User voices</a>
-      </div>
+      </nav>
 
-      <div style="height:18px"></div>
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+      <div style="height:14px"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
         <div class="muted-small">Quick actions</div>
-        <div style="display:flex; gap:8px">
+        <div style="display:flex;gap:8px">
           <button id="goTracker" class="btn">Tracker</button>
           <button id="goExercises" class="btn">Exercises</button>
         </div>
@@ -264,99 +240,99 @@
   </div>
 
   <main>
-
-    <!-- HERO: clean, left-aligned headline (placement fixed) -->
+    <!-- HERO -->
     <section class="section">
       <div class="container hero-inner">
         <div class="hero-row">
           <div class="hero-left">
             <div class="chip" id="heroChip">Train Smart. Live Well.</div>
-            <h1 id="homeTitle">Simple tools. Serious results.</h1>
+            <h1 id="homeTitle" class="animatedGradient">Simple tools. Serious results.</h1>
             <p class="lead">FitnessSphere focuses on clarity: dedicated pages with powerful tools. This homepage guides you — each section is spaced, labeled, and quick to navigate.</p>
 
-            <div class="cta-row mt-6">
+            <div class="cta-row">
               <a class="btn primary glow-on-hover" href="calories.html" id="cta-calories">Open Calorie Tracker</a>
               <a class="btn ghost" href="exercises.html" id="cta-exercises">Browse Exercises</a>
             </div>
           </div>
 
           <div class="hero-right">
-            <div class="hero-card floaty" role="img" aria-label="Quick preview">
+            <div class="hero-card floaty">
               <h3>Quick snapshot</h3>
               <p class="muted-small">Today • 1,240 kcal • Steps 4,200</p>
-              <div style="margin-top:12px; display:flex; gap:8px; align-items:center; justify-content:space-between;">
-                <div style="width:48%;"><canvas id="heroMini" width="200" height="120" style="border-radius:8px"></canvas></div>
-                <div style="width:48%; text-align:right;">
-                  <div style="font-weight:800; color:var(--sage-600)">Goal</div>
-                  <div class="muted-small">68% completed</div>
+              <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+                <div style="flex:1;">
+                  <canvas id="heroMini" width="300" height="180" style="display:block;width:100%;height:120px;border-radius:8px;"></canvas>
+                </div>
+                <div style="flex-basis:40%; text-align:right">
+                  <div style="font-weight:800; color:var(--sage-400)">Goal</div>
+                  <div style="color:var(--muted); font-size:1.1rem">68% completed</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- divider -->
         <div class="section-divider" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- FEATURES: spaced, alternate background -->
+    <!-- FEATURES -->
     <section class="section section--alt" aria-labelledby="featuresTitle">
       <div class="container">
-        <div class="section-head">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
           <div>
-            <h2 id="featuresTitle" style="margin:0; color:var(--sage-600)">What FitnessSphere does</h2>
-            <div class="muted-small">Each card opens a dedicated page with the full toolset (no heavy tools on the homepage).</div>
+            <h2 id="featuresTitle" style="margin:0;color:var(--sage-400)">What FitnessSphere does</h2>
+            <div class="muted-small">Each card links to a dedicated page with the full toolset.</div>
           </div>
-          <div class="muted-small">Tap a card to open the page</div>
+          <div class="muted-small">Tap a card to open the full page</div>
         </div>
 
-        <div class="features-grid" id="featuresGrid">
-          <a class="feature-card" href="calories.html"><h3>Calorie Tracker</h3><p>Log foods, view totals, macros, and export CSV. Full tracker is on the Calories page.</p></a>
-          <a class="feature-card" href="exercises.html"><h3>Exercise Library</h3><p>Search, filter by muscle group, save favorites and build quick workouts on the Exercises page.</p></a>
-          <a class="feature-card" href="weight-loss.html"><h3>Weight Loss</h3><p>Structured deficit programs and cardio templates. Open the Weight Loss page for programs.</p></a>
-          <a class="feature-card" href="weight-gain.html"><h3>Weight Gain</h3><p>Calorie surplus strategies, protein focused meals and strength templates on the Weight Gain page.</p></a>
-          <a class="feature-card" href="premium.html"><h3>Premium</h3><p>Cloud sync, advanced analytics, export and priority support. Details on the Premium page.</p></a>
-          <a class="feature-card" href="#contact"><h3>Support & Resources</h3><p>Beginner guides, vegetarian meals, and FAQs. All resources are linkable and easy to follow.</p></a>
+        <div class="features-grid">
+          <a class="feature-card" href="calories.html"><h3>Calorie Tracker</h3><p>Log meals, view totals, macros, and export CSV. Full tracker on the Calories page.</p></a>
+          <a class="feature-card" href="exercises.html"><h3>Exercise Library</h3><p>Filter by muscle group and save favorites. Exercises page has demos and filters.</p></a>
+          <a class="feature-card" href="weight-loss.html"><h3>Weight Loss</h3><p>Guided deficit plans and cardio templates. Programs on the Weight Loss page.</p></a>
+          <a class="feature-card" href="weight-gain.html"><h3>Weight Gain</h3><p>Surplus strategies, protein ideas, and strength templates on the Weight Gain page.</p></a>
+          <a class="feature-card" href="premium.html"><h3>Premium</h3><p>Cloud sync, advanced analytics, export and priority support on Premium.</p></a>
+          <a class="feature-card" href="#contact"><h3>Support & Resources</h3><p>Guides, vegetarian meal ideas, and FAQ resources.</p></a>
         </div>
 
         <div class="section-divider" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- ANALYTICS: Animated charts -->
+    <!-- ANALYTICS -->
     <section class="section" aria-labelledby="analyticsTitle">
       <div class="container">
-        <div class="section-head">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
           <div>
-            <h2 id="analyticsTitle" style="margin:0; color:var(--mint-300)">Quick analytics</h2>
-            <div class="muted-small">Animated charts powered by canvas — lightweight and offline-friendly.</div>
+            <h2 id="analyticsTitle" style="margin:0;color:var(--mint-300)">Quick analytics</h2>
+            <div class="muted-small">Animated charts previewed below (click to open full analytics).</div>
           </div>
-          <div class="muted-small">Preview demos</div>
+          <div class="muted-small">Demo charts</div>
         </div>
 
         <div class="chart-grid">
           <div class="chart-card">
             <div style="flex:1">
-              <canvas id="weeklyLine" width="800" height="240" aria-label="Weekly calories"></canvas>
+              <canvas id="weeklyLine" width="800" height="240" aria-label="Weekly calories chart"></canvas>
             </div>
-            <div style="width:220px; display:flex; flex-direction:column; gap:8px; align-items:flex-start;">
+            <div style="width:220px; display:flex; flex-direction:column; gap:8px;">
               <div style="font-weight:800; color:var(--mint-300)">Weekly calories</div>
-              <div class="muted-small">Animated line for the last 7 days.</div>
+              <div class="muted-small">Animated line of the last 7 days.</div>
               <button class="btn primary" id="openAnalytics">Open analytics</button>
             </div>
           </div>
 
           <div class="chart-card" style="flex-direction:column; align-items:stretch;">
-            <div style="display:flex; align-items:center; justify-content:space-between;">
-              <div style="font-weight:800; color:var(--sage-600)">Macros (today)</div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-weight:800;color:var(--sage-400)">Macros (today)</div>
               <div class="muted-small">Protein • Carbs • Fat</div>
             </div>
             <canvas id="macroDough" width="420" height="200" style="margin-top:12px"></canvas>
-            <div style="display:flex; gap:8px; margin-top:10px;">
-              <div style="flex:1; text-align:center;"><div style="font-weight:800; color:var(--mint-300)" id="pVal">120g</div><div class="muted-small">Protein</div></div>
-              <div style="flex:1; text-align:center;"><div style="font-weight:800; color:var(--sage-600)" id="cVal">240g</div><div class="muted-small">Carbs</div></div>
-              <div style="flex:1; text-align:center;"><div style="font-weight:800; color:var(--mint-400)" id="fVal">70g</div><div class="muted-small">Fats</div></div>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <div style="flex:1;text-align:center"><div style="font-weight:800;color:var(--mint-300)" id="pVal">120g</div><div class="muted-small">Protein</div></div>
+              <div style="flex:1;text-align:center"><div style="font-weight:800;color:var(--sage-400)" id="cVal">240g</div><div class="muted-small">Carbs</div></div>
+              <div style="flex:1;text-align:center"><div style="font-weight:800;color:var(--mint-400)" id="fVal">70g</div><div class="muted-small">Fats</div></div>
             </div>
           </div>
         </div>
@@ -365,42 +341,38 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS: functioning comments with localStorage -->
+    <!-- TESTIMONIALS -->
     <section class="section section--alt" aria-labelledby="testTitle">
       <div class="container">
-        <div class="section-head">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
           <div>
-            <h2 id="testTitle" style="margin:0; color:var(--mint-300)">User voices</h2>
-            <div class="muted-small">Add your comment — stored locally (demo). Testimonials auto-scroll but are controllable.</div>
+            <h2 id="testTitle" style="margin:0;color:var(--mint-300)">User voices</h2>
+            <div class="muted-small">Add your comment — stored locally (demo).</div>
           </div>
           <div class="muted-small">Community feedback</div>
         </div>
 
-        <div class="test-section">
-          <div class="testimonial-wrapper" id="testimonialWrapper" aria-live="polite">
-            <div class="testimonial-track" id="testimonialTrack">
-              <!-- testimonials inserted dynamically by JS -->
-            </div>
-          </div>
-
-          <form id="testimonialForm" class="test-form" style="margin-top:12px">
-            <input id="tName" type="text" placeholder="Your name (optional)">
-            <input id="tMsg" type="text" placeholder="Your short comment">
-            <button class="btn primary" type="submit">Add</button>
-          </form>
+        <div class="testimonial-wrapper" style="height:150px;">
+          <div id="testimonialTrack" class="testimonial-track" aria-live="polite"></div>
         </div>
+
+        <form id="testimonialForm" class="test-form" style="margin-top:12px">
+          <input id="tName" type="text" placeholder="Your name (optional)" />
+          <input id="tMsg" type="text" placeholder="Your short comment" />
+          <button class="btn primary" type="submit">Add</button>
+        </form>
 
         <div class="section-divider" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- CONTACT: fixed spacing, no overflow, big clear heading -->
+    <!-- CONTACT -->
     <section id="contact" class="section" aria-labelledby="contactTitle">
       <div class="container">
-        <div class="section-head">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
           <div>
-            <h2 id="contactTitle" style="margin:0; color:var(--sage-600)">Contact & Support</h2>
-            <div class="muted-small">Bugs, suggestions or collab? Use this form — it's compact and won't overflow your viewport.</div>
+            <h2 id="contactTitle" style="margin:0;color:var(--sage-400)">Contact & Support</h2>
+            <div class="muted-small">Bugs, suggestions or collab? Send a short message.</div>
           </div>
           <div class="muted-small">We reply quickly</div>
         </div>
@@ -415,14 +387,14 @@
       </div>
     </section>
 
-    <!-- FOOTER (safe spacing) -->
+    <!-- FOOTER -->
     <footer>
-      <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-        <div style="display:flex; gap:12px; align-items:center;">
-          <img src="logo.png" alt="" style="height:34px">
-          <div class="muted-small">&copy; <span id="year"></span> FitnessSphere</div>
+      <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <img src="logo.png" alt="" style="height:34px"/>
+          <div class="muted-small">&copy; <span id="yr"></span> FitnessSphere</div>
         </div>
-        <div style="display:flex; gap:12px; align-items:center;">
+        <div style="display:flex;gap:12px;align-items:center">
           <a href="#privacy" class="muted-small">Privacy</a>
           <a href="#terms" class="muted-small">Terms</a>
         </div>
@@ -431,77 +403,54 @@
 
   </main>
 
-  <!-- Modal root (kept small and centered) -->
-  <div id="modalRoot" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1800; padding:18px;">
-    <div id="modalInner" style="width:min(920px,96%); border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:16px; border:1px solid rgba(255,255,255,0.03)"></div>
+  <!-- modal root -->
+  <div id="modalRoot" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1800;padding:18px;">
+    <div id="modalInner" style="width:min(820px,96%);border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border:1px solid rgba(255,255,255,0.03)"></div>
   </div>
 
   <script>
-  /* ===========================================================================
-     Robust JS:
-       - Burger/menu (focus trap, accessible)
-       - Scroll reveal (IntersectionObserver)
-       - Parallax scrolling accents
-       - Testimonials load/save/render + auto-scroll
-       - Charts: hero mini, weekly line, macro dough (animated)
-       - Contact & testimonial submit handlers
-       - Many micro-interactions (hover, focus, subtle animation)
-     =========================================================================== */
+  /* ==========================================================================
+     JS improvements:
+      - Burger/menu: robust open/close + focus trap + scroll lock
+      - Hero headline: add reveal and large animated gradient class
+      - Ensure canvases scale with DPR for sharpness on mobile
+      - Testimonials: persist, render, and auto-scroll fixed (no overlap)
+      - Contact/testimonial forms: safe lightweight demo behaviour
+      - Reveal-on-scroll via IntersectionObserver
+     ========================================================================= */
 
   (function(){
-    const $ = s => document.querySelector(s);
-    const $$ = s => Array.from(document.querySelectorAll(s));
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const yr = new Date().getFullYear(); $('#yr').textContent = yr;
 
-    // ---------- utilities ----------
-    function safeHTML(s) { return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
-    function clamp(v,a,b){ return Math.min(b, Math.max(a,v)); }
-    function AF(cb){ return window.requestAnimationFrame(cb); }
+    // Helper safe HTML
+    function escapeHtml(s){ return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
 
-    // set year
-    $('#year').textContent = new Date().getFullYear();
-
-    // ---------- menu (robust) ----------
-    const burger = $('#burger');
-    const mainMenu = $('#mainMenu');
-    const menuClose = $('#menuClose');
-
+    // === Menu ===
+    const burger = $('#burger'), mainMenu = $('#mainMenu'), menuClose = $('#menuClose');
     function openMenu(){
       burger.classList.add('open');
       burger.setAttribute('aria-expanded','true');
       mainMenu.classList.add('show');
       mainMenu.style.display = 'flex';
-      mainMenu.setAttribute('aria-hidden','false');
-      document.body.style.overflow = 'hidden'; // trap scrolling
-      // focus trap: focus first interactive
-      setTimeout(()=> {
-        const first = mainMenu.querySelector('a,button');
-        if(first) first.focus();
-      }, 180);
+      document.body.style.overflow = 'hidden';
+      setTimeout(()=> { mainMenu.querySelector('a,button')?.focus(); }, 160);
     }
-
     function closeMenu(){
       burger.classList.remove('open');
       burger.setAttribute('aria-expanded','false');
-      mainMenu.setAttribute('aria-hidden','true');
       mainMenu.style.opacity = '0';
       document.body.style.overflow = '';
-      setTimeout(()=>{
-        mainMenu.style.display = 'none';
-        mainMenu.style.opacity = '';
-        // restore focus
-        burger.focus();
-      }, 260);
+      setTimeout(()=> { mainMenu.style.display = 'none'; mainMenu.style.opacity = ''; }, 260);
+      setTimeout(()=> burger.focus(), 300);
     }
-
-    burger.addEventListener('click', () => burger.classList.contains('open') ? closeMenu() : openMenu());
+    burger.addEventListener('click', ()=> burger.classList.contains('open') ? closeMenu() : openMenu());
     menuClose?.addEventListener('click', closeMenu);
-    mainMenu.addEventListener('click', (e) => { if(e.target === mainMenu) closeMenu(); });
-    document.addEventListener('keydown', (e) => {
-      if(e.key === 'Escape'){ if(mainMenu.classList.contains('show')) closeMenu(); closeModal(); }
-      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); document.querySelector('.feature-card')?.focus(); }
-    });
+    mainMenu.addEventListener('click', e => { if(e.target === mainMenu) closeMenu(); });
+    document.addEventListener('keydown', e => { if(e.key === 'Escape'){ if(mainMenu.classList.contains('show')) closeMenu(); closeModal(); } });
 
-    // focus trap inside menu
+    // focus trap in menu
     mainMenu.addEventListener('keydown', function(e){
       if(e.key !== 'Tab') return;
       const focusables = Array.from(mainMenu.querySelectorAll('a,button,input,select,textarea')).filter(el => el.offsetParent !== null);
@@ -511,276 +460,225 @@
       else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
     });
 
-    // ---------- Scroll reveal ----------
-    const revealEls = document.querySelectorAll('.hero h1, .hero p.lead, .preview, .feature-card, .testimonial, .hero-card');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(en => {
-        if(en.isIntersecting) {
-          en.target.classList.add('in-view');
-          // unobserve to reduce work
-          io.unobserve(en.target);
-        }
+    // === Reveal on load/scroll ===
+    const revealSelector = '.hero h1, .hero p.lead, .feature-card, .hero-card, .social, .testimonial';
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(ent => {
+        if(ent.isIntersecting) { ent.target.classList.add('in-view'); observer.unobserve(ent.target); }
       });
-    }, { threshold: 0.12 });
-    revealEls.forEach(el => io.observe(el));
+    }, {threshold: 0.12});
+    $$(revealSelector).forEach(el => observer.observe(el));
 
-    // ---------- subtle parallax decorations (based on scroll) ----------
-    // We'll move hero-right slightly for parallax effect
-    const heroRight = document.querySelector('.hero-right');
-    window.addEventListener('scroll', () => {
-      if(!heroRight) return;
-      const sc = window.scrollY;
-      // small translate for parallax
-      heroRight.style.transform = `translateY(${clamp(sc * 0.02, 0, 24)}px)`;
-    }, { passive: true });
+    // Ensure hero headline has animated reveal class
+    setTimeout(()=> {
+      const h = $('#homeTitle');
+      if(h){ h.classList.add('in-view'); h.classList.add('animatedGradient'); }
+      $('#heroChip')?.classList.add('in-view');
+      $('#homeTitle')?.scrollIntoView({block:'nearest', behavior:'smooth'});
+    }, 120);
 
-    // ---------- hero mini chart (small donut) ----------
-    (function drawHeroMini(){
-      const c = document.getElementById('heroMini');
-      if(!c) return;
-      const ctx = c.getContext('2d'), w = c.width, h = c.height;
-      const vals = [40, 35, 25];
-      const colors = ['#86f4d0','#39e0b0','#10c08f'];
-      let t0 = null;
+    // === Canvas: DPR scaling helper ===
+    function scaleCanvas(canvas){
+      if(!canvas) return;
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      canvas.getContext('2d').scale(dpr, dpr);
+    }
+
+    // Hero mini donut
+    (function heroMini(){
+      const canvas = document.getElementById('heroMini');
+      if(!canvas) return;
       function draw(p){
+        // scale for crispness
+        scaleCanvas(canvas);
+        const ctx = canvas.getContext('2d');
+        const w = canvas.clientWidth, h = canvas.clientHeight;
         ctx.clearRect(0,0,w,h);
-        const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 8;
+        const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 12;
+        const vals = [40,35,25]; const colors = ['#86f4d0','#39e0b0','#10c08f'];
         let start = -Math.PI/2;
         const total = vals.reduce((s,v)=>s+v,0);
         for(let i=0;i<vals.length;i++){
           const slice = (vals[i]/total) * Math.PI*2 * p;
-          ctx.beginPath();
-          ctx.moveTo(cx,cy);
-          ctx.arc(cx,cy,r,start,start+slice);
-          ctx.closePath();
-          ctx.fillStyle = colors[i];
-          ctx.fill();
+          ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,start+slice); ctx.closePath();
+          ctx.fillStyle = colors[i]; ctx.fill();
           start += slice;
         }
-        // small ring
-        ctx.beginPath(); ctx.arc(cx,cy,r+4,0,Math.PI*2); ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=6; ctx.stroke();
+        // ring
+        ctx.beginPath(); ctx.arc(cx,cy,r+6,0,Math.PI*2); ctx.lineWidth=6; ctx.strokeStyle='rgba(255,255,255,0.04)'; ctx.stroke();
       }
+      let t0 = null;
       function step(ts){
-        if(!t0) t0 = ts; const t = Math.min(1,(ts-t0)/800);
-        draw(t);
-        if(t < 1) requestAnimationFrame(step);
+        if(!t0) t0 = ts;
+        const p = Math.min(1,(ts - t0)/800);
+        draw(p);
+        if(p < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
+      window.addEventListener('resize', ()=> { scaleCanvas(canvas); draw(1); });
     })();
 
-    // ---------- Charts: Weekly line & macro dough ----------
-    (function charts(){
-      // Line chart (weekly)
-      const line = document.getElementById('weeklyLine');
-      if(!line) return;
-      const ctx = line.getContext('2d');
-      // sample data (kcal)
-      const data = [2100, 1850, 2300, 1900, 2050, 2400, 2200];
-
-      function drawLine(progress){
-        const w = line.width, h = line.height;
+    // Weekly line chart
+    (function weeklyLine(){
+      const canvas = document.getElementById('weeklyLine');
+      if(!canvas) return;
+      const data = [2100,1850,2300,1900,2050,2400,2200];
+      function draw(progress){
+        scaleCanvas(canvas);
+        const ctx = canvas.getContext('2d');
+        const w = canvas.clientWidth, h = canvas.clientHeight;
         ctx.clearRect(0,0,w,h);
-        // background subtle
-        ctx.fillStyle = 'rgba(255,255,255,0.01)';
-        ctx.fillRect(0,0,w,h);
-
-        const pad = 30;
-        const max = Math.max(...data) * 1.06;
-        const min = Math.min(...data) * 0.94;
-        const range = max - min;
-        const stepX = (w - pad*2) / (data.length - 1);
-
         // grid
+        ctx.fillStyle = 'rgba(255,255,255,0.01)'; ctx.fillRect(0,0,w,h);
+        const pad = 28; const max = Math.max(...data)*1.06; const min = Math.min(...data)*0.94; const range = max-min;
+        const stepX = (w - pad*2) / (data.length - 1);
         ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1;
-        for(let i=0;i<4;i++){
-          const y = pad + ( (h - pad*2) * (i/3) );
-          ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w-pad, y); ctx.stroke();
-        }
-
+        for(let i=0;i<4;i++){ const y = pad + (h - pad*2)*(i/3); ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke(); }
         // path
         ctx.beginPath();
         for(let i=0;i<data.length;i++){
           const x = pad + i*stepX;
-          const v = data[i];
-          const y = pad + ( (max - (min + (v-min) * progress)) / range) * (h - pad*2);
+          const y = pad + ((max - (min + (data[i]-min)*progress))/range) * (h - pad*2);
           if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
         }
-        // stroke with gradient
+        // stroke gradient
         const g = ctx.createLinearGradient(0,0,w,0); g.addColorStop(0,'#86f4d0'); g.addColorStop(1,'#10c08f');
         ctx.strokeStyle = g; ctx.lineWidth = 3; ctx.stroke();
-
-        // fill under
-        ctx.lineTo(w-pad, h-pad); ctx.lineTo(pad, h-pad); ctx.closePath();
-        ctx.fillStyle = 'rgba(16,192,143,0.06)'; ctx.fill();
-
+        // fill
+        ctx.lineTo(w-pad,h-pad); ctx.lineTo(pad,h-pad); ctx.closePath(); ctx.fillStyle='rgba(16,192,143,0.06)'; ctx.fill();
         // points
         for(let i=0;i<data.length;i++){
           const x = pad + i*stepX;
-          const v = data[i];
-          const y = pad + ( (max - (min + (v-min) * progress)) / range) * (h - pad*2);
+          const y = pad + ((max - (min + (data[i]-min)*progress))/range) * (h - pad*2);
           ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill();
         }
       }
+      let start = null;
+      function animate(ts){
+        if(!start) start = ts;
+        const t = Math.min(1,(ts-start)/900);
+        draw(t);
+        if(t < 1) requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+      window.addEventListener('resize', ()=>{ draw(1); });
+    })();
 
-      // animate
-      (function animateLine(t0 = null){
-        function step(ts){
-          if(!t0) t0 = ts;
-          const t = Math.min(1,(ts - t0)/900);
-          drawLine(t);
-          if(t < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-      })();
-
-      // Dough chart (macros)
-      const d = document.getElementById('macroDough');
-      const dctx = d.getContext('2d');
-      const macros = { p: 120, c: 240, f: 70 }; // grams
+    // Macro dough chart
+    (function macroDough(){
+      const canvas = document.getElementById('macroDough');
+      if(!canvas) return;
+      const macros = {p:120,c:240,f:70};
       $('#pVal').textContent = macros.p + 'g';
       $('#cVal').textContent = macros.c + 'g';
       $('#fVal').textContent = macros.f + 'g';
-
-      function drawDough(progress){
-        const w = d.width, h = d.height;
-        dctx.clearRect(0,0,w,h);
+      function draw(progress){
+        scaleCanvas(canvas);
+        const ctx = canvas.getContext('2d');
+        const w = canvas.clientWidth, h = canvas.clientHeight;
+        ctx.clearRect(0,0,w,h);
         const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 18;
         const vals = [macros.p, macros.c, macros.f];
         const colors = ['#86f4d0','#39e0b0','#10c08f'];
-        const total = vals.reduce((s,v) => s + v, 0) || 1;
+        const total = vals.reduce((s,v)=>s+v,0) || 1;
         let start = -Math.PI/2;
         for(let i=0;i<vals.length;i++){
           const slice = (vals[i]/total) * Math.PI*2 * progress;
-          dctx.beginPath();
-          dctx.moveTo(cx,cy);
-          dctx.arc(cx,cy,r,start,start+slice);
-          dctx.closePath();
-          dctx.fillStyle = colors[i];
-          dctx.fill();
+          ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,start+slice); ctx.closePath();
+          ctx.fillStyle = colors[i]; ctx.fill();
           start += slice;
         }
-        dctx.beginPath(); dctx.arc(cx,cy,r+4,0,Math.PI*2); dctx.strokeStyle='rgba(255,255,255,0.04)'; dctx.lineWidth=6; dctx.stroke();
+        ctx.beginPath(); ctx.arc(cx,cy,r+4,0,Math.PI*2); ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 6; ctx.stroke();
       }
-      (function animateDough(){ let t0=null; function step(ts){ if(!t0) t0 = ts; const p = Math.min(1, (ts - t0) / 900); drawDough(p); if(p < 1) requestAnimationFrame(step); } requestAnimationFrame(step); })();
-
+      let t0 = null;
+      function anim(ts){ if(!t0) t0 = ts; const p = Math.min(1,(ts-t0)/900); draw(p); if(p < 1) requestAnimationFrame(anim); }
+      requestAnimationFrame(anim);
+      window.addEventListener('resize', ()=> draw(1));
     })();
 
-    // ---------- Testimonials (persist + render + auto-scroll) ----------
+    // === Testimonials (persist + render + auto-scroll) ===
     (function testimonials(){
-      const KEY = 'fs_testimonials_v2';
-      const defaultList = [
+      const KEY = 'fitnesssphere_tests_v3';
+      const defaults = [
         {name:'Student, India', text:'Clean & quick — exactly what I needed'},
         {name:'Runner', text:'Progress rings kept me consistent'},
         {name:'Coach', text:'Premium analytics are worth it'},
         {name:'Remote worker', text:'Responsive & smooth UI'}
       ];
       let list = [];
-      try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); list = Array.isArray(saved) ? saved.concat(defaultList) : defaultList.slice(); } catch(e){ list = defaultList.slice(); }
+      try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); list = Array.isArray(saved) && saved.length ? saved.concat(defaults) : defaults.slice(); }
+      catch(e){ list = defaults.slice(); }
 
       const track = $('#testimonialTrack');
+
       function render(){
         track.innerHTML = '';
         list.forEach(item => {
           const div = document.createElement('div');
           div.className = 'testimonial';
-          div.innerHTML = `<h4>${safeHTML(item.text)}</h4><p style="margin-top:8px;color:var(--muted)">— ${safeHTML(item.name || 'Anonymous')}</p>`;
+          div.innerHTML = `<h4>${escapeHtml(item.text)}</h4><p style="margin-top:8px;color:var(--muted)">— ${escapeHtml(item.name || 'Anonymous')}</p>`;
           track.appendChild(div);
         });
-        // stage in-view animation
         setTimeout(()=> {
-          $$('.testimonial').forEach((el,i) => setTimeout(()=> el.classList.add('in-view'), i*80));
+          $$('.testimonial').forEach((el,i)=> setTimeout(()=> el.classList.add('in-view'), i*80));
         }, 80);
         restartAutoScroll();
       }
 
-      // add new
       $('#testimonialForm').addEventListener('submit', function(e){
         e.preventDefault();
-        const nm = $('#tName').value.trim() || 'Anonymous';
+        const name = $('#tName').value.trim() || 'Anonymous';
         const msg = $('#tMsg').value.trim();
         if(!msg){ $('#tMsg').focus(); return; }
-        list.unshift({name:nm, text:msg});
-        // keep to 60 items max locally
+        list.unshift({name, text: msg});
+        // cap locally
         localStorage.setItem(KEY, JSON.stringify(list.slice(0,60)));
         $('#tName').value=''; $('#tMsg').value='';
         render();
       });
 
-      // auto-scroll logic
       let timer = null;
       function restartAutoScroll(){
         if(timer) clearInterval(timer);
         if(!track || track.children.length <= 1) return;
         let idx = 0;
-        timer = setInterval(()=> {
+        timer = setInterval(()=>{
           idx = (idx + 1) % track.children.length;
-          let offset = 0;
-          const gap = 12;
-          for(let i=0;i<idx;i++){
-            offset += Math.round(track.children[i].getBoundingClientRect().width) + gap;
-          }
+          let offset = 0, gap = 12;
+          for(let i=0;i<idx;i++) offset += Math.round(track.children[i].getBoundingClientRect().width) + gap;
           track.style.transform = `translateX(-${offset}px)`;
         }, 4200);
       }
 
       render();
-      window.addEventListener('resize', () => { // recalc on resize
-        track.style.transform = 'translateX(0)'; // reset
-        restartAutoScroll();
-      });
+      window.addEventListener('resize', ()=> { track.style.transform = 'translateX(0)'; restartAutoScroll(); });
     })();
 
-    // ---------- Contact form handling ----------
+    // === Contact form (demo) ===
     $('#contactForm').addEventListener('submit', function(e){
       e.preventDefault();
       const email = $('#contactEmail').value.trim();
       const msg = $('#contactMsg').value.trim();
-      if(!email || !msg){ alert('Please provide email and message'); return; }
-      openModal(`<div style="padding:14px;"><h3 style="margin:0;color:var(--mint-300)">Thanks!</h3><p style="color:var(--muted);margin-top:8px">Message received (demo). We'll reply to ${safeHTML(email)}.</p><div style="margin-top:12px;text-align:right"><button id="closeM" class="btn">Close</button></div></div>`);
+      if(!email || !msg){ alert('Please enter email and message'); return; }
+      openModal(`<div style="padding:12px"><h3 style="margin:0;color:var(--mint-300)">Thanks!</h3><p style="color:var(--muted);margin-top:8px">Message received (demo). We'll reply to ${escapeHtml(email)}.</p><div style="margin-top:12px;text-align:right"><button id="closeM" class="btn">Close</button></div></div>`);
       $('#closeM')?.addEventListener('click', closeModal);
       $('#contactForm').reset();
     });
 
-    // ---------- Modal helpers ----------
-    const modalRoot = $('#modalRoot'), modalInner = $('#modalInner');
+    // === Modal helpers ===
+    const modalRoot = document.getElementById('modalRoot'), modalInner = document.getElementById('modalInner');
     function openModal(html){
-      modalInner.innerHTML = html; modalRoot.style.display = 'flex';
-      setTimeout(()=> modalRoot.style.opacity = '1', 10); document.body.style.overflow = 'hidden';
+      modalInner.innerHTML = html; modalRoot.style.display = 'flex'; setTimeout(()=> modalRoot.style.opacity = '1', 10); document.body.style.overflow = 'hidden';
     }
-    function closeModal(){
-      modalRoot.style.opacity = '0';
-      setTimeout(()=> { modalRoot.style.display = 'none'; modalInner.innerHTML = ''; document.body.style.overflow = ''; }, 220);
-    }
-    modalRoot.addEventListener('click', (e)=> { if(e.target === modalRoot) closeModal(); });
+    function closeModal(){ modalRoot.style.opacity = '0'; setTimeout(()=> { modalRoot.style.display = 'none'; modalInner.innerHTML = ''; document.body.style.overflow = ''; }, 220); }
+    modalRoot.addEventListener('click', function(e){ if(e.target === modalRoot) closeModal(); });
 
-    // ---------- Small micro-interactions ----------
-    $$('.feature-card').forEach(card => {
-      card.addEventListener('mouseenter', () => card.classList.add('glow-on-hover'));
-      card.addEventListener('mouseleave', () => card.classList.remove('glow-on-hover'));
-    });
+    // Small polishing: ensure inputs use min-width:0 to avoid overflow
+    $$('input').forEach(i => i.style.minWidth = '0');
 
-    $$('.btn.primary').forEach(b => {
-      b.addEventListener('mouseenter', () => b.style.transform = 'translateY(-3px)');
-      b.addEventListener('mouseleave', () => b.style.transform = '');
-    });
-
-    // ---------- Open analytics CTA ----------
-    $('#openAnalytics')?.addEventListener('click', () => {
-      openModal(`<div style="padding:14px"><h3 style="margin:0;color:var(--mint-300)">Analytics (preview)</h3><p style="color:var(--muted);margin-top:8px">Full analytics live on Premium. This is a demo preview with animated charts.</p><div style="margin-top:12px;text-align:right"><button id="closeA" class="btn">Close</button></div></div>`);
-      $('#closeA')?.addEventListener('click', closeModal);
-    });
-
-    // ---------- Prevent side-scroll caused by inputs (double safety) ----------
-    // Ensure inputs shrink properly
-    $$('input').forEach(i => { i.style.minWidth = '0'; });
-
-    // ---------- small accessibility helpers ----------
-    // ensure hero headline is visible if not yet animated
-    setTimeout(()=> {
-      document.querySelectorAll('.hero h1, .hero p.lead, .preview, .feature-card').forEach(el => el.classList.add('in-view'));
-    }, 420);
-
-    // ---------- End of main IIFE ----------
   })();
   </script>
 </body>
