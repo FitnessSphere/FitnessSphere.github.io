@@ -1,570 +1,216 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>FitnessSphere — Home</title>
-<meta name="theme-color" content="#2ed3a8" />
-<meta name="description" content="FitnessSphere — Photo calorie scanner, exercise library, workout builder. Private & fast." />
-<style>
-  /* ---------------- Theme variables ---------------- */
-  :root{
-    --bg-deep:#061016;
-    --bg-mid:#07121a;
-    --card:#071722;
-    --text:#eafcf6;
-    --muted:#96d3c2;
-    --mint1:#7ff0d0;
-    --mint2:#2ed3a8;
-    --mint-grad: linear-gradient(135deg,var(--mint1) 0%,var(--mint2) 100%);
-    --glass: rgba(255,255,255,0.02);
-    --glass-2: rgba(255,255,255,0.014);
-    --radius:14px;
-    --shadow: 0 18px 48px rgba(0,0,0,0.6);
-    --ease: cubic-bezier(.2,.7,.2,1);
-    --maxw:1200px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:
-    radial-gradient(900px 420px at 8% 2%, rgba(46,211,168,0.06), transparent 20%),
-    linear-gradient(180deg,var(--bg-deep),var(--bg-mid)); color:var(--text); font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial; -webkit-font-smoothing:antialiased}
-  img{display:block;max-width:100%}
-  a{color:inherit}
-  button{font-family:inherit}
-  .container{max-width:var(--maxw);margin:0 auto;padding:16px;position:relative}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FitnessSphere — Home</title>
+  <meta name="description" content="Track calories, explore exercises, and hit your fitness goals with a clean, premium experience." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Mint-forward palette */
+      --mint-50:#edfff8; --mint-100:#d7ffef; --mint-200:#b9ffe3;
+      --mint-300:#8ef7d1; --mint-400:#5ce7bd; --mint-500:#2ed3a8;
+      --mint-600:#15b893; --mint-700:#10937a; --mint-800:#0c7361; --mint-900:#0a5b4e;
 
-/* ---------------- Header ---------------- */
-header.site{position:sticky;top:0;z-index:120;background:linear-gradient(180deg, rgba(6,18,20,0.75), rgba(6,18,20,0.35));backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.03)}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;max-width:var(--maxw);margin:0 auto}
-.brand{display:flex;align-items:center;gap:12px}
-.brand .logo{width:46px;height:46px;border-radius:12px;overflow:hidden;display:grid;place-items:center;box-shadow:0 10px 30px rgba(46,211,168,0.12)}
-.brand img{width:100%;height:100%;object-fit:cover}
-.brand .title{font-weight:900;font-size:1.02rem;line-height:1}
-.nav-right{display:flex;align-items:center;gap:8px}
-.hamburger{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,0.02);cursor:pointer}
-.hamburger .lines{width:22px;height:14px;position:relative}
-.hamburger .lines span{position:absolute;left:0;right:0;height:2px;background:var(--muted);display:block;border-radius:2px;transition:transform .28s var(--ease),opacity .18s var(--ease)}
-.hamburger .lines span:nth-child(1){top:0}
-.hamburger .lines span:nth-child(2){top:6px}
-.hamburger .lines span:nth-child(3){top:12px}
-.hamburger.open .lines span:nth-child(1){transform:translateY(6px) rotate(45deg)}
-.hamburger.open .lines span:nth-child(2){opacity:0}
-.hamburger.open .lines span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+      --bg:#0b1220; /* deep slate */
+      --card:#0f172a80; --card-solid:#0f172a;
+      --text:#e6f6f0; --muted:#a7c3bb;
+      --ring: var(--mint-400);
+      --danger:#ff5a5a;
+      --radius-xl: 1.25rem; --radius-2xl: 1.75rem;
+      --shadow-1: 0 8px 20px rgba(0,0,0,.25);
+      --shadow-2: 0 20px 40px rgba(0,0,0,.35);
+      --blur: blur(12px);
+      --speed: .55s; --ease: cubic-bezier(.2,.7,.2,1);
+    }
+    * { box-sizing:border-box; }
+    html,body { height:100%; margin:0; padding:0; }
+    body {
+      font-family: Inter, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 5% 0%, rgba(46,211,168,0.15), transparent 60%),
+        radial-gradient(900px 500px at 100% 10%, rgba(16,147,122,0.15), transparent 60%),
+        linear-gradient(180deg, #0a1220 0%, #09121d 100%);
+      overflow-x:hidden;
+    }
 
-/* Auth controls (login/signup) */
-.auth-buttons{display:flex;gap:8px;align-items:center}
-.btn{display:inline-flex;align-items:center;gap:.6rem;padding:.56rem .85rem;border-radius:999px;font-weight:800;cursor:pointer;border:1px solid rgba(0,0,0,0.06);background:transparent;color:var(--text)}
-.btn.primary{background:var(--mint-grad);color:#052f27;box-shadow:0 10px 28px rgba(46,211,168,0.12)}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
-.btn.small{padding:.44rem .64rem;font-size:.92rem}
+    /* Container/grid utilities */
+    .container { width: min(1120px, 94vw); margin: 0 auto; }
+    .grid { display: grid; gap: 1.25rem; }
+    .btn { 
+      display: inline-flex; align-items: center; justify-content: center; 
+      padding: .75rem 1.25rem; font-weight: 600; border-radius: .75rem;
+      transition: background var(--speed) var(--ease), transform var(--speed) var(--ease);
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0) scale(.98); }
+    .btn--ghost {
+      border: 2px solid var(--mint-400); background: transparent; color: var(--mint-400);
+    }
+    .btn--ghost:hover {
+      background: var(--mint-400); color: var(--bg);
+    }
+    .btn--primary {
+      background: var(--mint-400); color: var(--bg); border: none;
+    }
+    .btn--primary:hover { background: var(--mint-500); }
+    .brand {
+      display: flex; align-items: center; gap: .7rem; text-decoration: none;
+    }
+    .brand img { height: 36px; }
+    .brand span { font-weight: 700; font-size: 1.25rem; color: var(--mint-300); }
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, #00000080 0%, #00000040 100%);
+    }
+    .nav__inner { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+    .nav__links a {
+      margin: 0 .75rem; text-decoration: none; font-weight: 500;
+      color: var(--text); padding: .5rem;
+      transition: color var(--speed);
+    }
+    .nav__links a:hover { color: var(--mint-400); }
+    .nav__cta { }
+    .nav__cta .btn { margin-left: .75rem; }
 
-/* ---------------- Offcanvas menu (NAV links live here) ---------------- */
-.offcanvas{position:fixed;top:0;right:0;height:100vh;width:84vw;max-width:380px;background:linear-gradient(180deg,rgba(6,18,20,0.98),rgba(6,18,20,0.96));box-shadow:-24px 0 44px rgba(0,0,0,0.6);transform:translateX(110%);transition:transform .36s var(--ease);z-index:130;padding:18px;overflow:auto}
-.offcanvas.open{transform:translateX(0)}
-.offcanvas h3{margin:0 0 12px;font-size:1.05rem}
-.offcanvas a{display:block;padding:12px;border-radius:10px;color:var(--muted);margin-bottom:8px}
-.offcanvas .auth{display:flex;gap:8px;margin-top:12px}
-
-/* ---------------- Hero ---------------- */
-.hero{display:grid;grid-template-columns:1fr min(420px,38vw);gap:22px;align-items:start;padding:28px 0}
-@media(max-width:980px){ .hero{grid-template-columns:1fr} .hero-right{order:2} }
-.hero-left{padding-right:6px}
-.kicker{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--mint-grad);color:#052f27;font-weight:900;font-size:.86rem}
-.hero-title{font-size:clamp(1.4rem,6vw,2.6rem);margin:14px 0 8px;line-height:1.02;font-weight:900}
-.hero-rot{color:var(--mint2)}
-.hero-sub{color:var(--muted);max-width:60ch;margin:0 0 16px;font-size:clamp(.95rem,.9rem,1.05rem)}
-.search-row{display:flex;gap:10px;align-items:center}
-.search-row input{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);height:46px;box-sizing:border-box;font-weight:700}
-.hero-cta{display:flex;gap:10px;margin-top:14px}
-
-/* hero right: interactive 3D card */
-.hero-right{min-height:220px;align-self:stretch}
-.card-3d{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,0.04);box-shadow:var(--shadow);transform-style:preserve-3d;transition:transform .22s var(--ease)}
-.card-layers{position:relative;overflow:visible}
-.card-layer{position:relative;pointer-events:none}
-.card-graphic{display:flex;gap:12px;align-items:center}
-.card-box{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.03)}
-.card-icon{width:80px;height:80px;border-radius:12px;background:var(--mint-grad);display:grid;place-items:center;color:#052f27;font-weight:900}
-
-/* CTA micro-animation */
-.cta-float{display:inline-grid;place-items:center;padding:12px 18px;border-radius:999px;background:var(--mint-grad);color:#052f27;font-weight:900;box-shadow:0 12px 30px rgba(46,211,168,0.12);transform-origin:center;animation:cta-breathe 2200ms ease-in-out infinite}
-@keyframes cta-breathe{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-
-/* ---------------- Features / grid ---------------- */
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
-@media(max-width:980px){ .features{grid-template-columns:repeat(2,1fr)} }
-.feature{background:var(--glass);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center;transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
-.feature:hover{transform:translateY(-8px);box-shadow:0 20px 48px rgba(0,0,0,0.45)}
-.feature .ico{width:54px;height:54;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));color:var(--mint2);font-weight:900}
-
-/* ---------------- Stats ---------------- */
-.stats{display:flex;gap:12px;margin-top:18px;align-items:stretch}
-.stat-card{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));display:flex;flex-direction:column;gap:8px;border:1px solid rgba(255,255,255,0.03)}
-.stat-card .num{font-size:clamp(1rem,5vw,1.6rem);font-weight:900;color:var(--mint2)}
-
-/* ---------------- Testimonials: card size fix for mobile ---------------- */
-.carousel{margin-top:18px;position:relative}
-.carousel-track{display:flex;gap:12px;transition:transform .6s var(--ease);will-change:transform}
-.testimonial{min-width:260px;max-width:420px;padding:14px;background:rgba(255,255,255,0.01);border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-.carousel-controls{display:flex;gap:8px;margin-top:12px}
-
-/* ---------------- Floating FAB and progress ---------------- */
-.fab{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:12px;background:var(--mint-grad);display:grid;place-items:center;color:#052f27;z-index:140;box-shadow:0 18px 38px rgba(46,211,168,0.12);cursor:pointer}
-.progress{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,var(--mint1),var(--mint2));width:0;z-index:140;border-bottom-left-radius:4px;border-bottom-right-radius:4px}
-
-/* ---------------- Modal, toast, cookie banner ---------------- */
-.modal-wrap{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,0.48);z-index:160}
-.modal{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:12px;width:min(520px,94vw);box-shadow:0 20px 60px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03)}
-.toast{position:fixed;right:14px;bottom:14px;background:rgba(6,12,12,0.95);padding:10px 14px;border-radius:10px;color:var(--text);display:none;z-index:170}
-.cookie-banner{position:fixed;left:12px;right:12px;bottom:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;gap:8px;align-items:center;z-index:150}
-
-/* reveal helpers */
-.reveal{opacity:0;transform:translateY(10px);transition:all .56s var(--ease)}
-.reveal.show{opacity:1;transform:none}
-
-/* small screen adjustments */
-@media(max-width:420px){
-  .container{padding:10px}
-  .brand .title{font-size:0.98rem}
-  .hero{gap:12px;padding:18px 0}
-  .hero-sub{font-size:0.92rem}
-  .feature .ico{width:44px;height:44px}
-  .testimonials .testimonial{min-width:220px}
-  .card-icon{width:66px;height:66px}
-}
-</style>
+    /* Hero section */
+    .hero { padding: 4rem 0; display: grid; place-items: center; }
+    .hero__wrap { text-align: center; max-width: 800px; margin: auto; }
+    .chip {
+      display: inline-block; background: var(--mint-600); color: var(--bg);
+      padding: .5rem 1rem; border-radius: .75rem; font-weight: 600; margin-bottom: 1rem;
+      animation: fadeIn 1s ease-out both;
+    }
+    .hero__title {
+      font-size: 2.5rem; line-height: 1.2; margin: .5rem 0;
+      background: linear-gradient(180deg, var(--mint-300), var(--mint-500));
+      -webkit-background-clip: text; color: transparent;
+      animation: fadeIn 1s ease-out .3s both;
+    }
+    .hero__lead {
+      margin: 1rem 0 2rem; color: var(--muted);
+      animation: fadeIn 1s ease-out .6s both;
+    }
+    .hero__cta { display: flex; justify-content: center; gap: 1rem; }
+    .hero__cta .btn { min-width: 8rem; }
+    /* Stats */
+    .hero__stat {
+      display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: center;
+      margin-top: 2rem; animation: fadeIn 1s ease-out 1s both;
+    }
+    .stat__num {
+      font-size: 1.5rem; font-weight: 700; color: var(--mint-400);
+      animation: countAnimation 2s ease-out both;
+    }
+    /* Misc */
+    .helper { font-size: .9rem; color: var(--muted); margin-top: .25rem; }
+    .mini.card { background: var(--bg-soft); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); }
+    .badge { font-size: .75rem; padding: .25rem .5rem; background: #15b893; color: #fff; border-radius: .5rem; }
+    @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+    /* Add more styles as needed (exercise cards, footer, etc) */
+  </style>
 </head>
 <body>
-  <!-- progress bar -->
-  <div class="progress" id="progressBar" aria-hidden="true"></div>
 
-  <!-- header -->
-  <header class="site" role="banner" aria-label="Main header">
-    <div class="nav container">
-      <div class="brand" aria-label="FitnessSphere home">
-        <div class="logo"><img src="logo.png" alt="FitnessSphere logo" loading="lazy"></div>
-        <div class="title">FitnessSphere</div>
-      </div>
-
-      <div class="nav-right" role="navigation">
-        <div class="auth-buttons" id="authControls">
-          <button class="btn ghost small" id="loginBtn">Login</button>
-          <button class="btn primary small" id="signupBtn">Sign up</button>
-        </div>
-        <div class="hamburger" id="hamb" role="button" aria-label="Open menu">
-          <div class="lines"><span></span><span></span><span></span></div>
-        </div>
+  <!-- NAVIGATION -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="FitnessSphere home">
+        <img src="logo.png" alt="FitnessSphere logo">
+        <span>FitnessSphere</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="weight-loss.html">Weight Loss</a>
+        <a href="weight-gain.html">Weight Gain</a>
+        <a href="calories.html">Calories</a>
+        <a href="exercises.html">Exercises</a>
+        <a href="premium.html">Premium</a>
+      </nav>
+      <div class="nav__cta">
+        <button class="btn btn--ghost" id="loginBtn" aria-haspopup="dialog" aria-controls="loginModal">Log in</button>
       </div>
     </div>
   </header>
 
-  <!-- offcanvas with all site links (only place with links) -->
-  <aside class="offcanvas" id="offcanvas" aria-hidden="true">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h3>Menu</h3>
-      <button class="btn ghost" id="offClose" aria-label="Close menu">✕</button>
-    </div>
-
-    <nav aria-label="Site navigation">
-      <a href="index.html">Home</a>
-      <a href="weight-loss.html">Weight Loss</a>
-      <a href="weight-gain.html">Weight Gain</a>
-      <a href="calories.html">Calories</a>
-      <a href="exercises.html">Exercises</a>
-      <a href="workouts.html">Workouts</a>
-    </nav>
-
-    <div style="height:8px"></div>
-    <div class="auth">
-      <button class="btn ghost" id="offLogin">Login</button>
-      <button class="btn primary" id="offSignup">Sign up</button>
-    </div>
-
-    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.03);padding-top:12px;color:var(--muted);font-size:.95rem">
-      Tip: include a small object (card/coin) in meal photos for better portion estimates.
-    </div>
-  </aside>
-
-  <!-- main content -->
-  <main class="container" id="main" role="main">
-    <section class="hero" aria-label="Intro">
-      <div class="hero-left">
-        <div class="kicker reveal">Personal • Private • Fast</div>
-
-        <h1 class="hero-title reveal">
-          Train smarter — <span id="typeWrite" aria-hidden="true">Track • Improve • Transform</span>
-        </h1>
-
-        <p class="hero-sub reveal">FitnessSphere combines a large local food database, photo-to-calories, and a curated exercise library — fast, private, and beautiful. Try the photo scanner or build a workout in seconds.</p>
-
-        <div class="search-row reveal">
-          <input id="siteSearch" type="search" placeholder="Search foods, exercises, plans..." aria-label="Search">
-          <button class="btn primary" id="searchGo">Search</button>
-        </div>
-
-        <div class="hero-cta reveal" style="margin-top:14px">
-          <button class="cta-float" id="openCalories">Open Calories</button>
-          <button class="btn ghost" id="openExercises">Explore Exercises</button>
-          <button class="btn" id="openBuilder">Build Workout</button>
-        </div>
-
-        <div class="features reveal" style="margin-top:18px">
-          <div class="feature"><div class="ico">📸</div><div><div style="font-weight:800">Photo → Calories</div><div class="small muted">Snap or upload for instant estimates</div></div></div>
-          <div class="feature"><div class="ico">🏋️</div><div><div style="font-weight:800">Exercise Library</div><div class="small muted">Videos, GIFs & tags</div></div></div>
-          <div class="feature"><div class="ico">🔐</div><div><div style="font-weight:800">Privacy-first</div><div class="small muted">Local DB & on-device options</div></div></div>
-        </div>
-
-        <div class="stats reveal" style="margin-top:18px">
-          <div class="stat-card"><div class="small muted">Foods</div><div class="num" data-target="1100">0</div><div class="small muted">Local DB items</div></div>
-          <div class="stat-card"><div class="small muted">Exercises</div><div class="num" data-target="500">0</div><div class="small muted">Curated movements</div></div>
-          <div class="stat-card"><div class="small muted">Workouts</div><div class="num" data-target="12000">0</div><div class="small muted">Combinations possible</div></div>
-        </div>
+  <!-- HERO -->
+  <section class="hero container">
+    <div class="hero__wrap">
+      <div class="chip">Mint-powered fitness</div>
+      <h1 class="hero__title">Smarter tracking. Cleaner design. Faster progress.</h1>
+      <p class="hero__lead">
+        Log foods with a tap, explore a global exercise database, and track your journey — all in a clean, premium interface.
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="calories.html">Open Calorie Tracker</a>
+        <a class="btn btn--ghost" href="exercises.html">Browse Exercises</a>
       </div>
-
-      <aside class="hero-right reveal">
-        <div class="card-3d" id="card3d" role="region" aria-label="Featured">
-          <div class="card-layers">
-            <div class="card-graphic">
-              <div class="card-icon" aria-hidden="true">⚡</div>
-              <div class="card-box">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start">
-                  <div><div class="small muted">Welcome</div><div style="font-weight:900;font-size:1.05rem">FitnessSphere</div></div>
-                  <div style="text-align:right"><div class="small muted">Version</div><div style="font-weight:900">Beta 1.2</div></div>
-                </div>
-
-                <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
-                  <button class="btn ghost" id="quickBuild">Build workout</button>
-                  <button class="btn ghost" id="quickScan">Scan meal</button>
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <div class="small muted">Featured</div>
-                <div style="font-weight:900">Photo Calorie Scanner</div>
-                <div class="small muted" style="margin-top:8px">Use the camera on the calories page — include a card/coin for better portions.</div>
-              </div>
-              <div style="width:86px;height:86px;border-radius:14px;background:var(--mint-grad);display:grid;place-items:center"></div>
-            </div>
+      <div class="hero__stat" style="margin-top:2rem;">
+        <div>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+               stroke="var(--mint-400)" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round">
+            <path d="M6 26h8l4-12 6 20 4-12h10"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat__num" data-countto="1250000">0</div>
+          <div class="helper">Calories logged by our users</div>
+          <div id="macros" style="height:60px; width:100%; display:flex; align-items:center; gap:.5rem;">
+            <!-- Macronutrient bar / chart would be drawn here via JS -->
           </div>
+          <div class="helper">Proteins • Carbs • Fats</div>
         </div>
-      </aside>
-    </section>
-
-    <!-- testimonials (carousel) -->
-    <section aria-label="Testimonials" style="margin-top:22px">
-      <h3 style="margin:0 0 10px">What people say</h3>
-      <div class="carousel" id="carousel">
-        <div class="carousel-track" id="carouselTrack" aria-live="polite">
-          <article class="testimonial" aria-label="Testimonial 1">
-            <strong>Jane D.</strong><div class="small muted">— Lost 12kg</div>
-            <p style="margin-top:8px;color:var(--muted)">“The photo calorie feature changed the way I track meals. Super fast and private.”</p>
-          </article>
-
-          <article class="testimonial" aria-label="Testimonial 2">
-            <strong>Omar R.</strong><div class="small muted">— Built custom workouts</div>
-            <p style="margin-top:8px;color:var(--muted)">“The exercise library helped me create gym-ready plans in 10 minutes.”</p>
-          </article>
-
-          <article class="testimonial" aria-label="Testimonial 3">
-            <strong>Lina M.</strong><div class="small muted">— Uses locally</div>
-            <p style="margin-top:8px;color:var(--muted)">“Love that the large food DB is local — doesn't lag and works offline.”</p>
-          </article>
+        <div class="mini card" style="grid-column: span 2; padding:1rem;">
+          <span class="badge">Goal</span>
+          <div class="card__title" style="margin: .5rem 0; font-weight:600;">
+            You’re 68% to your target 🎯
+          </div>
+          <div style="height:12px; background:#1f2a3b; border-radius:6px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+            <div id="goalbar" style="height:100%; width:68%; background: linear-gradient(90deg, var(--mint-400), var(--mint-700));"></div>
+          </div>
+          <div class="helper" style="margin-top:.5rem;">Keep logging to boost momentum</div>
         </div>
       </div>
-      <div class="carousel-controls" style="margin-top:10px">
-        <button class="btn ghost" id="prevTest">Prev</button>
-        <button class="btn" id="nextTest">Next</button>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <footer style="margin-top:28px;padding-bottom:42px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-        <div>© FitnessSphere</div>
-        <div style="display:flex;gap:12px">
-          <a class="small muted" href="privacy.html">Privacy</a>
-          <a class="small muted" href="terms.html">Terms</a>
-        </div>
-      </div>
-    </footer>
-  </main>
+  <!-- THE REST OF THE PAGE (Features, Footer, etc.) WOULD FOLLOW HERE -->
 
-  <!-- floating action button -->
-  <button class="fab" id="fab" aria-label="Open calories">🔥</button>
-
-  <!-- newsletter / auth modal -->
-  <div class="modal-wrap" id="modalWrap" role="dialog" aria-modal="true" style="display:none">
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" role="dialog" aria-modal="true" aria-label="Log in">
     <div class="modal" role="document">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <strong id="modalTitle">Newsletter</strong>
-        <button class="btn ghost" id="modalClose">Close</button>
-      </div>
-      <div>
-        <p class="small muted">Subscribe to updates — quick tips and new features.</p>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <input id="nlEmail" placeholder="Your email" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);height:42px">
-          <button class="btn primary" id="subscribeBtn">Subscribe</button>
-        </div>
-      </div>
+      <h3>Welcome back</h3>
+      <p id="loginDesc" class="helper">Log in to sync your progress.</p>
+      <form class="form" id="loginForm">
+        <input type="text" placeholder="Email or Username" required autofocus>
+        <input type="password" placeholder="Password" required>
+        <button class="btn btn--primary">Log in</button>
+      </form>
     </div>
   </div>
 
-  <!-- toast -->
-  <div class="toast" id="toast" role="status" aria-live="polite" style="display:none"></div>
-
-  <!-- cookie banner -->
-  <div class="cookie-banner" id="cookie" style="display:none">
-    <div style="display:flex;gap:10px;align-items:center">
-      <div style="width:28px;height:28px;border-radius:6px;background:var(--mint-grad);"></div>
-      <div>
-        <div style="font-weight:700">Cookies & Privacy</div>
-        <div class="small muted">We use cookies to improve performance. No tracking by default.</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn primary" id="acceptCookies">Accept</button>
-      <button class="btn ghost" id="cookieMore">Settings</button>
-    </div>
-  </div>
-
-<script>
-/* ---------------- Utilities ---------------- */
-const $ = s=> document.querySelector(s);
-const $$ = s=> Array.from(document.querySelectorAll(s));
-const toast = (msg, t=1600)=>{ const el=$('#toast'); el.textContent=msg; el.style.display='block'; setTimeout(()=> el.style.display='none', t); };
-
-/* ---------------- bfcache / back button fixes ---------------- */
-window.addEventListener('pageshow', (ev)=> {
-  if(ev.persisted){
-    if(!sessionStorage.getItem('fs_reloaded')){ sessionStorage.setItem('fs_reloaded','1'); setTimeout(()=> location.reload(), 80); }
-    else sessionStorage.removeItem('fs_reloaded');
-  }
-});
-window.addEventListener('popstate', ()=> {
-  try { const main = $('#main'); if(!main || main.innerHTML.trim().length < 40) location.reload(); } catch(e){ location.reload(); }
-});
-window.addEventListener('unload', ()=> { try{ sessionStorage.removeItem('fs_reloaded'); }catch(e){} });
-
-/* ---------------- Header / Offcanvas ---------------- */
-const hamb = $('#hamb'), off = $('#offcanvas'), offClose = $('#offClose');
-hamb.addEventListener('click', ()=> {
-  const open = !off.classList.contains('open');
-  off.classList.toggle('open', open);
-  hamb.classList.toggle('open', open);
-  off.setAttribute('aria-hidden', !open);
-});
-offClose.addEventListener('click', ()=> { off.classList.remove('open'); hamb.classList.remove('open'); off.setAttribute('aria-hidden', 'true'); });
-document.addEventListener('click', (e)=> {
-  if(off.classList.contains('open') && !off.contains(e.target) && !hamb.contains(e.target)){ off.classList.remove('open'); hamb.classList.remove('open'); off.setAttribute('aria-hidden','true'); }
-});
-
-/* ---------------- Header auth (hide on login) ---------------- */
-const loginBtn = $('#loginBtn'), signupBtn = $('#signupBtn'), offLogin = $('#offLogin'), offSignup = $('#offSignup');
-const authControls = $('#authControls');
-
-function applyLoggedInUI(user){
-  try{
-    if(hamb) hamb.style.display='none';
-    if(authControls) authControls.style.display='none';
-    if(offLogin) offLogin.style.display='none';
-    if(offSignup) offSignup.style.display='none';
-    toast('Welcome, '+(user.name||'User'), 1400);
-  }catch(e){}
-}
-function applyLoggedOutUI(){ if(hamb) hamb.style.display=''; if(authControls) authControls.style.display=''; if(offLogin) offLogin.style.display=''; if(offSignup) offSignup.style.display=''; }
-
-function fakeAuth(email){
-  const u = { email, name: email.split('@')[0] || 'User' };
-  localStorage.setItem('fs_user', JSON.stringify(u));
-  applyLoggedInUI(u);
-}
-
-/* wire login/signup buttons to newsletter modal as a lightweight flow (client-only) */
-loginBtn.addEventListener('click', ()=> showModal('auth-login'));
-signupBtn.addEventListener('click', ()=> showModal('auth-signup'));
-offLogin.addEventListener('click', ()=> { off.classList.remove('open'); hamb.classList.remove('open'); showModal('auth-login'); });
-offSignup.addEventListener('click', ()=> { off.classList.remove('open'); hamb.classList.remove('open'); showModal('auth-signup'); });
-
-/* ---------------- Simple modal (newsletter/auth) ---------------- */
-const modalWrap = $('#modalWrap'), modalTitle = $('#modalTitle'), modalClose = $('#modalClose');
-modalClose.addEventListener('click', ()=> modalWrap.style.display='none');
-
-function showModal(mode='newsletter'){
-  modalWrap.style.display='grid';
-  if(mode==='newsletter'){ modalTitle.textContent='Newsletter'; $('#nlEmail').value=''; document.getElementById('subscribeBtn').dataset.mode='newsletter'; }
-  if(mode==='auth-login'){ modalTitle.textContent='Login (demo)'; $('#nlEmail').value=''; document.getElementById('subscribeBtn').dataset.mode='login'; }
-  if(mode==='auth-signup'){ modalTitle.textContent='Sign up (demo)'; $('#nlEmail').value=''; document.getElementById('subscribeBtn').dataset.mode='signup'; }
-}
-
-/* subscribe button handler (demo) */
-$('#subscribeBtn').addEventListener('click', ()=>{
-  const email = $('#nlEmail').value.trim();
-  if(!email || !email.includes('@')) return toast('Enter a valid email');
-  const mode = $('#subscribeBtn').dataset.mode || 'newsletter';
-  if(mode === 'login' || mode === 'signup'){ fakeAuth(email); modalWrap.style.display='none'; return; }
-  toast('Subscribed — thanks!');
-  modalWrap.style.display='none';
-});
-
-/* small keyboard shortcut */
-document.addEventListener('keydown', (e)=> {
-  if(e.key==='/' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); $('#siteSearch').focus(); }
-});
-
-/* ---------------- Hero typewriter + rotating words ---------------- */
-const rotating = ['Track', 'Improve', 'Transform', 'Measure', 'Progress'];
-let rIdx=0;
-function cycleRotator(){
-  const el = document.getElementById('typeWrite');
-  const word = rotating[rIdx % rotating.length];
-  el.style.opacity='0';
-  setTimeout(()=>{ el.textContent = word; el.style.opacity='1'; rIdx++; }, 180);
-}
-cycleRotator();
-setInterval(cycleRotator, 2200);
-
-/* ---------------- CTA + FAB wiring ---------------- */
-$('#openCalories').addEventListener('click', ()=> location.href='calories.html');
-$('#openExercises').addEventListener('click', ()=> location.href='exercises.html');
-$('#openBuilder').addEventListener('click', ()=> location.href='exercises.html#builder');
-$('#quickBuild').addEventListener('click', ()=> location.href='exercises.html#builder');
-$('#quickScan').addEventListener('click', ()=> location.href='calories.html');
-$('#fab').addEventListener('click', ()=> location.href='calories.html');
-
-/* ---------------- Search redirect ---------------- */
-$('#searchGo').addEventListener('click', ()=> {
-  const q = $('#siteSearch').value.trim();
-  if(!q) return toast('Type something');
-  location.href = `calories.html?q=${encodeURIComponent(q)}`;
-});
-
-/* ---------------- Animated counters and reveal ---------------- */
-const reveals = Array.from(document.querySelectorAll('.reveal'));
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(ent=>{
-    if(ent.isIntersecting){
-      ent.target.classList.add('show');
-      // animate counters inside this reveal
-      const nums = ent.target.querySelectorAll('.num');
-      nums.forEach(n => animateNumber(n));
-      observer.unobserve(ent.target);
-    }
-  });
-},{threshold:0.12});
-reveals.forEach(r=>observer.observe(r));
-
-function animateNumber(el){
-  const target = +el.dataset.target || 0; let cur = 0;
-  const step = Math.max(1, Math.round(target / 36));
-  const id = setInterval(()=> {
-    cur += step;
-    el.textContent = cur >= target ? String(target) : String(cur);
-    if(cur >= target) clearInterval(id);
-  }, 22);
-}
-
-/* ---------------- Card 3D tilt (pointer-friendly) ---------------- */
-const card = $('#card3d');
-if(card){
-  card.addEventListener('pointermove', (e)=>{
-    const r = card.getBoundingClientRect();
-    const cx = r.left + r.width/2, cy = r.top + r.height/2;
-    const dx = e.clientX - cx, dy = e.clientY - cy;
-    const rx = (dy / r.height) * -8, ry = (dx / r.width) * 10;
-    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
-  });
-  card.addEventListener('pointerleave', ()=> card.style.transform = 'none');
-  card.addEventListener('pointerdown', ()=> card.style.transform += ' scale(.995)');
-  card.addEventListener('pointerup', ()=> card.style.transform = 'none');
-}
-
-/* ---------------- Carousel with swipe/drag & responsive card widths ---------------- */
-const track = $('#carouselTrack');
-let slideIdx = 0;
-function showSlide(i){
-  const items = track.children.length;
-  if(items === 0) return;
-  if(i < 0) i = items-1;
-  if(i >= items) i = 0;
-  slideIdx = i;
-  const w = track.children[0].getBoundingClientRect().width + 12;
-  track.style.transform = `translateX(-${i * w}px)`;
-}
-$('#prevTest').addEventListener('click', ()=> showSlide(slideIdx-1));
-$('#nextTest').addEventListener('click', ()=> showSlide(slideIdx+1));
-let auto = setInterval(()=> showSlide(slideIdx+1), 5200);
-/* pause on hover */
-$('#carousel').addEventListener('mouseenter', ()=> clearInterval(auto));
-$('#carousel').addEventListener('mouseleave', ()=> auto = setInterval(()=> showSlide(slideIdx+1), 5200));
-/* touch drag */
-let startX=0, isDown=false, startTrans=0;
-track.addEventListener('pointerdown', (e)=> { isDown=true; startX=e.clientX; startTrans = getTranslateX(track); track.setPointerCapture(e.pointerId); });
-track.addEventListener('pointermove', (e)=> { if(!isDown) return; const dx = e.clientX - startX; track.style.transform = `translateX(${startTrans + dx}px)`; });
-track.addEventListener('pointerup', (e)=> { isDown=false; const dx = e.clientX - startX; const w = track.children[0].getBoundingClientRect().width + 12; if(dx < -60) showSlide(slideIdx+1); else if(dx > 60) showSlide(slideIdx-1); else showSlide(slideIdx); });
-function getTranslateX(el){ const s = getComputedStyle(el).transform; if(s === 'none') return 0; const m = new WebKitCSSMatrix(s); return m.m41; }
-
-/* ---------------- Scroll progress ---------------- */
-window.addEventListener('scroll', ()=> {
-  const h = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
-  $('#progressBar').style.width = pct + '%';
-});
-
-/* ---------------- cookie banner ---------------- */
-if(!localStorage.getItem('fs_cookies_accepted')) setTimeout(()=>{ $('#cookie').style.display='flex'; }, 1600);
-$('#acceptCookies').addEventListener('click', ()=> { localStorage.setItem('fs_cookies_accepted','1'); $('#cookie').style.display='none'; toast('Thanks — preferences saved'); });
-$('#cookieMore').addEventListener('click', ()=> { toast('Cookie settings are not implemented in demo'); });
-
-/* ---------------- Newsletter quick open on CTA long-press (micro interaction) ---------------- */
-let holdTimer;
-$('.cta-float').addEventListener('pointerdown', ()=> { holdTimer = setTimeout(()=> showModal('newsletter'), 700); });
-$('.cta-float').addEventListener('pointerup', ()=> clearTimeout(holdTimer));
-
-/* ---------------- Floating action behavior on orientation/resize ---------------- */
-window.addEventListener('resize', ()=> {
-  if(window.innerWidth > 980){ off.classList.remove('open'); hamb.classList.remove('open'); off.setAttribute('aria-hidden', 'true'); }
-});
-
-/* ---------------- Small UX: sticky back-to-top on double-tap FAB ---------------- */
-let lastTap = 0;
-$('#fab').addEventListener('click', (e)=>{
-  const now = Date.now();
-  if(now - lastTap < 420){ window.scrollTo({top:0,behavior:'smooth'}); } else { location.href='calories.html'; }
-  lastTap = now;
-});
-
-/* ---------------- Small init: counters & nav state ---------------- */
-document.addEventListener('DOMContentLoaded', ()=>{
-  // mark nav (offcanvas) active if URL matches
-  const path = location.pathname.split('/').pop() || 'index.html';
-  Array.from(document.querySelectorAll('.offcanvas a')).forEach(a=>{
-    if(a.getAttribute('href') === path) a.style.color = '#fff';
-  });
-  // if user logged in, apply logged-in UI
-  const u = localStorage.getItem('fs_user');
-  if(u) applyLoggedInUI(JSON.parse(u));
-});
-
-/* ---------------- Helper: translateX value parser (for older browsers) ---------------- */
-function getTranslateX(el){
-  const s = getComputedStyle(el).transform;
-  if(s === 'none') return 0;
-  try{
-    const match = s.match(/matrix.*\((.+)\)/);
-    if(!match) return 0;
-    const parts = match[1].split(',').map(p=>parseFloat(p.trim()));
-    return parts.length === 6 ? parts[4] : 0;
-  } catch(e){ return 0; }
-}
-
-/* ---------------- Display toast convenience ---------------- */
-window.showToast = toast;
-
-/* ---------------- Accessibility: close modals on ESC ---------------- */
-window.addEventListener('keydown', (e)=> {
-  if(e.key === 'Escape'){ $('#modalWrap').style.display='none'; if(off.classList.contains('open')){ off.classList.remove('open'); hamb.classList.remove('open'); } }
-});
-</script>
+  <script>
+    // Example script to animate stat counter
+    document.addEventListener('DOMContentLoaded', () => {
+      const countElem = document.querySelector('.stat__num');
+      const target = parseInt(countElem.getAttribute('data-countto'), 10);
+      let count = 0;
+      const step = Math.ceil(target / 100);
+      const interval = setInterval(() => {
+        count += step;
+        if(count >= target) { count = target; clearInterval(interval); }
+        countElem.textContent = count.toLocaleString();
+      }, 30);
+      // Login modal toggle
+      const btn = document.getElementById('loginBtn');
+      const modal = document.getElementById('loginModal');
+      btn.addEventListener('click', () => { modal.style.display='block'; });
+      modal.addEventListener('click', (e) => { if(e.target===modal) modal.style.display='none'; });
+    });
+  </script>
 </body>
 </html>
