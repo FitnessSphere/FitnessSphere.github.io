@@ -4,216 +4,131 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>FitnessSphere — Home</title>
-  <meta name="description" content="FitnessSphere — The Ultimate Fitness tool. Clean, fast, and focused.">
+  <meta name="description" content="FitnessSphere — The Ultimate Fitness tool.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-  /* ======================================================================
-     FitnessSphere — index.html (consolidated, optimized)
-     - Header: brand + logo + 3-line burger only (menu fixed & smooth)
-     - Big animated hero title: “The Ultimate Fitness tool”
-     - Cards separated clearly, brighter gradients (mint + sage + deep green)
-     - Input fields upgraded (no underlines anywhere)
-     - Charts responsive (no side-by-side on small screens, no infinite white)
-     - Daily Habits: complete -> item hides w/ “Good job!” card, returns next day
-     - No “Quick action” chips in the menu
-     - Removed the older “people review” block as requested
-     - Animations across sections, microinteractions, gradient strokes
-     ====================================================================== */
-
+  /* ---------- Core palette & layout ---------- */
   :root{
-    /* Core palette */
-    --bg-900:#071018; --bg-850:#09131c; --bg-800:#0b1722;
+    --bg-900:#071018; --bg-850:#09131c;
     --text:#eafff7; --text-dim:rgba(234,255,247,.76);
-
-    /* Mints + sages */
     --mint-a:#49f0c6; --mint-b:#5dd6f2; --mint-c:#29d9a3;
-    --sage-300:#cfeadb; --sage-350:#b7dfcc; --sage-450:#8cc2ad; --sage-600:#3d7b67;
-    --deep:#063f35;
-
+    --sage-300:#cfeadb;
     --border:rgba(255,255,255,.06);
     --glass:rgba(255,255,255,.03);
     --glow:rgba(16,193,138,.18);
-
-    --radius:14px; --radius-lg:18px;
-    --shadow-1:0 10px 28px rgba(0,0,0,.55);
-    --shadow-2:0 24px 60px rgba(0,0,0,.7);
-
-    --maxw:1180px;
-    --ease:cubic-bezier(.22,.9,.22,1);
+    --radius:14px; --maxw:1180px; --ease:cubic-bezier(.22,.9,.22,1);
   }
-
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0}
-  body{
-    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-    color:var(--text);
-    background:
-      radial-gradient(800px 500px at 8% 10%, rgba(41,217,163,.06), transparent 40%),
-      linear-gradient(180deg,var(--bg-900),var(--bg-850));
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-    overflow-x:hidden;
-  }
-
-  a{color:inherit;text-decoration:none;outline:none}
-  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-  img{max-width:100%;display:block}
-
+  html,body{height:100%;margin:0;padding:0;font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:
+    radial-gradient(800px 500px at 8% 10%, rgba(41,217,163,.06), transparent 40%),
+    linear-gradient(180deg,var(--bg-900),var(--bg-850));color:var(--text);-webkit-font-smoothing:antialiased}
+  a,button{color:inherit;text-decoration:none;outline:none}
+  img{display:block;max-width:100%}
   .container{width:min(var(--maxw),94%);margin:0 auto}
 
-  /* -------------------- header -------------------- */
-  header.site-header{
-    position:sticky;top:0;z-index:1000;
-    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-    backdrop-filter:blur(10px) saturate(120%);
-    border-bottom:1px solid var(--border);
-  }
-  .head-row{display:flex;align-items:center;justify-content:space-between;padding:10px 4px}
+  /* ---------- header ---------- */
+  header.site-header{position:sticky;top:0;z-index:1200;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+  .head-row{display:flex;align-items:center;justify-content:space-between;padding:8px 6px}
   .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:44px;border-radius:10px;background:#fff;filter:drop-shadow(0 6px 16px rgba(0,0,0,.5))}
-  .brand .site-name{font-weight:900;color:var(--mint-c);letter-spacing:.3px}
-
+  .brand img{height:44px;border-radius:10px;background:#fff;filter:drop-shadow(0 6px 16px rgba(0,0,0,.45))}
+  .brand .site-name{font-weight:900;color:var(--mint-c);font-size:1.05rem}
   .burger{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.03);border:1px solid var(--border)}
   .burger .lines{width:24px;height:16px;position:relative}
-  .burger .lines span{position:absolute;left:0;right:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--mint-a),var(--mint-b));
-    transition:transform .22s var(--ease),opacity .16s var(--ease)}
-  .burger .lines span:nth-child(1){top:0}
-  .burger .lines span:nth-child(2){top:7px}
-  .burger .lines span:nth-child(3){top:14px}
-  .burger.open .lines span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-  .burger.open .lines span:nth-child(2){opacity:0}
-  .burger.open .lines span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .burger .lines span{position:absolute;left:0;right:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--mint-a),var(--mint-b));transition:transform .22s var(--ease),opacity .16s var(--ease)}
+  .burger .lines span:nth-child(1){top:0} .burger .lines span:nth-child(2){top:7px} .burger .lines span:nth-child(3){top:14px}
+  .burger.open .lines span:nth-child(1){transform:translateY(7px) rotate(45deg)} .burger.open .lines span:nth-child(2){opacity:0} .burger.open .lines span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-  /* -------------------- fullscreen menu -------------------- */
-  .menu-wrap{position:fixed;inset:0;display:none;background:rgba(0,0,0,.55);z-index:1100}
+  /* ---------- menu (fullscreen fixed panel) ---------- */
+  .menu-wrap{position:fixed;inset:0;display:none;background:rgba(0,0,0,.55);z-index:1300}
   .menu-wrap.show{display:block}
-  .menu-panel{
-    position:fixed;left:0;right:0;top:0;max-height:100vh;height:100vh;
-    background:linear-gradient(120deg,var(--mint-a),var(--mint-b));
-    color:#023328;border:1px solid rgba(255,255,255,.05);
-    box-shadow:var(--shadow-2);
-    display:flex;flex-direction:column;
-    -webkit-overflow-scrolling:touch;
-  }
-  .menu-close{position:absolute;right:14px;top:14px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.1);font-weight:800}
-  .menu-inner{overflow:auto;padding:20px;overscroll-behavior:contain}
-  .menu-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-  .menu-head img{height:44px;border-radius:10px;background:#fff;padding:6px}
-  .menu-title{font-weight:900}
-  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  .menu-grid a{display:block;padding:14px 10px;border-radius:12px;color:#053c31;font-weight:900;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-  .menu-grid a:hover{background:rgba(255,255,255,.12)}
-  @media (min-width:940px){
-    .menu-panel{left:50%;transform:translateX(-50%);top:50%;max-height:86vh;height:auto;border-radius:16px}
-  }
+  .menu-panel{position:fixed;left:0;right:0;top:0;height:100vh;background:linear-gradient(120deg,var(--mint-a),var(--mint-b));color:#04221b;border:1px solid rgba(255,255,255,.05);box-shadow:0 30px 80px rgba(0,0,0,.7);overflow:hidden}
+  .menu-inner{overflow:auto;padding:22px;overscroll-behavior:contain}
+  .menu-close{position:absolute;right:14px;top:14px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.08);font-weight:800}
+  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .menu-grid a{display:block;padding:12px;border-radius:12px;background:rgba(255,255,255,.06);font-weight:800;color:#053c31}
+  @media(min-width:940px){ .menu-panel{left:50%;transform:translateX(-50%);top:50%;max-height:86vh;height:auto;border-radius:16px} }
 
-  /* -------------------- hero -------------------- */
+  /* ---------- hero (fix for truncation) ---------- */
   .section{padding:52px 0}
-  .divider{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--mint-a),var(--mint-b));box-shadow:0 8px 28px var(--glow);margin:18px 0}
   .hero{padding:84px 0 24px}
   .hero-row{display:flex;gap:28px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-  .chip{display:inline-block;padding:9px 14px;border-radius:999px;background:linear-gradient(90deg,var(--mint-a),var(--mint-c));color:#062e27;font-weight:900;box-shadow:0 12px 32px var(--glow)}
+  .chip{display:inline-block;padding:9px 14px;border-radius:999px;background:linear-gradient(90deg,var(--mint-a),var(--mint-c));color:#062e27;font-weight:900;box-shadow:0 12px 32px rgba(16,193,138,.12)}
+  /* IMPORTANT: removed white-space:nowrap so headline won't truncate; use clamp for fluid sizing and allow wrapping */
   .hero h1{
-    margin:16px 0 10px;font-weight:900;line-height:1.02;
-    font-size:clamp(1.9rem,7.5vw,4.8rem);
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    background:linear-gradient(90deg,var(--mint-a),var(--mint-b));
-    -webkit-background-clip:text;color:transparent;background-size:200% 100%;
+    margin:16px 0 8px;font-weight:900;line-height:1.02;
+    font-size:clamp(2rem,7.5vw,4.6rem);
+    background:linear-gradient(90deg,var(--mint-a),var(--mint-b));-webkit-background-clip:text;color:transparent;background-size:200% 100%;
     animation:gradShift 5s ease-in-out infinite;
     filter:drop-shadow(0 22px 40px rgba(6,55,46,.25));
-    opacity:0;transform:translateY(14px) scale(.98);
-    transition:opacity .6s var(--ease),transform .6s var(--ease);
+    opacity:0;transform:translateY(14px) scale(.98);transition:opacity .56s var(--ease),transform .56s var(--ease);
+    word-break:break-word; /* allow line wraps */
   }
   .hero h1.show{opacity:1;transform:translateY(0) scale(1)}
   @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
   .lead{color:var(--text-dim);max-width:700px;margin:0 0 10px}
   .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-  .btn{padding:12px 18px;border-radius:14px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
-  .btn:active{transform:translateY(1px)}
-  .btn.accent{background:linear-gradient(90deg,var(--mint-a),var(--mint-b));color:#062e27;box-shadow:0 16px 38px var(--glow)}
+  .btn{padding:12px 18px;border-radius:14px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .18s var(--ease),box-shadow .18s var(--ease)}
+  .btn.accent{background:linear-gradient(90deg,var(--mint-a),var(--mint-b));color:#062e27;box-shadow:0 16px 38px rgba(16,193,138,.12)}
   .btn.ghost{border:1px solid var(--border);color:var(--mint-a);background:rgba(255,255,255,.02)}
 
-  /* right hero card */
+  /* ---------- hero mini chart card ---------- */
   .glass{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:14px}
-  .mini-chart{height:220px;border-radius:10px;overflow:hidden}
+  .mini-chart{height:220px;border-radius:10px;overflow:hidden;background:transparent}
+  .mini-chart canvas{display:block;background:transparent}
 
-  /* -------------------- feature cards -------------------- */
+  /* ---------- cards & features ---------- */
   .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-  .card{
-    position:relative;padding:18px;border-radius:14px;border:1px solid var(--border);
-    background:
-      radial-gradient(600px 200px at -10% -10%, rgba(73,240,198,.15), transparent 40%),
-      radial-gradient(600px 200px at 110% 120%, rgba(93,214,242,.12), transparent 40%),
-      linear-gradient(180deg,rgba(255,255,255,.02),transparent);
-    box-shadow:0 18px 50px rgba(0,0,0,.55);
-    transition:transform .32s var(--ease),box-shadow .32s var(--ease),opacity .42s var(--ease);
-    opacity:0;transform:translateY(10px);
-    min-height:120px;
-  }
+  .card{position:relative;padding:18px;border-radius:14px;border:1px solid var(--border);background:linear-gradient(180deg,rgba(73,240,198,.08),rgba(93,214,242,.05));box-shadow:0 18px 50px rgba(0,0,0,.55);transition:transform .32s var(--ease),opacity .42s var(--ease);opacity:0;transform:translateY(10px);min-height:120px}
   .card.show{opacity:1;transform:translateY(0)}
-  .card:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(0,0,0,.65)}
   .card h3{margin:0 0 8px;color:#e9fff9}
-  .card p{margin:0;color:var(--sage-350)}
-  /* vertical separators on wide screens */
-  @media (min-width:880px){
-    .features-grid>.card:not(:nth-child(3n))::after{
-      content:"";position:absolute;top:10px;right:-9px;width:2px;height:calc(100% - 20px);
-      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-radius:2px;opacity:.55
-    }
-  }
+  .card p{margin:0;color:rgba(255,255,255,.8)}
+  @media(min-width:880px){ .features-grid>.card:not(:nth-child(3n))::after{content:'';position:absolute;top:10px;right:-9px;height:calc(100% - 20px);width:2px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-radius:2px;opacity:.6} }
 
-  /* -------------------- chart area (never two big charts on same row at small widths) -------------------- */
+  /* ---------- charts grid ---------- */
   .chart-grid{display:grid;grid-template-columns:1fr 380px;gap:18px;align-items:start}
-  @media (max-width:980px){.chart-grid{grid-template-columns:1fr}}
+  @media(max-width:980px){ .chart-grid{grid-template-columns:1fr} }
   .chart-card{display:flex;gap:12px;align-items:stretch;padding:14px;border-radius:14px;border:1px solid var(--border);background:var(--glass)}
   .chart-wrap{width:100%;height:260px;border-radius:10px;overflow:hidden}
-  .chart-wrap canvas{width:100%;height:100%;display:block}
+  .chart-wrap canvas{width:100%;height:100%;display:block;background:transparent}
 
-  /* -------------------- testimonials (kept minimal, auto-scroll and controllable) -------------------- */
+  /* tooltip */
+  .chart-tooltip{position:fixed;z-index:2000;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.86);color:#fff;font-weight:700;font-size:.95rem;pointer-events:none;transform:translate(-50%,-120%);white-space:nowrap;display:none}
+
+  /* ---------- testimonials ---------- */
   .t-wrap{overflow:hidden;border-radius:14px}
   .t-track{display:flex;gap:12px;transition:transform .7s var(--ease)}
   .t{min-width:260px;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--glass)}
 
-  /* -------------------- daily habits -------------------- */
+  /* ---------- habits ---------- */
   .habits{display:flex;flex-direction:column;gap:12px}
   .habit-card{padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--glass)}
   .habit-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .habit-left{display:flex;align-items:center;gap:12px}
-  .toggle{width:48px;height:28px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border);position:relative;transition:background .2s var(--ease)}
+  .toggle{width:48px;height:28px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border);position:relative;transition:background .2s var(--ease);cursor:pointer}
   .toggle i{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .22s var(--ease)}
-  .toggle.on{background:linear-gradient(90deg,var(--mint-a),var(--mint-b));box-shadow:0 12px 32px var(--glow)}
+  .toggle.on{background:linear-gradient(90deg,var(--mint-a),var(--mint-b));box-shadow:0 12px 32px rgba(16,193,138,.12)}
   .toggle.on i{transform:translateX(20px)}
-  .bar{height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+  .bar{height:10px;border-radius:999px;background:rgba(255,255,255,.04);overflow:hidden}
   .bar > b{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--mint-a),var(--mint-b));transition:width .4s var(--ease)}
   .done-card{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:12px;border:1px dashed rgba(73,240,198,.45);border-radius:12px;background:linear-gradient(180deg,rgba(73,240,198,.06),rgba(93,214,242,.06));opacity:0;transform:translateY(-6px);animation:pop .45s var(--ease) forwards}
   @keyframes pop{to{opacity:1;transform:translateY(0)}}
 
-  /* -------------------- inputs (pretty, no underlines anywhere) -------------------- */
-  input[type="text"], input[type="email"], textarea{
-    background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.02));
-    border:1px solid rgba(30,140,110,.18);
-    padding:12px 14px;border-radius:12px;color:var(--text);min-width:0;outline:none;
-    transition:box-shadow .2s var(--ease),border-color .2s var(--ease),transform .16s var(--ease)
-  }
+  /* ---------- inputs ---------- */
+  input[type="text"], input[type="email"], textarea{background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.02));border:1px solid rgba(30,140,110,.18);padding:12px 14px;border-radius:12px;color:var(--text);min-width:0;outline:none;transition:box-shadow .18s var(--ease),border-color .18s var(--ease)}
   input::placeholder, textarea::placeholder{color:rgba(255,255,255,.42)}
-  input:focus, textarea:focus{box-shadow:0 12px 34px var(--glow);border-color:rgba(16,193,138,.5);transform:translateY(-1px)}
-  a,button{border-bottom:none} /* absolutely no underlines */
+  input:focus, textarea:focus{box-shadow:0 12px 34px rgba(16,193,138,.12);border-color:rgba(16,193,138,.5)}
+  a,button{border-bottom:none}
 
-  /* -------------------- footer -------------------- */
+  /* ---------- footer ---------- */
   footer{padding:40px 0;border-top:1px solid var(--border);margin-top:24px}
-  small.muted{color:var(--text-dim)}
-
-  /* helpers */
-  .mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-5{margin-top:20px}
-  .mb-1{margin-bottom:4px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}
-  .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--sage-350);font-weight:700}
+  .muted{color:var(--text-dim)}
   </style>
 </head>
 <body>
 
-  <!-- progress bar -->
-  <div id="scrollProgress" style="position:fixed;left:0;top:0;height:3px;width:0%;z-index:1200;background:linear-gradient(90deg,var(--mint-a),var(--mint-b));box-shadow:0 6px 20px var(--glow)"></div>
+  <!-- progress -->
+  <div id="scrollProgress" style="position:fixed;left:0;top:0;height:3px;width:0%;z-index:1400;background:linear-gradient(90deg,var(--mint-a),var(--mint-b));box-shadow:0 6px 20px rgba(16,193,138,.08)"></div>
 
   <!-- header -->
   <header class="site-header">
@@ -233,9 +148,9 @@
     <div class="menu-panel" role="dialog" aria-label="Main menu">
       <button id="menuClose" class="menu-close" aria-label="Close">Close</button>
       <div class="menu-inner">
-        <div class="menu-head">
-          <img src="logo.png" alt="">
-          <div class="menu-title">FitnessSphere</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <img src="logo.png" alt="" style="height:44px;border-radius:8px;background:#fff;padding:6px">
+          <div style="font-weight:900">FitnessSphere</div>
         </div>
         <nav class="menu-grid" aria-label="Primary">
           <a href="index.html">Home</a>
@@ -247,7 +162,6 @@
           <a href="#habits">Daily Habits</a>
           <a href="#contact">Contact</a>
         </nav>
-        <!-- (intentionally NO quick action chips here) -->
       </div>
     </div>
   </div>
@@ -267,80 +181,86 @@
             </div>
           </div>
 
-          <div style="flex:1;min-width:280px">
+          <div style="flex:1;min-width:280px;max-width:420px">
             <div class="glass">
-              <h3 class="mb-1" style="color:var(--sage-350)">Quick snapshot</h3>
-              <small class="mb-2" style="display:block;color:var(--text-dim)">Today • 1,240 kcal • Steps 4,200</small>
-              <div class="mini-chart"><canvas id="heroMini"></canvas></div>
+              <h3 style="margin:0 0 8px;color:var(--sage-300)">Quick snapshot</h3>
+              <small class="muted" style="display:block;margin-bottom:8px">Today • 1,240 kcal • Steps 4,200</small>
+              <div class="mini-chart">
+                <canvas id="heroMini"></canvas>
+                <!-- legend for mini chart -->
+                <div id="heroLegend" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="divider" aria-hidden="true"></div>
+        <div style="height:18px"></div>
       </div>
     </section>
 
-    <!-- what we do (cards) -->
-    <section class="section" aria-labelledby="whatTitle">
+    <!-- features -->
+    <section class="section">
       <div class="container">
-        <div class="mb-3" style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
           <div>
-            <h2 id="whatTitle" class="mb-1" style="color:var(--sage-300)">What FitnessSphere does</h2>
-            <small style="color:var(--text-dim)">Tap a card to open the page</small>
+            <h2 style="margin:0;color:var(--sage-300)">What FitnessSphere does</h2>
+            <small class="muted">Tap a card to open the page</small>
           </div>
-          <span class="tag">Mint gradient UI • Smooth micro-animations</span>
+          <div style="font-weight:800;color:var(--mint-c)">Mint gradient UI • micro-animations</div>
         </div>
+
+        <div style="height:18px"></div>
 
         <div class="features-grid">
-          <a class="card" href="calories.html">
-            <h3>Calorie Tracker</h3>
-            <p>Log foods, view totals & macros. Export CSV. Full tool on the Calories page.</p>
-          </a>
-          <a class="card" href="exercises.html">
-            <h3>Exercise Library</h3>
-            <p>Search, filter by muscle group, save favorites, and build quick workouts.</p>
-          </a>
-          <a class="card" href="weight-loss.html">
-            <h3>Weight Loss</h3>
-            <p>Structured deficit programs and cardio templates to stay consistent.</p>
-          </a>
-          <a class="card" href="weight-gain.html">
-            <h3>Weight Gain</h3>
-            <p>Surplus strategies, protein-focused meals, and strength templates.</p>
-          </a>
-          <a class="card" href="premium.html">
-            <h3>Premium</h3>
-            <p>Cloud sync, advanced analytics, and export/backup tools.</p>
-          </a>
+          <a class="card" href="calories.html"><h3>Calorie Tracker</h3><p>Log foods, view totals & macros. Export CSV. Full tool on the Calories page.</p></a>
+          <a class="card" href="exercises.html"><h3>Exercise Library</h3><p>Search, filter by muscle group, save favorites and build quick workouts.</p></a>
+          <a class="card" href="weight-loss.html"><h3>Weight Loss</h3><p>Structured deficit programs and templates.</p></a>
+          <a class="card" href="weight-gain.html"><h3>Weight Gain</h3><p>Calorie surplus strategies, protein-focused meals, and strength templates.</p></a>
+          <a class="card" href="premium.html"><h3>Premium</h3><p>Cloud sync, advanced analytics, export and support.</p></a>
         </div>
 
-        <div class="divider" aria-hidden="true"></div>
+        <div style="height:18px"></div>
       </div>
     </section>
 
-    <!-- analytics preview (animated charts; no overflow) -->
-    <section class="section" aria-labelledby="chartsTitle">
+    <!-- charts -->
+    <section class="section">
       <div class="container">
-        <h2 id="chartsTitle" class="mb-2" style="color:var(--sage-300)">Quick analytics</h2>
-        <small class="mb-3" style="display:block;color:var(--text-dim)">Animated preview — tap a chart area to open full analytics (Premium).</small>
+        <h2 style="margin:0 0 8px;color:var(--sage-300)">Quick analytics</h2>
+        <small class="muted">Animated charts previewed below — tap a chart to open full analytics.</small>
+
+        <div style="height:18px"></div>
 
         <div class="chart-grid">
           <div class="chart-card">
-            <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+            <div style="flex:1">
+              <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+              <div style="display:flex;gap:10px;justify-content:space-between;margin-top:8px">
+                <div style="font-weight:800;color:var(--mint-c)">Weekly calories</div>
+                <div class="muted">Last 7 days</div>
+              </div>
+            </div>
           </div>
+
           <div class="chart-card">
-            <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+            <div style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div style="font-weight:800;color:var(--sage-300)">Macros (today)</div>
+                <div id="pieLegend" style="display:flex;gap:8px;align-items:center"></div>
+              </div>
+              <div class="chart-wrap" style="margin-top:8px"><canvas id="pieChart"></canvas></div>
+            </div>
           </div>
         </div>
 
-        <div class="divider" aria-hidden="true"></div>
+        <div style="height:18px"></div>
       </div>
     </section>
 
-    <!-- testimonials kept lightweight (still controllable) -->
-    <section class="section" id="testimonials" aria-labelledby="tTitle">
+    <!-- testimonials -->
+    <section class="section" id="testimonials">
       <div class="container">
-        <h2 id="tTitle" class="mb-2" style="color:var(--sage-300)">What athletes say</h2>
-        <div class="t-wrap glass">
+        <h2 style="margin:0 0 8px;color:var(--sage-300)">User voices</h2>
+        <div class="t-wrap glass" style="padding:12px">
           <div id="tTrack" class="t-track">
             <div class="t">“The UI keeps me focused. Love the gradients.”</div>
             <div class="t">“Separate pages = zero clutter. Perfect on phone.”</div>
@@ -348,15 +268,16 @@
             <div class="t">“Charts have just enough motion — clean.”</div>
           </div>
         </div>
-        <div class="divider" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- daily habits -->
-    <section class="section" id="habits" aria-labelledby="hTitle">
+    <!-- habits -->
+    <section class="section" id="habits">
       <div class="container">
-        <h2 id="hTitle" class="mb-2" style="color:var(--sage-300)">Daily Habits</h2>
-        <small class="mb-3" style="display:block;color:var(--text-dim)">Toggle small tasks. Completed ones disappear with a message and come back tomorrow.</small>
+        <h2 style="margin:0 0 8px;color:var(--sage-300)">Daily Habits</h2>
+        <small class="muted">Complete a task and it disappears with a "Good job!" card until tomorrow.</small>
+
+        <div style="height:12px"></div>
 
         <div class="habits">
           <div class="habit-card" data-habit="water">
@@ -365,7 +286,7 @@
                 <div class="toggle" role="switch" aria-checked="false" tabindex="0"><i></i></div>
                 <div>
                   <div style="font-weight:800">Drink 2L water</div>
-                  <small class="muted" style="color:var(--text-dim)">Hydration fuels recovery</small>
+                  <small class="muted">Hydration fuels recovery</small>
                 </div>
               </div>
               <div style="flex:1;max-width:380px">
@@ -381,7 +302,7 @@
                 <div class="toggle" role="switch" aria-checked="false" tabindex="0"><i></i></div>
                 <div>
                   <div style="font-weight:800">Protein target</div>
-                  <small class="muted" style="color:var(--text-dim)">Hit your grams for the day</small>
+                  <small class="muted">Hit your grams for the day</small>
                 </div>
               </div>
               <div style="flex:1;max-width:380px">
@@ -397,7 +318,7 @@
                 <div class="toggle" role="switch" aria-checked="false" tabindex="0"><i></i></div>
                 <div>
                   <div style="font-weight:800">30 min walk</div>
-                  <small class="muted" style="color:var(--text-dim)">NEAT adds up fast</small>
+                  <small class="muted">NEAT adds up fast</small>
                 </div>
               </div>
               <div style="flex:1;max-width:380px">
@@ -413,7 +334,7 @@
                 <div class="toggle" role="switch" aria-checked="false" tabindex="0"><i></i></div>
                 <div>
                   <div style="font-weight:800">Strength session</div>
-                  <small class="muted" style="color:var(--text-dim)">Move some iron</small>
+                  <small class="muted">Move some iron</small>
                 </div>
               </div>
               <div style="flex:1;max-width:380px">
@@ -423,22 +344,20 @@
             <div class="done-slot"></div>
           </div>
         </div>
-
-        <div class="divider" aria-hidden="true"></div>
       </div>
     </section>
 
     <!-- contact -->
-    <section class="section" id="contact" aria-labelledby="cTitle">
+    <section class="section" id="contact">
       <div class="container">
-        <h2 id="cTitle" class="mb-2" style="color:var(--sage-300)">Contact & Support</h2>
-        <div class="glass">
+        <h2 style="margin:0 0 8px;color:var(--sage-300)">Contact & Support</h2>
+        <div class="glass" style="padding:14px">
           <div style="display:grid;grid-template-columns:1fr 1fr 120px;gap:12px;align-items:center">
-            <input type="email" id="cEmail" placeholder="your@email.com" aria-label="Your email">
-            <input type="text" id="cMsg" placeholder="Short message" aria-label="Your message">
+            <input type="email" id="cEmail" placeholder="your@email.com">
+            <input type="text" id="cMsg" placeholder="Short message">
             <button class="btn accent" id="cSend">Send</button>
           </div>
-          <small id="cNote" class="mt-3" style="display:block;color:var(--text-dim)">We reply quickly.</small>
+          <small id="cNote" style="display:block;margin-top:8px;color:var(--text-dim)">We reply quickly.</small>
         </div>
       </div>
     </section>
@@ -448,273 +367,416 @@
     <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:10px">
         <img src="logo.png" alt="" style="height:34px;border-radius:8px;background:#fff">
-        <div>
-          <small class="muted">© 2025 FitnessSphere</small>
-        </div>
+        <div><small class="muted">© 2025 FitnessSphere</small></div>
       </div>
-      <div style="display:flex;gap:18px">
-        <a href="#" class="muted">Privacy</a>
-        <a href="#" class="muted">Terms</a>
-      </div>
+      <div style="display:flex;gap:18px"><a href="#" class="muted">Privacy</a><a href="#" class="muted">Terms</a></div>
     </div>
   </footer>
 
+  <!-- chart tooltip (single element reused) -->
+  <div id="chartTooltip" class="chart-tooltip" aria-hidden="true"></div>
+
   <script>
-  /* ===== util ===== */
-  const qs = (s, p=document) => p.querySelector(s);
-  const qsa = (s, p=document) => [...p.querySelectorAll(s)];
-  const clamp = (n, a, b)=>Math.max(a,Math.min(b,n));
+  /*******************************
+   * Utility helpers
+   *******************************/
+  const $ = (s, root=document)=>root.querySelector(s);
+  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  /* ===== header menu ===== */
-  const burger = qs('#burger');
-  const menuWrap = qs('#menu');
-  const menuClose = qs('#menuClose');
-
-  const openMenu = () => {
-    burger.classList.add('open');
-    menuWrap.classList.add('show');
-    document.body.style.overflow = 'hidden'; // prevent background scroll
-    burger.setAttribute('aria-expanded','true');
-    menuWrap.setAttribute('aria-hidden','false');
-  };
-  const closeMenu = () => {
-    burger.classList.remove('open');
-    menuWrap.classList.remove('show');
-    document.body.style.overflow = '';
-    burger.setAttribute('aria-expanded','false');
-    menuWrap.setAttribute('aria-hidden','true');
-  };
-  burger.addEventListener('click', () => menuWrap.classList.contains('show') ? closeMenu() : openMenu());
+  /*******************************
+   * Menu open/close (prevent background scroll)
+   *******************************/
+  const burger = $('#burger'), menuWrap = $('#menu'), menuClose = $('#menuClose');
+  function openMenu(){ burger.classList.add('open'); menuWrap.classList.add('show'); document.body.style.overflow='hidden'; burger.setAttribute('aria-expanded','true'); menuWrap.setAttribute('aria-hidden','false'); }
+  function closeMenu(){ burger.classList.remove('open'); menuWrap.classList.remove('show'); document.body.style.overflow=''; burger.setAttribute('aria-expanded','false'); menuWrap.setAttribute('aria-hidden','true'); }
+  burger.addEventListener('click', ()=> menuWrap.classList.contains('show') ? closeMenu() : openMenu());
   menuClose.addEventListener('click', closeMenu);
   menuWrap.addEventListener('click', (e)=>{ if(e.target===menuWrap) closeMenu(); });
 
-  /* ===== scroll progress ===== */
-  const sp = qs('#scrollProgress');
-  const onScroll = () => {
-    const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    const pct = max > 0 ? (h.scrollTop / max)*100 : 0;
-    sp.style.width = pct + '%';
-  };
-  document.addEventListener('scroll', onScroll,{passive:true}); onScroll();
+  /*******************************
+   * Scroll progress
+   *******************************/
+  const sp = $('#scrollProgress');
+  function updateScroll(){ const d = document.documentElement; const max = d.scrollHeight - d.clientHeight; const pct = max>0 ? (d.scrollTop/max)*100 : 0; sp.style.width = pct + '%'; }
+  document.addEventListener('scroll', updateScroll, {passive:true}); window.addEventListener('resize', updateScroll); updateScroll();
 
-  /* ===== hero reveal ===== */
-  const heroTitle = qs('#heroTitle');
-  const lead = qs('.lead');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
-    });
-  },{threshold:.2});
-  io.observe(heroTitle); io.observe(lead);
+  /*******************************
+   * Hero reveal (fix: removed nowrap; allow wrap)
+   *******************************/
+  const heroTitle = $('#heroTitle');
+  const heroObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); heroObserver.unobserve(e.target); } });
+  }, {threshold: .2});
+  heroObserver.observe(heroTitle);
 
-  /* ===== card reveals ===== */
-  const cards = qsa('.card');
-  const io2 = new IntersectionObserver((ents)=>{
-    ents.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io2.unobserve(e.target);} });
-  },{threshold:.15});
-  cards.forEach(c=>io2.observe(c));
+  /*******************************
+   * Reveal for cards
+   *******************************/
+  const cards = $$('.card');
+  const cardObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); cardObserver.unobserve(e.target); } });
+  }, {threshold: .12});
+  cards.forEach(c=>cardObserver.observe(c));
 
-  /* ===== lightweight charts (no libs) ===== */
-  function drawLineChart(canvas){
+  /*******************************
+   * Chart sizing helper (safe, avoids white blank)
+   *******************************/
+  function sizeCanvas(canvas){
+    if(!canvas) return null;
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const rect = canvas.getBoundingClientRect();
+    // guard: if not visible or width/height 0, return false to avoid blank rendering
+    if(rect.width === 0 || rect.height === 0) return null;
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
     const ctx = canvas.getContext('2d');
-    const DPR = devicePixelRatio||1;
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    canvas.width = w*DPR; canvas.height = h*DPR; ctx.scale(DPR,DPR);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return {ctx, w:rect.width, h:rect.height};
+  }
+
+  /*******************************
+   * HERO mini donut (real values and legend)
+   * Uses today's sample macros or demo values
+   *******************************/
+  function drawHeroMini(){
+    const canvas = $('#heroMini');
+    const wrap = canvas && canvas.parentElement;
+    if(!canvas || !wrap) return;
+    const s = sizeCanvas(canvas);
+    if(!s) return; // skip if zero width
+    const ctx = s.ctx, w = s.w, h = s.h;
     ctx.clearRect(0,0,w,h);
 
-    // axes (subtle)
-    ctx.strokeStyle = 'rgba(255,255,255,.08)';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(12,h-24); ctx.lineTo(w-8,h-24); ctx.stroke();
+    // demo actual values (these should be read from your app state if available)
+    const data = [{label:'Protein',val:120,color:'#29d9a3'},{label:'Carbs',val:240,color:'#49f0c6'},{label:'Fat',val:70,color:'#5dd6f2'}];
+    const total = data.reduce((a,b)=>a+b.val,0) || 1;
+    const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 14;
 
-    // data
-    const pts = [0.18,0.62,0.28,0.42,0.68,0.52,0.80];
-    const pad = 16;
-    const step = (w - pad*2)/(pts.length-1);
+    // draw ring background
+    ctx.beginPath(); ctx.arc(cx,cy,r+6,0,Math.PI*2); ctx.lineWidth = 10; ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.stroke();
 
-    // gradient line
-    const grad = ctx.createLinearGradient(0,0,w,0);
-    grad.addColorStop(0,'#49f0c6'); grad.addColorStop(1,'#5dd6f2');
-
-    // animate
+    // animate pie
     let t=0;
     function frame(){
-      t = clamp(t+0.02,0,1);
+      t = clamp(t + 0.03, 0, 1);
       ctx.clearRect(0,0,w,h);
-      ctx.strokeStyle = 'rgba(255,255,255,.08)';
-      ctx.beginPath(); ctx.moveTo(12,h-24); ctx.lineTo(w-8,h-24); ctx.stroke();
+      // light background
+      ctx.beginPath(); ctx.arc(cx,cy,r+6,0,Math.PI*2); ctx.lineWidth = 10; ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.stroke();
 
-      ctx.lineWidth=3; ctx.strokeStyle=grad; ctx.beginPath();
-      pts.forEach((p,i)=>{
-        const x = pad + i*step;
-        const y = pad + (1-p)*(h-pad*2);
-        const yEased = pad + (1-(p*t))*(h-pad*2); // ease in
-        if(i===0) ctx.moveTo(x,yEased); else ctx.lineTo(x,yEased);
-      });
-      ctx.stroke();
-
-      // points
-      ctx.fillStyle='#eafff7';
-      pts.forEach((p,i)=>{
-        const x = pad + i*step;
-        const y = pad + (1-(p*t))*(h-pad*2);
-        ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
-      });
+      let angle = -Math.PI/2;
+      for(let i=0;i<data.length;i++){
+        const part = (data[i].val/total) * Math.PI * 2 * t;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,angle,angle+part); ctx.closePath();
+        ctx.fillStyle = data[i].color; ctx.fill();
+        angle += part;
+      }
+      // center label
+      ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.font = '700 14px Inter, system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(Math.round((data[0].val/total)*100) + '% P', cx, cy);
 
       if(t<1) requestAnimationFrame(frame);
     }
     frame();
+
+    // update legend below
+    const legend = $('#heroLegend');
+    if(legend){
+      legend.innerHTML = '';
+      data.forEach(d=>{
+        const el = document.createElement('div');
+        el.style.display='flex'; el.style.alignItems='center'; el.style.gap='8px'; el.style.fontWeight=700; el.style.color='var(--text-dim)';
+        el.innerHTML = `<span style="width:12px;height:12px;border-radius:3px;background:${d.color};display:inline-block"></span><span style="font-size:13px">${d.label} ${d.val}g</span>`;
+        legend.appendChild(el);
+      });
+    }
   }
 
-  function drawPieChart(canvas){
-    const ctx = canvas.getContext('2d');
-    const DPR = devicePixelRatio||1;
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    canvas.width = w*DPR; canvas.height = h*DPR; ctx.scale(DPR,DPR);
+  /*******************************
+   * LINE CHART: weekly calories (axis, labels, tooltip)
+   *******************************/
+  function drawLineChart(){
+    const canvas = $('#lineChart'), tooltip = $('#chartTooltip');
+    if(!canvas) return;
+    const s = sizeCanvas(canvas);
+    if(!s) return;
+    const ctx = s.ctx, w = s.w, h = s.h;
     ctx.clearRect(0,0,w,h);
 
-    const cx=w/2, cy=h/2, r=Math.min(w,h)/3;
-    const parts=[0.35,0.42,0.23]; // protein, carbs, fat
-    const colors=['#29d9a3','#49f0c6','#5dd6f2'];
+    // sample real-ish weekly calories (Mon..Sun)
+    const labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const values = [2100,1850,2300,1900,2050,2400,2200];
+    const max = Math.max(...values) * 1.06;
+    const min = Math.min(...values) * 0.94;
+    const pad = 28;
+    const innerH = h - pad*2;
+    const innerW = w - pad*2;
 
-    let a0=-Math.PI/2; let t=0;
-    function frame(){
-      t = clamp(t+0.02,0,1);
+    // gridlines
+    ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.lineWidth = 1;
+    for(let i=0;i<4;i++){
+      const y = pad + (innerH * i / 3);
+      ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w-pad, y); ctx.stroke();
+    }
+
+    // draw area + line animated
+    let t=0;
+    function animate(){
+      t = clamp(t + 0.03, 0, 1);
+      // clear and redraw grid
       ctx.clearRect(0,0,w,h);
-      parts.forEach((p,i)=>{
-        const a1 = a0 + p*Math.PI*2*t;
-        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
-        ctx.fillStyle=colors[i]; ctx.globalAlpha=0.9; ctx.fill(); ctx.globalAlpha=1;
-        a0 = a1;
+      ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.lineWidth = 1;
+      for(let i=0;i<4;i++){ const y = pad + (innerH * i/3); ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke(); }
+
+      // path
+      ctx.beginPath();
+      values.forEach((v,i)=>{
+        const x = pad + (innerW * i / (values.length - 1));
+        const norm = (v - min) / (max - min);
+        const y = pad + innerH * (1 - norm * t);
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
       });
-      a0 = -Math.PI/2;
+      // fill
+      ctx.lineWidth = 3;
+      const g = ctx.createLinearGradient(0,0,w,0); g.addColorStop(0,'#86f4d0'); g.addColorStop(1,'#10c08f');
+      ctx.strokeStyle = g; ctx.stroke();
+
+      // area under curve
+      ctx.lineTo(w - pad, h - pad); ctx.lineTo(pad, h - pad); ctx.closePath();
+      ctx.fillStyle = 'rgba(16,192,143,0.06)'; ctx.fill();
+
+      // draw points
+      values.forEach((v,i)=>{
+        const x = pad + (innerW * i / (values.length - 1));
+        const norm = (v - min) / (max - min);
+        const y = pad + innerH * (1 - norm * t);
+        ctx.beginPath(); ctx.fillStyle = '#fff'; ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
+      });
+
+      // draw x labels
+      ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.font='600 12px Inter, system-ui'; ctx.textAlign='center';
+      labels.forEach((lab,i)=>{ const x = pad + (innerW * i/(labels.length-1)); ctx.fillText(lab, x, h - 8); });
+
+      if(t<1) requestAnimationFrame(animate);
+    }
+    animate();
+
+    // tooltip handling (pointer move)
+    function onMove(e){
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || e.touches && e.touches[0].clientX) - rect.left;
+      // find nearest point
+      const step = innerW / (values.length - 1);
+      let idx = Math.round((x - pad) / step);
+      idx = clamp(idx, 0, values.length - 1);
+      const px = pad + idx * step;
+      const val = values[idx];
+      // position tooltip
+      const tip = tooltip;
+      tip.style.left = (rect.left + px) + 'px';
+      tip.style.top = (rect.top + (pad + innerH * (1 - ((val-min)/(max-min)))) - 12) + 'px';
+      tip.style.display = 'block';
+      tip.textContent = labels[idx] + ': ' + val + ' kcal';
+    }
+    function hideTip(){ const tip = tooltip; tip.style.display = 'none'; }
+
+    canvas.addEventListener('pointermove', onMove);
+    canvas.addEventListener('pointerleave', hideTip);
+    canvas.addEventListener('touchstart', onMove, {passive:true});
+    canvas.addEventListener('touchmove', onMove, {passive:true});
+  }
+
+  /*******************************
+   * PIE CHART: macros with legend and tooltip
+   *******************************/
+  function drawPieChart(){
+    const canvas = $('#pieChart'); const legendRoot = $('#pieLegend'); const tooltip = $('#chartTooltip');
+    if(!canvas) return;
+    const s = sizeCanvas(canvas); if(!s) return;
+    const ctx = s.ctx, w = s.w, h = s.h;
+    ctx.clearRect(0,0,w,h);
+
+    // sample macro values (should be connected to actual tracker if available)
+    const macros = [{label:'Protein',val:120,color:'#29d9a3'},{label:'Carbs',val:240,color:'#49f0c6'},{label:'Fats',val:70,color:'#5dd6f2'}];
+    const total = macros.reduce((a,b)=>a+b.val,0) || 1;
+    const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 14;
+
+    // animate slices
+    let t=0;
+    function frame(){
+      t = clamp(t + 0.03,0,1);
+      ctx.clearRect(0,0,w,h);
+      let angle = -Math.PI/2;
+      for(let i=0;i<macros.length;i++){
+        const slice = macros[i].val/total * Math.PI*2 * t;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,angle,angle+slice); ctx.closePath();
+        ctx.fillStyle = macros[i].color; ctx.fill();
+        angle += slice;
+      }
+      // center label
+      ctx.fillStyle = '#fff'; ctx.font = '700 13px Inter, system-ui'; ctx.textAlign='center';
+      ctx.fillText('Macros', cx, cy - 4);
+      ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.font='600 12px Inter, system-ui';
+      ctx.fillText(total + ' kcal', cx, cy + 14);
+
       if(t<1) requestAnimationFrame(frame);
     }
     frame();
+
+    // legend
+    if(legendRoot){
+      legendRoot.innerHTML = '';
+      macros.forEach(m=>{
+        const el = document.createElement('div'); el.style.display='flex'; el.style.alignItems='center'; el.style.gap='8px'; el.style.fontWeight='700'; el.style.color='var(--text-dim)';
+        el.innerHTML = `<span style="width:12px;height:12px;border-radius:3px;background:${m.color};display:inline-block"></span><span style="font-size:13px">${m.label} ${m.val}g</span>`;
+        legendRoot.appendChild(el);
+      });
+    }
+
+    // tooltip on hover (find slice by angle)
+    function onMove(e){
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || e.touches && e.touches[0].clientX) - rect.left;
+      const y = (e.clientY || e.touches && e.touches[0].clientY) - rect.top;
+      const dx = x - cx, dy = y - cy;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 6 || dist > r + 6){ tooltip.style.display='none'; return; }
+      let ang = Math.atan2(dy, dx);
+      if(ang < -Math.PI/2) ang += Math.PI*2;
+      let current = -Math.PI/2;
+      for(let i=0;i<macros.length;i++){
+        const sweep = macros[i].val/total * Math.PI*2;
+        if(ang >= current && ang <= current + sweep){
+          tooltip.style.left = (rect.left + x) + 'px';
+          tooltip.style.top = (rect.top + y - 10) + 'px';
+          tooltip.style.display = 'block';
+          tooltip.textContent = `${macros[i].label}: ${macros[i].val}g (${Math.round((macros[i].val/total)*100)}%)`;
+          return;
+        }
+        current += sweep;
+      }
+      tooltip.style.display = 'none';
+    }
+    canvas.addEventListener('pointermove', onMove);
+    canvas.addEventListener('pointerleave', ()=>{ tooltip.style.display='none'; });
   }
 
-  const heroMini = qs('#heroMini');
-  const lineCanvas = qs('#lineChart');
-  const pieCanvas = qs('#pieChart');
+  /*******************************
+   * DRAW ALL CHARTS safely (guards for 0 sizes)
+   *******************************/
+  function drawAll(){
+    // safety: only draw if canvas width > 10
+    try{ drawHeroMini(); }catch(e){ console.warn('hero draw failed', e); }
+    try{ drawLineChart(); }catch(e){ console.warn('line draw failed', e); }
+    try{ drawPieChart(); }catch(e){ console.warn('pie draw failed', e); }
+  }
+  window.addEventListener('load', ()=>{ setTimeout(drawAll,120); });
+  window.addEventListener('resize', ()=>{ clearTimeout(window._draw); window._draw = setTimeout(drawAll,150); });
 
-  const resizeCharts = () => {
-    [heroMini,lineCanvas,pieCanvas].forEach(cv=>{
-      if(!cv) return;
-      // redraw on resize
-      if(cv.id==='heroMini') drawLineChart(cv);
-      if(cv.id==='lineChart') drawLineChart(cv);
-      if(cv.id==='pieChart') drawPieChart(cv);
-    });
-  };
-  window.addEventListener('resize', ()=>{ clearTimeout(window._rz); window._rz=setTimeout(resizeCharts,120); });
-  window.addEventListener('load', resizeCharts);
-
-  /* ===== testimonials auto-scroll (controllable) ===== */
-  const track = qs('#tTrack');
+  /*******************************
+   * Testimonials auto-scroll control
+   *******************************/
+  const tTrack = $('#tTrack');
   let tIndex = 0;
-  function tick(){
-    const items = qsa('.t', track);
-    if(items.length<1) return;
-    tIndex = (tIndex+1)%items.length;
-    track.style.transform = `translateX(${-tIndex*(items[0].offsetWidth+12)}px)`;
+  function tTick(){
+    const items = $$('.t', tTrack);
+    if(items.length <= 1) return;
+    tIndex = (tIndex + 1) % items.length;
+    tTrack.style.transform = `translateX(${-tIndex*(items[0].offsetWidth + 12)}px)`;
   }
-  let tTimer = setInterval(tick, 2400);
-  track.addEventListener('pointerenter',()=>clearInterval(tTimer));
-  track.addEventListener('pointerleave',()=>tTimer=setInterval(tick,2400));
+  let tTimer = setInterval(tTick, 2600);
+  tTrack.addEventListener('pointerenter', ()=>clearInterval(tTimer));
+  tTrack.addEventListener('pointerleave', ()=> tTimer = setInterval(tTick, 2600));
 
-  /* ===== daily habits logic =====
-     - Complete -> hide row, show "Good job" card
-     - Persist per day; next day resets automatically
-  */
+  /*******************************
+   * Daily habits: persist per day & show "Good job!" then hide until next day
+   *******************************/
   const DAY_KEY = 'fs_day_key';
-  const HABIT_KEY = 'fs_habits_state';
-
-  function todayKey(){
-    const d = new Date();
-    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  const HABIT_STATE = 'fs_habit_state_v2';
+  function dayKey(){ const d = new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+  // reset if new day
+  if(localStorage.getItem(DAY_KEY) !== dayKey()){
+    localStorage.setItem(DAY_KEY, dayKey());
+    localStorage.setItem(HABIT_STATE, JSON.stringify({})); // clear
   }
-
-  function maybeReset(){
-    const d = localStorage.getItem(DAY_KEY);
-    const tk = todayKey();
-    if(d!==tk){
-      localStorage.setItem(DAY_KEY, tk);
-      localStorage.setItem(HABIT_KEY, JSON.stringify({})); // reset all
-    }
-  }
-  maybeReset();
-
-  function loadState(){
-    try { return JSON.parse(localStorage.getItem(HABIT_KEY)||'{}'); }
-    catch(e){ return {}; }
-  }
-  function saveState(state){ localStorage.setItem(HABIT_KEY, JSON.stringify(state)); }
-
-  function renderHabit(card, isDone){
-    const toggle = qs('.toggle', card);
-    const bar = qs('.bar > b', card);
-    const slot = qs('.done-slot', card);
-
-    if(isDone){
-      // hide main row, show congrats card
-      card.querySelector('.habit-row').style.display='none';
-      slot.innerHTML = `
-        <div class="done-card">
-          <div><strong>Good job!</strong> Task completed for today.</div>
-          <span class="tag">Returns tomorrow</span>
-        </div>`;
-    }else{
-      card.querySelector('.habit-row').style.display='';
-      slot.innerHTML = '';
-    }
-    // reset visuals
-    toggle.classList.toggle('on', isDone);
-    toggle.setAttribute('aria-checked', isDone?'true':'false');
-    bar.style.width = isDone ? '100%' : '0%';
-  }
+  function loadState(){ try{return JSON.parse(localStorage.getItem(HABIT_STATE)||'{}')}catch(e){return{}} }
+  function saveState(s){ localStorage.setItem(HABIT_STATE, JSON.stringify(s)); }
 
   function initHabits(){
     const state = loadState();
-    qsa('.habit-card').forEach(card=>{
+    $$('.habit-card').forEach(card=>{
       const key = card.getAttribute('data-habit');
       const isDone = !!state[key];
-      renderHabit(card, isDone);
+      const toggle = $('.toggle', card);
+      const bar = $('.bar > b', card);
+      const slot = $('.done-slot', card);
 
-      const toggle = qs('.toggle', card);
-      const bar = qs('.bar > b', card);
+      function render(done){
+        if(done){
+          card.querySelector('.habit-row').style.display = 'none';
+          slot.innerHTML = `<div class="done-card"><div><strong>Good job!</strong> Task completed for today.</div><span style="font-weight:800;color:var(--mint-c)">Will return tomorrow</span></div>`;
+        } else {
+          card.querySelector('.habit-row').style.display = '';
+          slot.innerHTML = '';
+        }
+        toggle.classList.toggle('on', done);
+        toggle.setAttribute('aria-checked', done? 'true' : 'false');
+        bar.style.width = done ? '100%' : '0%';
+      }
+
+      // initial render
+      render(isDone);
 
       function complete(){
         state[key] = true;
         saveState(state);
-        // animate bar then render
+        // animate then show message
         bar.style.width = '100%';
-        setTimeout(()=>renderHabit(card,true), 240);
+        setTimeout(()=>render(true), 220);
       }
 
-      toggle.addEventListener('click', ()=>{
-        if(state[key]) return; // already done today
-        complete();
-      });
-      toggle.addEventListener('keydown', (e)=>{
-        if(e.key==='Enter' || e.key===' '){ e.preventDefault(); if(!state[key]) complete(); }
-      });
+      toggle.addEventListener('click', ()=>{ if(!state[key]) complete(); });
+      toggle.addEventListener('keydown', e=>{ if((e.key==='Enter' || e.key===' ') && !state[key]) { e.preventDefault(); complete(); }});
     });
   }
   initHabits();
 
-  /* ===== contact (demo only) ===== */
-  qs('#cSend').addEventListener('click', ()=>{
-    const em = qs('#cEmail').value.trim();
-    const msg = qs('#cMsg').value.trim();
-    if(!em || !msg){ qs('#cNote').textContent = 'Please add email and a short message.'; return; }
-    qs('#cNote').textContent = 'Thanks! We will get back to you shortly.';
-    qs('#cEmail').value = ''; qs('#cMsg').value='';
-  });
+  /*******************************
+   * Contact demo
+   *******************************/
+  const cSend = $('#cSend');
+  if(cSend){
+    cSend.addEventListener('click', ()=>{
+      const em = $('#cEmail').value.trim(), msg = $('#cMsg').value.trim();
+      if(!em || !msg){ $('#cNote').textContent = 'Please provide email & message.'; return; }
+      $('#cNote').textContent = 'Thanks — (demo) message received.';
+      $('#cEmail').value=''; $('#cMsg').value='';
+    });
+  }
 
-  /* Prevent any accidental huge white space due to images/canvas:
-     - we redraw charts on load/resize and set canvas display:block; height fixed via CSS.
-     - no remote images besides logo.png. */
+  /*******************************
+   * On initial load we draw charts once visible:
+   *******************************/
+  // observe chart container to draw when visible (avoid early zero sizes)
+  const chartObserver = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        drawAll();
+        chartObserver.unobserve(e.target);
+      }
+    });
+  }, {threshold:.02});
+  const chartSection = $('.chart-grid');
+  if(chartSection) chartObserver.observe(chartSection);
+
+  // also ensure hero mini redraw on orientation change
+  window.addEventListener('orientationchange', ()=> setTimeout(drawAll, 180));
+
+  // prevent page-wide horizontal overflow
+  window.addEventListener('load', ()=> setTimeout(()=>{ document.documentElement.style.overflowX = 'hidden'; }, 50));
+
   </script>
 </body>
 </html>
